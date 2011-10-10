@@ -20,5 +20,7 @@ $this->menu=array(
 	'attributes'=>array(
 		'id',
 		'username',
+		'email',
+		'password'
 	),
 )); ?>
