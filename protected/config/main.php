@@ -110,4 +110,6 @@ return array(
 		// this is used in contact page
 		'adminEmail'=>'webmaster@example.com',
 	),
+	// added by LDF 10-7-11
+//	'defaultController' => 'login',
 );
