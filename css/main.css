@@ -227,3 +227,18 @@ div.search-form
 {
 	background: #80CFFF;
 }
+
+#upload_form {
+border: 1px solid #CCC;
+padding: 25px;
+text-align:center;
+}
+
+#upload_form p + p {
+font-weight: bold;
+}
+
+.errorMessage {
+font-weight:bold;
+color:#F00;
+}

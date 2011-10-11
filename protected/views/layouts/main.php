@@ -46,8 +46,7 @@
 
 	<div id="footer">
 		Brought to you by the <a href="http://statelibrary.ncdcr.gov/" target="_blank">State Library of North Carolina</a> &amp; <a href="http://www.nclive.org/">NCLive</a><br />
-        Funding for this project provided by a Sparks! Ignition grant from <a href="http://www.imls.gov/" target="_blank">IMLS</a><br />
-		<?php echo Yii::powered(); ?>
+        Funding for this project provided by a Sparks! Ignition grant from <a href="http://www.imls.gov/" target="_blank">IMLS</a>
 	</div><!-- footer -->
 
 </div><!-- page -->
