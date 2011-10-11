@@ -1,6 +1,5 @@
-
 /.settings
 /.buildpath
 /.project
-protected/config/main.php
+#protected/config/main.php
 assets/*

@@ -25,11 +25,14 @@ return array(
 		// uncomment the following to enable the Gii tool
 		'gii'=>array(
 			'class'=>'system.gii.GiiModule',
-			'password'=>'Enter Your Password Here',
+			'password'=>'dean',
 		 	// If removed, Gii defaults to localhost only. Edit carefully to taste.
 			'ipFilters'=>array('127.0.0.1','::1'),
 		),
-		
+		// used by rights module
+		'rights'=>array(
+			'install'=>true,
+		),
 	),
 
 	// application components
@@ -41,6 +44,12 @@ return array(
 		),
 		'authManager' => array(
 			'class' => 'RDbAuthManager',
+			'connectionID'=>'db',
+
+		),
+		// adding in CSRF protection component
+		'request' => array(
+			'enableCsrfValidation' => true
 		),
 		// uncomment the following to enable URLs in path-format
 		'urlManager'=>array(
@@ -96,12 +105,6 @@ return array(
             'host'  => '127.0.0.1'
         ),
 		/**** end of 3rd party extentions ****/
-	),
-	
-	'modules' => array(
-		'rights' => array(
-			'install' => true,
-		),
 	),
 
 	// application-level parameters that can be accessed
