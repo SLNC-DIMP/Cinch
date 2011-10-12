@@ -28,7 +28,7 @@ return array(
 			'password'=>'',
 		 	// If removed, Gii defaults to localhost only. Edit carefully to taste.
 			'ipFilters'=>array('127.0.0.1','::1'),
-		),
+		), 
 		// used by rights module
 		'rights'=>array(
 			'install'=>true,
@@ -68,9 +68,16 @@ return array(
 		'db'=>array(
 			'connectionString' => 'mysql:host=localhost;dbname=testdrive',
 			'emulatePrepare' => true,
-			'username' => '',
+			'username' => 'root',
 			'password' => '',
 			'charset' => 'utf8',
+		),
+		
+		// added to put session info into db
+		'session' => array (
+			'class' => 'system.web.CDbHttpSession',
+			'connectionID' => 'db',
+			'sessionTableName' => 'user_session_info',
 		),
 	
 		'errorHandler'=>array(
