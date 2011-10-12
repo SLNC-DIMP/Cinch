@@ -35,29 +35,30 @@ class UploadController extends Controller {
 	}
 	
 	public function actionIndex() {
-		$dir = Yii::getPathOfAlias('application.uploads');
+		$user_upload_dir = $this->getUsrUploadDir();
 		$uploaded = false;
-		$model=new Upload();
+		$model = new Upload();
+		
 		if(isset($_POST['Upload'])) {
 			$model->attributes = $_POST['Upload'];
 			$file = CUploadedFile::getInstance($model,'file');
 			if($model->validate()){
+				
 				$mod_name = $this->encryptName($file->getName());
-				$uploaded = $file->saveAs($dir . '/' . $mod_name);
+				$uploaded = $file->saveAs($user_upload_dir . '/' . $mod_name);
 			}
 		}
 		
 		$this->render('index', array(
 			'model' => $model,
 			'uploaded' => $uploaded,
-			'dir' => $dir,
+			'dir' => $user_upload_dir,
 		));
 	}
 	
-	/*
-	* Converts a file's name into an MD5 hash so users' can't mess with their own files.
-	* Requires PHP 5.3 to work correctly
-	* @return string of file name
+	/**
+	* Converts a file's name into an MD5 hash so users' can't easily mess with their own files.
+	* @return string encrypted file name
 	*/
 	public function encryptName($file) {
 		$file_extension = strrchr($file, '.');
@@ -65,6 +66,22 @@ class UploadController extends Controller {
 		$encrypted_name = md5($file_name);
 		
 		return $encrypted_name . $file_extension;
+	}
+	
+	/**
+	* Finds a user's upload directory.
+	* @return string
+	*/
+	public function getUsrUploadDir() {
+		$dir = Yii::getPathOfAlias('application.uploads');
+		$user_dir = Yii::app()->user->name;
+		$user_upload_dir = $dir . '/' . $user_dir;
+		
+		if(!is_dir($user_upload_dir)) {
+			$user_upload_dir = mkdir($user_upload_dir);
+		}
+		
+		return $user_upload_dir;
 	}
 	
 	/**

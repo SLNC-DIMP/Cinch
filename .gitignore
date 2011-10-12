@@ -3,3 +3,4 @@
 /.project
 protected/config/main.php
 assets/*
+uploads/*
