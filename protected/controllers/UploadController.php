@@ -34,15 +34,16 @@ class UploadController extends Controller {
 		);
 	}
 	
-	function actionIndex() {
+	public function actionIndex() {
 		$dir = Yii::getPathOfAlias('application.uploads');
 		$uploaded = false;
 		$model=new Upload();
 		if(isset($_POST['Upload'])) {
-			$model->attributes = CHtml::encode($_POST['Upload']);
+			$model->attributes = $_POST['Upload'];
 			$file = CUploadedFile::getInstance($model,'file');
 			if($model->validate()){
-				$uploaded = $file->saveAs($dir.'/'.$file->getName());
+				$mod_name = $this->encryptName($file->getName());
+				$uploaded = $file->saveAs($dir . '/' . $mod_name);
 			}
 		}
 		
@@ -53,8 +54,21 @@ class UploadController extends Controller {
 		));
 	}
 	
+	/*
+	* Converts a file's name into an MD5 hash so users' can't mess with their own files.
+	* Requires PHP 5.3 to work correctly
+	* @return string of file name
+	*/
+	public function encryptName($file) {
+		$file_extension = strrchr($file, '.');
+		$file_name = substr($file, 0, -4);
+		$encrypted_name = md5($file_name);
+		
+		return $encrypted_name . $file_extension;
+	}
+	
 	/**
-	* Placeholder should be moved into a component
+	* Placeholder should be moved into a component.  Not sure how to do that. Not used at the moment
 	*/
 	public function cleanInput($values) {
 		if(is_array($values)) {
