@@ -42,8 +42,11 @@ class UploadController extends Controller {
 		if(isset($_POST['Upload'])) {
 			$model->attributes = $_POST['Upload'];
 			$file = CUploadedFile::getInstance($model,'file');
+		
 			if($model->validate()){
-				
+				if(!is_dir($user_upload_dir)) {
+					mkdir($user_upload_dir);
+				}
 				$mod_name = $this->encryptName($file->getName());
 				$uploaded = $file->saveAs($user_upload_dir . '/' . $mod_name);
 			}
@@ -57,7 +60,7 @@ class UploadController extends Controller {
 	}
 	
 	/**
-	* Converts a file's name into an MD5 hash so users' can't easily mess with their own files.
+	* Converts a file's name into an MD5 hash so users can't easily mess with their own files.
 	* @return string encrypted file name
 	*/
 	public function encryptName($file) {
@@ -74,12 +77,8 @@ class UploadController extends Controller {
 	*/
 	public function getUsrUploadDir() {
 		$dir = Yii::getPathOfAlias('application.uploads');
-		$user_dir = Yii::app()->user->name;
-		$user_upload_dir = $dir . '/' . $user_dir;
-		
-		if(!is_dir($user_upload_dir)) {
-			$user_upload_dir = mkdir($user_upload_dir);
-		}
+		$user_name = Yii::app()->user->name;
+		$user_upload_dir = $dir . '/' . $user_name;
 		
 		return $user_upload_dir;
 	}
