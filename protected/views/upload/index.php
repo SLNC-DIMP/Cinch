@@ -1,4 +1,7 @@
-
+<?php
+$this->breadcrumbs=array(
+	'Uploads',
+); ?>
 <div id="upload_form">
 	<h2>Select a file to upload to Cinch</h2>
     <p>Files must be .txt or .cvs files.  Please make sure each URL listed is on its own line in your file.</p>
