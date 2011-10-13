@@ -2,5 +2,6 @@
 /.buildpath
 /.project
 protected/config/main.php
+protected/config/test.php
 assets/*
 uploads/*
