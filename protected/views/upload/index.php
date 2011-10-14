@@ -11,9 +11,9 @@ $this->breadcrumbs=array(
     <?php endif ?>
     
     <?php echo CHtml::beginForm('', 'post', array('enctype'=>'multipart/form-data')); ?>
-    <?php echo CHtml::error($model, 'file'); ?>
+    <?php echo CHtml::error($model, 'upload_path'); ?>
     <br />
-    <?php echo CHtml::activeFileField($model, 'file'); ?>
+    <?php echo CHtml::activeFileField($model, 'upload_path'); ?>
     <br /><br />
     <?php echo CHtml::submitButton('Upload'); ?>
     <?php echo CHtml::endForm(); ?>

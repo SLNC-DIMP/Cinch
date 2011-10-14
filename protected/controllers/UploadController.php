@@ -37,18 +37,23 @@ class UploadController extends Controller {
 	public function actionIndex() {
 		$user_upload_dir = $this->getUsrUploadDir();
 		$uploaded = false;
-		$model = new Upload();
+		$model = new Upload;
 		
 		if(isset($_POST['Upload'])) {
-			$model->attributes = $_POST['Upload'];
-			$file = CUploadedFile::getInstance($model,'file');
-		
+			$file = CUploadedFile::getInstance($model,'upload_path');
+			
 			if($model->validate()){
 				if(!is_dir($user_upload_dir)) {
 					mkdir($user_upload_dir);
 				}
+				
 				$mod_name = $this->encryptName($file->getName());
-				$uploaded = $file->saveAs($user_upload_dir . '/' . $mod_name);
+				$user_id = Yii::app()->user->id;
+				$upload_path = $user_upload_dir . '/' . $mod_name;
+				$model->attributes = array('user_id' => $user_id, 'upload_path' => $upload_path);
+				$uploaded = $file->saveAs($upload_path);
+				
+				if($uploaded) { $model->save(); }
 			}
 		}
 		
@@ -81,20 +86,5 @@ class UploadController extends Controller {
 		$user_upload_dir = $dir . '/' . $user_name;
 		
 		return $user_upload_dir;
-	}
-	
-	/**
-	* Placeholder should be moved into a component.  Not sure how to do that. Not used at the moment
-	*/
-	public function cleanInput($values) {
-		if(is_array($values)) {
-			foreach($values as $key => $value) {
-				$clean_values[$key] = CHtml::encode(trim($value));
-			}
-			
-			return $clean_values;
-		} else {
-			return CHtml::encode(trim($values));
-		}
 	}
 }
