@@ -12,7 +12,7 @@
  * @property User $user
  */
 class Upload extends CActiveRecord {
-	public $file;
+	public $upload_path;
 	
 	/**
 	 * Returns the static model of the specified AR class.
