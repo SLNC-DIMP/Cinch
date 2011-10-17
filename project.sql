@@ -65,7 +65,33 @@ CREATE TABLE IF NOT EXISTS `authitemchild` (
 --
 -- Dumping data for table `authitemchild`
 --
+--
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `file_info`
+--
+
+CREATE TABLE IF NOT EXISTS `file_info` (
+  `id` int(10) NOT NULL auto_increment,
+  `org_file_path` varchar(2084) collate utf8_bin default NULL,
+  `temp_file_path` varchar(1000) collate utf8_bin default NULL COMMENT 'orginial file path.  2083 character URL appears to be IE limit',
+  `file_type_id` int(1) NOT NULL default '0' COMMENT 'current file path on the server',
+  `checksum_created` int(1) NOT NULL default '0',
+  `checksum` varchar(40) collate utf8_bin default NULL COMMENT 'file check sum sha1 or md5. sha1 is the default',
+  `virus_check` int(1) NOT NULL default '0' COMMENT 'has file had virus check',
+  `dynamic_file` int(1) NOT NULL default '0' COMMENT 'is the file dynamically generated from orginal URL',
+  `last_modified` varchar(15) collate utf8_bin default NULL COMMENT 'file last modified timestamp',
+  `problem_file` int(1) NOT NULL default '0',
+  `user_id` int(6) NOT NULL default '0' COMMENT "CONSTRAINT FOREIGN KEY (user_id) REFERENCES user(id)",
+  `upload_file_id` int(6) NOT NULL default '0' COMMENT "CONSTRAINT FOREIGN KEY (upload_file_id) REFERENCES user_uploads(id)",
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='downloaded file information' AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `file_info`
+--
 
 -- --------------------------------------------------------
 
