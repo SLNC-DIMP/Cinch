@@ -173,7 +173,7 @@ CREATE TABLE IF NOT EXISTS `user_session_info` (
 -- Table structure for table `user_uploads`
 --
 
-CREATE TABLE IF NOT EXISTS `user_uploads` (
+CREATE TABLE IF NOT EXISTS `upload` (
   `id` int(7) NOT NULL auto_increment,
   `user_id` int(6) NOT NULL COMMENT "CONSTRAINT FOREIGN KEY (user_id) REFERENCES user(id)",
   `upload_path` varchar(250) collate utf8_unicode_ci NOT NULL,
@@ -182,7 +182,7 @@ CREATE TABLE IF NOT EXISTS `user_uploads` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=4 ;
 
 --
--- Dumping data for table `user_uploads`
+-- Dumping data for table `upload`
 --
 
 

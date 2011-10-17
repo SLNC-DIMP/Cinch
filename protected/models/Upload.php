@@ -28,7 +28,7 @@ class Upload extends CActiveRecord {
 	 */
 	public function tableName()
 	{
-		return 'user_uploads';
+		return 'upload';
 	}
 	
 	/**
