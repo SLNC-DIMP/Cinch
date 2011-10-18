@@ -27,7 +27,6 @@
 
 	<div id="mainmenu">
     	<?php
-		//	print_r(Yii::app()->session);
 			$menu_items = array(
 				array('label'=>'Home', 'url'=>array('/site/index')),
 				array('label'=>'About', 'url'=>array('/site/page', 'view'=>'about')),
