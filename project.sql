@@ -24,7 +24,10 @@ CREATE TABLE IF NOT EXISTS `AuthAssignment` (
 --
 -- Dumping data for table `authassignment`
 --
-
+INSERT INTO `AuthAssignment` (`itemname`, `userid`, `bizrule`, `data`) VALUES
+('Admin', '1', NULL, 'N;'),
+('Admin', '2', NULL, 'N;'),
+('Admin', 'admin', NULL, 'N;');
 
 -- --------------------------------------------------------
 
@@ -46,8 +49,31 @@ CREATE TABLE IF NOT EXISTS `AuthItem` (
 --
 
 INSERT INTO `AuthItem` (`name`, `type`, `description`, `bizrule`, `data`) VALUES
+('Admin', 2, NULL, NULL, 'N;'),
 ('Authenticated', 2, NULL, NULL, 'N;'),
-('Guest', 2, NULL, NULL, 'N;');
+('FileInfo.*', 1, NULL, NULL, 'N;'),
+('FileInfo.Admin', 0, NULL, NULL, 'N;'),
+('FileInfo.Create', 0, NULL, NULL, 'N;'),
+('FileInfo.Delete', 0, NULL, NULL, 'N;'),
+('FileInfo.Index', 0, NULL, NULL, 'N;'),
+('FileInfo.Update', 0, NULL, NULL, 'N;'),
+('FileInfo.View', 0, NULL, NULL, 'N;'),
+('Guest', 2, NULL, NULL, 'N;'),
+('Site.*', 1, NULL, NULL, 'N;'),
+('Site.Contact', 0, NULL, NULL, 'N;'),
+('Site.Error', 0, NULL, NULL, 'N;'),
+('Site.Index', 0, NULL, NULL, 'N;'),
+('Site.Login', 0, NULL, NULL, 'N;'),
+('Site.Logout', 0, NULL, NULL, 'N;'),
+('Upload.*', 1, NULL, NULL, 'N;'),
+('Upload.Index', 0, NULL, NULL, 'N;'),
+('User.*', 1, NULL, NULL, 'N;'),
+('User.Admin', 0, NULL, NULL, 'N;'),
+('User.Create', 0, NULL, NULL, 'N;'),
+('User.Delete', 0, NULL, NULL, 'N;'),
+('User.Index', 0, NULL, NULL, 'N;'),
+('User.Update', 0, NULL, NULL, 'N;'),
+('User.View', 0, NULL, NULL, 'N;');
 
 -- --------------------------------------------------------
 
@@ -66,7 +92,22 @@ CREATE TABLE IF NOT EXISTS `authitemchild` (
 -- Dumping data for table `authitemchild`
 --
 --
-
+INSERT INTO `authitemchild` (`parent`, `child`) VALUES
+('Authenticated', 'Guest'),
+('Authenticated', 'Site.*'),
+('Guest', 'Site.*'),
+('Authenticated', 'Site.Contact'),
+('Guest', 'Site.Contact'),
+('Authenticated', 'Site.Error'),
+('Guest', 'Site.Error'),
+('Authenticated', 'Site.Index'),
+('Guest', 'Site.Index'),
+('Authenticated', 'Site.Login'),
+('Guest', 'Site.Login'),
+('Authenticated', 'Site.Logout'),
+('Guest', 'Site.Logout'),
+('Authenticated', 'Upload.*'),
+('Authenticated', 'Upload.Index');
 -- --------------------------------------------------------
 
 --
