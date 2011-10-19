@@ -6,9 +6,9 @@ class DownloadCommand extends CConsoleCommand {
 	}
 	
 	/**
-	 * Retrieves a list of uploaded files with url links that need to be downloaded
-	 * @return object Data Access Object
-	 */
+	* Retrieves a list of uploaded files with url links that need to be downloaded
+	* @return object Data Access Object
+	*/
 	public function getUrls() {
 		$get_file_list = Yii::app()->db->createCommand()
 			->select('*')
