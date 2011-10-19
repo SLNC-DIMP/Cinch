@@ -13,3 +13,13 @@ an IMLS Sparks! Ignition grant.
 
 After download, you may need to run the setup.sh shell file before initial running.
 
+-------------------------
+
+Parts of Cinch include:
+
+- Yii Framework <yiiframework.com>
+- jQuery <jquery.com>
+- jQuery UI <jqueryui.com>
+- Apache Tika <tika.apache.org>
+- RabbitMQ <rabbitmq.com>
+
