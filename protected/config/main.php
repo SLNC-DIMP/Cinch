@@ -31,7 +31,8 @@ return array(
 		), 
 		// used by rights module
 		'rights'=>array(
-			'install'=>true,
+			//'install'=>true,
+			//'superuserName'=>'cinch_admin'
 		),
 	),
 
@@ -77,7 +78,7 @@ return array(
 		'session' => array (
 			'class' => 'system.web.CDbHttpSession',
 			'connectionID' => 'db',
-			'sessionTableName' => 'user_session_info',
+			'sessionTableName' => '',
 		),
 	
 		'errorHandler'=>array(
@@ -95,8 +96,8 @@ return array(
 				/*
 				array(
 					'class'=>'CWebLogRoute',
-				),
-				*/
+				), */
+				
 			),
 		),
 		
@@ -111,6 +112,11 @@ return array(
             'class' => 'application.components.AMQP.CAMQP',
             'host'  => '127.0.0.1'
         ),
+		
+		// added zip file extension
+		'zip' => array(
+			'class'=>'application.extensions.zip.EZip'
+		),
 		/**** end of 3rd party extentions ****/
 	),
 
@@ -120,6 +126,4 @@ return array(
 		// this is used in contact page
 		'adminEmail'=>'webmaster@example.com',
 	),
-	// added by LDF 10-7-11
-//	'defaultController' => 'login',
 );
