@@ -1,7 +1,6 @@
 /.settings
 /.buildpath
 /.project
-protected/config/main.php
-protected/config/test.php
+protected/config/*
 assets/*
 uploads/*
