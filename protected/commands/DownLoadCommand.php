@@ -1,14 +1,15 @@
 <?php
 class DownloadCommand extends CConsoleCommand {
-    public function run($args) {
-        
-    }
+	public function __construct() {
+		parent::__construct();
+		$this->error = new Error();
+	}
 	
 	/**
 	 * Retrieves a list of uploaded files with url links that need to be downloaded
 	 * @return object Data Access Object
 	 */
-	public function getList() {
+	public function getUrls() {
 		$get_file_list = Yii::app()->db->createCommand()
 			->select('*')
 			->from('files_for_download')
@@ -18,16 +19,33 @@ class DownloadCommand extends CConsoleCommand {
 		return $get_file_list;
 	}
 	
-	/**
-	 * Pulls the urls from a file lists into arrays
-	 * @return array
-	 */
-	public function readList() {
-		$file_lists = $this->getList();
+	public function cleanName($file) {
+		$patterns = array('/^(http|https):\/\//i', '\s');
+		$replacments = array('', '_');
+		$file_name = preg_replace($patterns, $replacments, $file);
 		
-		foreach($file_lists as $file_list) {
-			$url_list = file($file_list, FILE_SKIP_EMPTY_LINES);
-		}
+		return $clean_name;
+	}
+	
+	/**
+	* Update url as processed
+	*/
+	public function updateFileList($id) {
+		$sql = "UPDATE files_for_download SET processed = 1 WHERE id = :id)";
+		$write_files = Yii::app()->db->createCommand($sql);
+		$write_files->bindParam(":id", $id, PDO::PARAM_INT);
+		$write_files->execute();		
+	}
+	
+	/**
+	* Write file error
+	*/
+	public function writeError($error, $id) {
+		$sql = "UPDATE file_info SET problem_file = :error WHERE id = :id)";
+		$error = Yii::app()->db->createCommand($sql);
+		$error->bindParam(":error", $error, PDO::PARAM_INT);
+		$error->bindParam(":id", $id, PDO::PARAM_INT);
+		$error->execute();		
 	}
 	
 	/**
@@ -65,4 +83,8 @@ class DownloadCommand extends CConsoleCommand {
 		
 		return array('file_info' => $file_info, 'file_name' => $file_name, 'last_mod_time' => $last_modified_time);
 	}
+	
+	public function run($args) {
+        
+    }
 }

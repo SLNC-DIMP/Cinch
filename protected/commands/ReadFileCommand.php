@@ -30,7 +30,7 @@ class ReadFileCommand extends CConsoleCommand {
 	* Update file list as processed
 	*/
 	public function updateFileList($id) {
-		$sql = "UPDATE files_for_download SET processed = 1 WHERE id = :id)";
+		$sql = "UPDATE upload SET processed = 1 WHERE id = :id";
 		$write_files = Yii::app()->db->createCommand($sql);
 		$write_files->bindParam(":id", $id, PDO::PARAM_INT);
 		$write_files->execute();		
@@ -50,18 +50,17 @@ class ReadFileCommand extends CConsoleCommand {
 	public function run($args) {
         $file_lists = $file_lists = $this->getLists();
 		
-		
 		foreach($file_lists as $file_list) {
-			$url_list = file($file_list->upload_path, FILE_SKIP_EMPTY_LINES);
-			$url_count = fileCount($url_list);
+			$url_list = file($file_list['upload_path'], FILE_SKIP_EMPTY_LINES);
+			$url_count = $this->fileCount($url_list);
 			
 			$i = 0;
+			
 			foreach($url_list as $url) {
-				$this->addUrl(strip_tags(trim($url)), $file_list->user_upload_id, $file_list->user_id);
-				$i++;
+				$this->addUrl(strip_tags(trim($url)), $file_list['id'], $file_list['user_id']);
 				
-				if($url_count == $i) {
-					$this->updateFileList($file_list->id);
+				if($i == $url_count) {
+					$this->updateFileList($file_list['id']);
 				}
 			}
 		}
