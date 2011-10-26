@@ -47,22 +47,23 @@ class ReadFileCommand extends CConsoleCommand {
 	/**
 	* Process all unprocessed lists and add urls to database.  When list completes updates list as processed.
 	*/
-	public function run($args) {
-        $file_lists = $file_lists = $this->getLists();
+	public function run() {
+     $file_lists = $file_lists = $this->getLists();
 		
 		foreach($file_lists as $file_list) {
 			$url_list = file($file_list['upload_path'], FILE_SKIP_EMPTY_LINES);
 			$url_count = $this->fileCount($url_list);
 			
 			$i = 0;
-			
 			foreach($url_list as $url) {
 				$this->addUrl(strip_tags(trim($url)), $file_list['id'], $file_list['user_id']);
 				
-				if($i == $url_count) {
+				$i++;
+			
+				if($i == ($url_count - 1)) {
 					$this->updateFileList($file_list['id']);
 				}
 			}
-		}
+		} 	
     }
 }
