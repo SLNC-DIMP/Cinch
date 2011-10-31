@@ -110,6 +110,20 @@ INSERT INTO `authitemchild` (`parent`, `child`) VALUES
 ('Authenticated', 'Upload.Index');
 -- --------------------------------------------------------
 
+
+CREATE TABLE IF NOT EXISTS `error_files` (
+  `id` int(11) NOT NULL auto_increment,
+  `url` varchar(2600) collate utf8_unicode_ci NOT NULL,
+  `error_code` int(4) NOT NULL,
+  `list_id` int(10) NOT NULL,
+  `user_id` int(7) NOT NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `error_files`
+--
+
 --
 -- Table structure for table `file_info`
 --
