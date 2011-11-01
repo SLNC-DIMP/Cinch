@@ -111,7 +111,7 @@ INSERT INTO `authitemchild` (`parent`, `child`) VALUES
 -- --------------------------------------------------------
 
 
-CREATE TABLE IF NOT EXISTS `error_files` (
+CREATE TABLE IF NOT EXISTS `problem_downloads` (
   `id` int(11) NOT NULL auto_increment,
   `url` varchar(2600) collate utf8_unicode_ci NOT NULL,
   `error_code` int(4) NOT NULL,
@@ -121,7 +121,7 @@ CREATE TABLE IF NOT EXISTS `error_files` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 --
--- Dumping data for table `error_files`
+-- Dumping data for table `problem_downloads`
 --
 
 --
