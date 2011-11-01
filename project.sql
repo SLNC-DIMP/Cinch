@@ -125,6 +125,29 @@ CREATE TABLE IF NOT EXISTS `problem_downloads` (
 --
 
 --
+-- Table structure for table `file_type`
+--
+
+CREATE TABLE IF NOT EXISTS `file_type` (
+  `id` int(4) NOT NULL auto_increment,
+  `file_type` varchar(125) collate utf8_bin NOT NULL,
+  `file_type_name` varchar(50) collate utf8_bin NOT NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=7 ;
+
+--
+-- Dumping data for table `file_type`
+--
+
+INSERT INTO `file_type` (`id`, `file_type`, `file_type_name`) VALUES
+(1, 'application/pdf', 'PDF'),
+(2, 'application/msword', 'MS Word 2003 format'),
+(3, 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'MS Word 2007 format'),
+(4, 'image/tiff', 'TIFF'),
+(5, 'image/jpeg', 'JPEG'),
+(6, 'image/gif', 'GIF');
+
+--
 -- Table structure for table `file_info`
 --
 
