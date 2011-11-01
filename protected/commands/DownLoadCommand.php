@@ -18,7 +18,7 @@ class DownloadCommand extends CConsoleCommand {
 			->select('*')
 			->from($this->download_file_list)
 			->where('processed = :processed', array(':processed' => 0))
-			->limit(10)
+			->limit(5)
 			->queryAll();
 			
 		return $get_file_list;
@@ -66,6 +66,20 @@ class DownloadCommand extends CConsoleCommand {
 		$write_files->execute();		
 	}
 	
+	/**
+	* On error write file info to problem_downloads table
+	*/
+	public function writeError($url, $error, $list_id, $current_user_id) {
+		$sql = "INSERT INTO problem_downloads(url, error_code, list_id, current_user_id) 
+			VALUES(:url, :error_code, :list_id, :current_user_id)";
+		$error = Yii::app()->db->createCommand($sql);
+		$error->bindParam(":url", $url, PDO::PARAM_STR);
+		$write_files->bindParam(":error_code", $error, PDO::PARAM_INT);
+		$write_files->bindParam(":list_id", $list_id, PDO::PARAM_INT);
+		$write_files->bindParam(":current_user_id", $current_user_id, PDO::PARAM_INT);
+		$write_files->execute();
+	}
+	
 /***************** End of Queries - Maybe move into a model ****************************************************/	
 	/**
 	* Removes illegal filename characters
@@ -99,25 +113,27 @@ class DownloadCommand extends CConsoleCommand {
 	
 	/**
 	* Finds first directory files should be added to under a given user's main directory
+	* $dirs always has at least two directories (. and ..).
 	* @return string directory name
 	*/
 	public function getStartDir($file_list_owner) {
-		$user_dir = $this->full_path . '/' . $file_list_owner;
-		
-		if(!file_exists($user_dir)) { mkdir($user_dir); }
-		$dirs = scandir($user_dir);
-		
-		$dir_list = array();
-		foreach($dirs as $dir) {
-			// check for dirs starting with . character.
-			if(is_dir($dir) && substr($dir, 0) == false) {
-				$dir_list[] = $dir;
-			}
+		$user_base_dir = $this->full_path . '/' . $file_list_owner;
+		if(!file_exists($user_base_dir)) { 
+			mkdir($user_base_dir); 
+		}
+		$dirs = scandir($user_base_dir);
+
+		$first_download_dir = $user_base_dir . '/' . $file_list_owner . '_0';
+		if(!file_exists($first_download_dir)) { 
+			mkdir($first_download_dir); 
 		}
 		
-		$working_dir = (!empty($dir_list)) ?  end($dir_list) : $user_dir . '/' . $file_list_owner . '_0';
-		if(!file_exists($user_dir . '/' . $file_list_owner . '_0')) { mkdir($user_dir . '/' . $file_list_owner . '_0'); }
-		 
+		if(count($dirs) > 2) {
+			$working_dir = $user_base_dir . '/' . end($dirs);
+		} else {
+			$working_dir = $first_download_dir;
+		}
+		
 		return $working_dir;
 	}
 	
@@ -129,23 +145,19 @@ class DownloadCommand extends CConsoleCommand {
 	public function currentDir($current_dir) {
 		$file_count = count(scandir($current_dir)) - 2;
 		
-		if($file_count < 500) {
+		if($file_count < 3) {
 			$working_dir = $current_dir;
 		} else {
 			$dir_suffix = strrchr($current_dir, '_');
+			
 			$dir_body = substr_replace($current_dir, '', - (int)strlen($dir_suffix));
 			$next_dir_num = str_replace('_', '', $dir_suffix) + 1;
 			$working_dir = $dir_body . '_' . $next_dir_num;
-			
 			if(!is_dir($working_dir)) { mkdir($working_dir); }
 		}
-		
+	
 		return $working_dir;
 	}
-	
-	
-	
-
 	
 	/**
 	* opens a CURL connection and writes CURL contents to a file
