@@ -135,6 +135,7 @@ CREATE TABLE IF NOT EXISTS `file_info` (
   `file_type_id` int(1) NOT NULL default '0' COMMENT 'current file path on the server',
   `checksum` varchar(40) collate utf8_bin default NULL COMMENT 'file check sum sha1 or md5. sha1 is the default',
   `virus_check` int(1) NOT NULL default '0' COMMENT 'has file had virus check',
+  `metadata` int(1) NOT NULL default '0' COMMENT 'Whether metadata extraction has been run',
   `dynamic_file` int(1) NOT NULL default '0' COMMENT 'is the file dynamically generated from orginal URL',
   `last_modified` varchar(15) collate utf8_bin default NULL COMMENT 'file last modified timestamp',
   `problem_file` int(1) NOT NULL default '0',
