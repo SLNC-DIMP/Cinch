@@ -74,10 +74,7 @@ class MetadataCommand extends CConsoleCommand {
 	* @return array
 	*/
 	private function scrapeMetadata($file) {
-		$tika = '/srv/local/tika-0.10/tika-app/target/tika-app-0.10.jar';
-		$local = 'C:/"Program Files"/apache-tika-0.8/tika-app/target/tika-app-0.8.jar';
-		
-		if(file_exists($tika)) { $tika_path = $tika; } else { $tika_path = $local; }
+		$tika_path = '';
 		
 		$output = array();
 		$command = 'java -jar ' .$tika_path . ' --metadata ' . $file;
