@@ -39,14 +39,6 @@ class ReadFileCommand extends CConsoleCommand {
 		$write_files->execute();		
 	}
 	
-	
-	/**
-	* URL counter
-	*/
-	public function fileCount(array $url_list) {
-		return count($url_list);
-	}
-	
 	/**
 	* Process all unprocessed lists and add urls to database.  When list completes updates list as processed.
 	*/

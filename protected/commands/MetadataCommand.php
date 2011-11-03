@@ -1,5 +1,10 @@
 <?php
 class MetadataCommand extends CConsoleCommand {
+	const PDF = 'application/pdf';
+	const WORD2003 = 'application/msword';
+	const WORD2007 = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+	const TEXT = 'text/plain';
+	
 	/**
 	* Retrieves a list of uploaded files that need to have their metadata extracted
 	* @return object Data Access Object
@@ -15,9 +20,24 @@ class MetadataCommand extends CConsoleCommand {
 		return $get_file_list;
 	}
 	
-	public function writeMetadata(array $metadata, $file_type) {
-		$sql = "UPDATE file_info SET problem_file = 4 WHERE id = :id";
-		$tika_metadata = Yii::app()->db->createCommand($sql);
+	
+	
+	public function writeMetadata($metadata, $file_id, $user_id) {
+		switch($file_type) {
+			case self::PDF:
+				$write = new PDFQuery();
+				break;
+			case self::WORD2003:
+				$write = new PDFQuery();
+				break;
+			case self::WORD2007:
+				$write = new PDFQuery();
+				break;
+			case self::TEXT:
+				$write = new PDFQuery();
+				break;
+		}
+		$write->writeMetadata($metadata, $file_id, $user_id);
 	}
 	
 	/**
@@ -26,10 +46,9 @@ class MetadataCommand extends CConsoleCommand {
 	* @access public
 	*/
 	public function updateFileInfo($file_id) {
-		$sql = "UPDATE file_info SET metadata = 1 WHERE id = :id";
+		$sql = "UPDATE file_info SET metadata = 1, file_type_id = 1 WHERE id = ?";
 		$metadata_processed = Yii::app()->db->createCommand($sql);
-		$metadata_processed->bindParam(":id", $file_id, PDO::PARAM_INT);
-		$metadata_processed->execute();	
+		$metadata_processed->execute(array($file_id));	
 	}
 	
 	/**
@@ -55,7 +74,11 @@ class MetadataCommand extends CConsoleCommand {
 	* @return array
 	*/
 	private function scrapeMetadata($file) {
-		$tika_path = '';	
+		$tika = '/srv/local/tika-0.10/tika-app/target/tika-app-0.10.jar';
+		$local = 'C:/"Program Files"/apache-tika-0.8/tika-app/target/tika-app-0.8.jar';
+		
+		if(file_exists($tika)) { $tika_path = $tika; } else { $tika_path = $local; }
+		
 		$output = array();
 		$command = 'java -jar ' .$tika_path . ' --metadata ' . $file;
 		
@@ -88,29 +111,24 @@ class MetadataCommand extends CConsoleCommand {
 	public function getMetadata($file) {
 		$metadata = $this->scrapeMetadata($file);
 		
-		foreach($metadata as $metadata_value):
+		foreach($metadata as $metadata_value) {
 			$field_name = trim(stristr($metadata_value, ':', true)); // returns portion of string before the colon		
 			$formatted_metadata[$field_name] = trim(strrchr($metadata_value, ':')); 
-		endforeach;
+		}
 	
 		return $formatted_metadata;
 	}
 	
 	public function run() {
 		$files = $this->getFileList();
+		if(empty($files)) { exit; }
 		
 		foreach($files as $file) {
-			try {
-				$metadata = $this->getMetadata($file['temp_file_path']);
-				$file_type = $this->getTikaFileType($metadata);
-				print_r($metadata) . "\r\n";
-				echo $file_type . "\r\n";
-				$write_metadata = $this->writeMetadata($metadata, $file_type);
-				$update_filetype_metadata = $this->updateFileInfo($file_type, $file['id']);
-			} catch(Exception $e) {
-				$this->tikaError($file['id']);
-				continue;
-			}
+			$metadata = $this->getMetadata($file['temp_file_path']);
+			$file_type = $this->getTikaFileType($metadata);
+			$this->writeMetadata($metadata, $file['upload_file_id'], $file['user_id']);
+			$this->updateFileInfo($file['id']);
 		}
 	}
 }
+// UPDATE `files_for_download` SET `processed`=0 WHERE `processed` = 1
