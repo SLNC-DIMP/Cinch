@@ -76,9 +76,11 @@ class MetadataCommand extends CConsoleCommand {
 	* @return array
 	*/
 	private function scrapeMetadata($file) {
-		$tika_path = '';
+		$tika_path = '';  
+    
+		
 		$output = array();
-		$command = 'java -jar ' .$tika_path . ' --metadata ' . $file;
+		$command = 'java -jar ' . $tika_path . ' --metadata ' . $file;
 		
 		exec(escapeshellcmd($command), $output);
 		
