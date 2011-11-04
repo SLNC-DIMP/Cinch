@@ -1,7 +1,7 @@
 <?php
-class FileTypeActiveRecord extends CActiveRecord {
+abstract class FileTypeActiveRecord extends CActiveRecord {
 
-	abstract public function writeMetadata(array $metadata, $file_id, $user_id) {}
+	public function writeMetadata() {}
 	
 	/**
 	* Returned metadata fields vary by document, not just doc type.
