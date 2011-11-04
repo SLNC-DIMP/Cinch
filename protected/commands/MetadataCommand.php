@@ -20,21 +20,23 @@ class MetadataCommand extends CConsoleCommand {
 		return $get_file_list;
 	}
 	
-	
-	
-	public function writeMetadata($metadata, $file_id, $user_id) {
+	/**
+	* Save metadata to correct
+	* @return object Data Access Object
+	*/
+	public function writeMetadata($file_type, $metadata, $file_id, $user_id) {
 		switch($file_type) {
 			case self::PDF:
-				$write = new PDFQuery();
+				$write = new PDF_Metadata;
 				break;
 			case self::WORD2003:
-				$write = new PDFQuery();
+				$write = new WORD2003_Metadata;
 				break;
 			case self::WORD2007:
-				$write = new PDFQuery();
+				$write = new WORD2007_Metadata;
 				break;
 			case self::TEXT:
-				$write = new PDFQuery();
+				$write = new Text_Metadata;
 				break;
 		}
 		$write->writeMetadata($metadata, $file_id, $user_id);
@@ -74,11 +76,7 @@ class MetadataCommand extends CConsoleCommand {
 	* @return array
 	*/
 	private function scrapeMetadata($file) {
-		$tika = '/srv/local/tika-0.10/tika-app/target/tika-app-0.10.jar';
-		$local = 'C:/"Program Files"/apache-tika-0.8/tika-app/target/tika-app-0.8.jar';
-		
-		if(file_exists($tika)) { $tika_path = $tika; } else { $tika_path = $local; }
-		
+		$tika_path = '';
 		$output = array();
 		$command = 'java -jar ' .$tika_path . ' --metadata ' . $file;
 		
@@ -126,7 +124,7 @@ class MetadataCommand extends CConsoleCommand {
 		foreach($files as $file) {
 			$metadata = $this->getMetadata($file['temp_file_path']);
 			$file_type = $this->getTikaFileType($metadata);
-			$this->writeMetadata($metadata, $file['upload_file_id'], $file['user_id']);
+			$this->writeMetadata($file_type, $metadata, $file['upload_file_id'], $file['user_id']);
 			$this->updateFileInfo($file['id']);
 		}
 	}
