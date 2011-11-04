@@ -45,9 +45,9 @@ class ChecksumCommand extends CConsoleCommand {
 	*/
 	public function writeError($id) {
 		$write_error = Yii::app()->db->createCommand()
-				->update($this->table)
-				->set(array('problem_file' => 5))
-				->where('id = :id', array(':id' => $id));
+			->update($this->table)
+			->set(array('problem_file' => 5))
+			->where('id = :id', array(':id' => $id));
 	}
 	
 	/**
@@ -55,7 +55,7 @@ class ChecksumCommand extends CConsoleCommand {
 	* @return string
 	*/
 	public function createChecksum($file, $type = 'md5') {
-		$checksum = ($type = 'md5') ? md5_file($file) : sha1_file($file);
+		$checksum = ($type == 'md5') ? md5_file($file) : sha1_file($file);
 		
 		return $checksum;
 	}
