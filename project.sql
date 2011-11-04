@@ -194,6 +194,34 @@ CREATE TABLE IF NOT EXISTS `files_for_download` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `pdf_metadata`
+--
+
+CREATE TABLE IF NOT EXISTS `pdf_metadata` (
+  `id` int(10) NOT NULL auto_increment,
+  `author` varchar(250) collate utf8_bin default NULL,
+  `creation_date` varchar(30) collate utf8_bin default NULL COMMENT 'file creation date',
+  `last_modified` varchar(30) collate utf8_bin default NULL COMMENT 'file last modified date',
+  `creator` varchar(250) collate utf8_bin default NULL,
+  `producer` varchar(250) collate utf8_bin default NULL COMMENT 'software used to create the PDF',
+  `resource_name` varchar(250) collate utf8_bin default NULL COMMENT 'similar too but not the same as title',
+  `title` text collate utf8_bin,
+  `pages` int(5) default 0 COMMENT 'Number of pages',
+  `subject` varchar(250) collate utf8_bin default NULL,
+  `keywords` text collate utf8_bin,
+  `licensed_to` varchar(250) collate utf8_bin default NULL COMMENT 'who the pdf software is registered too',
+  `file_id` int(10) default NULL COMMENT 'id of associated file',
+  `user_id` int(6) default NULL COMMENT 'id of user associated with the file',
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `pdf_metadata`
+--
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `rights`
 --
 
