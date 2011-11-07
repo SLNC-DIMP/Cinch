@@ -37,20 +37,20 @@ class ChecksumCommand extends CConsoleCommand {
 	*/
 	public function getFileChecksums($count) {
 		if($count <= 5000) {
-			$start = 0;
-			$total = $count;
+			$offset = 0;
+			$limit = $count;
 		} else {
-			$start = mt_rand(0, ($count - 5000));
-			$total = 5000;
+			$offset = mt_rand(0, ($count - 5000));
+			$limit = 5000;
 		}
 		
 		$get_file_checksums = Yii::app()->db->createCommand()
 			->select('id, temp_file_path, checksum')
 			->from($this->table)
-			->limit($start, $total)
+			->limit($limit, $offset)
 			->queryAll();
 			
-		return $get_file_lists;
+		return $get_file_checksums;
 	}
 	
 	/**
@@ -85,9 +85,9 @@ class ChecksumCommand extends CConsoleCommand {
 	* Calculates a checksum for each file and compares it to the file's initial checksum
 	* Write error to DB if mismatch detected. 
 	*/
-	public function actionMetaCheck() {
+	public function actionCheck() {
 		$file_count = $this->getCheckedFileCount();
-		
+	
 		if($file_count > 0) {
 			$file_list = $this->getFileChecksums($file_count);
 			
@@ -95,6 +95,9 @@ class ChecksumCommand extends CConsoleCommand {
 				$current_checksum = $this->createChecksum($file['temp_file_path']);
 				if($current_checksum != $file['checksum']) {
 					$this->writeError($file['id']);
+					echo 'checksum not ok for: ' . $file['temp_file_path'] . "\r\n";
+				} else {
+					echo 'checksum ok for: ' . $file['temp_file_path'] . "\r\n";
 				}
 			}
 		}
@@ -104,12 +107,13 @@ class ChecksumCommand extends CConsoleCommand {
 	* Run checksum command 
 	* Default is to create new checksum for downloaded files
 	*/
-	public function run($args) {
+	public function actionCreate($args) {
 		$file_lists = $this->getFileList();
 		
 		if(count($file_lists) > 0) {
-			foreach($file_lists as $file_list) {
+			foreach($file_lists as $file_list) { 
 				$checksum = $this->createChecksum($file_list['temp_file_path']);
+				
 				if($checksum) {
 					$this->writeSuccess($checksum, $file_list['id']);
 					echo "checksum for:" . $file_list['temp_file_path'] . " is " . $checksum . "\r\n";
@@ -121,3 +125,4 @@ class ChecksumCommand extends CConsoleCommand {
 		}
 	}
 }
+// UPDATE `file_info` SET `checksum` = NULL WHERE `checksum`IS NOT NULL
