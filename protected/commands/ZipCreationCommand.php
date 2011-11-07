@@ -60,8 +60,8 @@ class ZipCreationCommand extends CConsoleCommand {
 	public function ZipWrite(ZipArchive $zip, $file) {
 		if(file_exists($file)) {
 		//	$dir_sep = (PHP_OS != 'WINNT') ? '/' : '\\';
-			$short_path = str_replace('/', '', strrchr($file['temp_file_path'], '/'));
-		
+			$short_path = str_replace('/', '', strrchr($file, '/'));
+			echo $short_path . "\r\n";
 			$zip->addFile($file, $short_path);
 		}
 		
