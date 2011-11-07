@@ -14,7 +14,6 @@ class MetadataCommand extends CConsoleCommand {
 			->select('id, temp_file_path, user_id, upload_file_id')
 			->from('file_info')
 			->where('metadata = :metadata', array(':metadata' => 0))
-			->limit(1)
 			->queryAll();
 			
 		return $get_file_list;
@@ -77,6 +76,10 @@ class MetadataCommand extends CConsoleCommand {
 	*/
 	private function scrapeMetadata($file) {
 		$tika_path = '';
+		$tika = '/srv/local/tika-0.10/tika-app/target/tika-app-0.10.jar';
+    	$local = 'C:/"Program Files"/apache-tika-0.8/tika-app/target/tika-app-0.8.jar';
+		if(file_exists($tika)) { $tika_path = $tika; } else { $tika_path = $local; }
+		
 		$output = array();
 		$command = 'java -jar ' .$tika_path . ' --metadata ' . $file;
 		

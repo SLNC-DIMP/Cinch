@@ -58,10 +58,19 @@ class ChecksumCommand extends CConsoleCommand {
 	* 5 is id of checksum mismatch in error_type table
 	* @return object Data Access Object
 	*/
-	public function writeError($id) {
-		$sql = "UPDATE " . $this->table . " SET problem_file = 5 WHERE id = ?";
+	public function writeError($id, $error = 5) {
+		$sql = "UPDATE " . $this->table . " SET problem_file = ? WHERE id = ?";
 		$write_error = Yii::app()->db->createCommand()
-			->execute(array($id));
+			->execute(array($error, $id));
+	}
+	
+	/**
+	*	Write checksum errors to the database
+	*/
+	public function writeSuccess($checksum, $id) {
+		$sql = "UPDATE " . $this->table . " SET checksum = ? WHERE id = ?";
+		$write = Yii::app()->db->createCommand($sql)
+			->execute(array($checksum, $id));
 	}
 	
 	/**
@@ -73,13 +82,6 @@ class ChecksumCommand extends CConsoleCommand {
 		
 		return $checksum;
 	}
-	
-	public function writeSuccess($checksum, $id) {
-		$sql = "UPDATE " . $this->table . " SET checksum = ? WHERE id = ?";
-		$write = Yii::app()->db->createCommand($sql)
-			->execute(array($checksum, $id));
-	}
-	
 	
 	/**
 	* Calculates a checksum for each file and compares it to the file's initial checksum
@@ -106,6 +108,9 @@ class ChecksumCommand extends CConsoleCommand {
 	/**
 	* Run checksum command 
 	* Default is to create new checksum for downloaded files
+	* Writes checksum error on failure. 
+	* 2 is value for "Could not create checksum"
+	* 3 is value for "Duplicate Checksum. File deleted or not downloaded"
 	*/
 	public function actionCreate($args) {
 		$file_lists = $this->getFileList();
@@ -118,7 +123,7 @@ class ChecksumCommand extends CConsoleCommand {
 					$this->writeSuccess($checksum, $file_list['id']);
 					echo "checksum for:" . $file_list['temp_file_path'] . " is " . $checksum . "\r\n";
 				} else {
-					$this->writeError($file_list['id']);
+					$this->writeError($file_list['id'], 2);
 					echo "Checksum not created. for: " . $file_list['temp_file_path'] . "\r\n";
 				}
 			}

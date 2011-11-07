@@ -18,7 +18,6 @@ class DownloadCommand extends CConsoleCommand {
 			->select('*')
 			->from($this->download_file_list)
 			->where('processed = :processed', array(':processed' => 0))
-			->limit(5)
 			->queryAll();
 			
 		return $get_file_list;
