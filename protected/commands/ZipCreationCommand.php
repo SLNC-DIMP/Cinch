@@ -38,12 +38,35 @@ class ZipCreationCommand extends CConsoleCommand {
 	}
 	
 	/**
+	* Get user's base download path for Zip file creation
+	* @return string
+	*/
+	private function getUserPath($user_id, $type = 'curl') {
+		$user_name = Yii::app()->db->createCommand()
+			->select('username')
+			->from('user')
+			->where(':id = id', array(':id' => $user_id))
+			->queryColumn();
+		
+		$type = ($type == 'curl') ? 'curl' : 'ftp';
+		
+		return Yii::getPathOfAlias('application.' . $type . '_downloads') . DIRECTORY_SEPARATOR . $user_name[0] . DIRECTORY_SEPARATOR . 'files_' . date('Y_m_d_H_i_sa') . '.zip';
+	}
+	
+	/**
+	* Write the Zip archive path to the db
+	*/
+	public function writePath($user_id, $path) {
+		$sql = "INSERT INTO zip_gz_downloads(user_id, archive_path) VALUES(?, ?)";
+		$write_zip = Yii::app()->db->createCommand($sql)
+			->execute(array($user_id, $path));
+	}
+	
+	/**
 	* Creates a new zip archive
 	* @return Zip archive object
 	*/
-	public function createArchive($path) {
-		$zip_path = $path . DIRECTORY_SEPARATOR . 'files_' . date('Y_m_d_H_i_sa') . '.zip';
-		
+	public function createArchive($zip_path) {
 		$zip = new ZipArchive();
 		if ($zip->open($zip_path, ZIPARCHIVE::CREATE) !== true) {
 			echo "cannot open <$path>\r\n";
@@ -75,23 +98,6 @@ class ZipCreationCommand extends CConsoleCommand {
 		return $zip->close($path);
 	}
 	
-	/**
-	* Get user's base download path
-	* @return string
-	*/
-	private function getUserPath($user_id, $type = 'curl') {
-		$user_name = Yii::app()->db->createCommand()
-			->select('username')
-			->from('user')
-			->where(':id = id', array(':id' => $user_id))
-			->queryColumn();
-		
-		$type = ($type == 'curl') ? 'curl' : 'ftp';
-		
-		return Yii::getPathOfAlias('application.' . $type . '_downloads') . DIRECTORY_SEPARATOR . $user_name[0];
-	}
-	
-	
 	public function run() {
 		$users = $this->getUserFileCount();
 		
@@ -101,11 +107,11 @@ class ZipCreationCommand extends CConsoleCommand {
 			$zip_file = $this->createArchive($user_path);
 			
 			foreach($user_files as $file) {
-
 				$this->ZipWrite($zip_file, $file['temp_file_path']);
 			}
 			
 			$this->ZipClose($zip_file, $user_path);
+			$this->writePath($user['user_id'], $user_path);
 		}
 	}
 }
