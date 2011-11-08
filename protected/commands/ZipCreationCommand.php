@@ -50,7 +50,7 @@ class ZipCreationCommand extends CConsoleCommand {
 		
 		$type = ($type == 'curl') ? 'curl' : 'ftp';
 		
-		return Yii::getPathOfAlias('application.' . $type . '_downloads') . DIRECTORY_SEPARATOR . $user_name[0] . DIRECTORY_SEPARATOR . 'files_' . date('Y_m_d_H_i_sa') . '.zip';
+		return Yii::getPathOfAlias('application.' . $type . '_downloads') . DIRECTORY_SEPARATOR . $user_name[0] . DIRECTORY_SEPARATOR . 'curl_files.zip';
 	}
 	
 	/**
@@ -87,7 +87,6 @@ class ZipCreationCommand extends CConsoleCommand {
 			echo $short_path . "\r\n";
 			$zip->addFile($file, $short_path);
 		}
-		
 	}
 	
 	/**
@@ -98,6 +97,9 @@ class ZipCreationCommand extends CConsoleCommand {
 		return $zip->close($path);
 	}
 	
+	/**
+	* Add zip files 10 at a time.
+	*/
 	public function run() {
 		$users = $this->getUserFileCount();
 		
@@ -106,12 +108,20 @@ class ZipCreationCommand extends CConsoleCommand {
 			$user_path = $this->getUserPath($user['user_id']);
 			$zip_file = $this->createArchive($user_path);
 			
+			$file_count = 0;
 			foreach($user_files as $file) {
+				if($file_count < 10) { 
+					$file_count++;
+				} else {
+					$this->ZipClose($zip_file, $user_path);
+					$zip_file = $this->createArchive($user_path);
+					$file_count = 0;
+				}
 				$this->ZipWrite($zip_file, $file['temp_file_path']);
 			}
 			
 			$this->ZipClose($zip_file, $user_path);
-			$this->writePath($user['user_id'], $user_path);
+			$this->writePath($user['user_id'], $user_path); 
 		}
 	}
 }
