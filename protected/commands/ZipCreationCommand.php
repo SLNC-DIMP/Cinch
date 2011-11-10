@@ -1,18 +1,16 @@
 <?php
 /**
-* @TODO create metadata txt files (add to each folder)
-* @TODO create error listing txt files (add to zip directory)
-* @TODO create manifest of all files included (add to zip directory)
-* @TODO only dump the specified users files into a zip file (Done)
+* @todo create metadata txt files (add to each folder)
+* @todo create error listing txt files (add to zip directory)
+* @todo create manifest of all files included (add to zip directory)
+* @todo only dump the specified users files into a zip file (Done)
 */
 class ZipCreationCommand extends CConsoleCommand {
 	public $file_info = 'file_info';
 	
-/*	public function __construct() {
-		$this->manifest = new Manifest();
-		$this->meta_text = new MetaText();	
-		$this->error_list = new ErrorList();
-	} */
+	public function __construct() {
+	//	$this->manifest = new Manifest();
+	} 
 	
 	/**
 	* Get list of users who have files to download grouped by user and number of files to zip.
@@ -38,7 +36,7 @@ class ZipCreationCommand extends CConsoleCommand {
 	*/
 	public function getUserFiles($user_id) {
 		$user_files = Yii::app()->db->createCommand()
-			->select('id, temp_file_path, user_id')
+			->select('id, temp_file_path, file_type_id, user_id')
 			->from($this->file_info)
 			->where(':user_id = user_id', array(':user_id' => $user_id))
 			->queryAll();
@@ -62,7 +60,7 @@ class ZipCreationCommand extends CConsoleCommand {
 		
 		$type = ($type == 'curl') ? 'curl' : 'ftp';
 		
-		return Yii::getPathOfAlias('application.' . $type . '_downloads') . DIRECTORY_SEPARATOR . $user_name[0] . DIRECTORY_SEPARATOR . 'curl_files.zip';
+		return Yii::getPathOfAlias('application.' . $type . '_downloads') . DIRECTORY_SEPARATOR . $user_name[0] . DIRECTORY_SEPARATOR . $type . '_files.zip';
 	}
 	
 	/**
@@ -122,6 +120,7 @@ class ZipCreationCommand extends CConsoleCommand {
 	}
 	
 	/**
+	* Write File level metadata
 	* Add zip files 10 at a time.
 	*/
 	public function run() {
@@ -144,9 +143,11 @@ class ZipCreationCommand extends CConsoleCommand {
 				$this->zipWrite($zip_file, $file['temp_file_path']);
 			}
 			
+			$this->meta_text->findMetadata($meta_type, $file_id, $user_id);
+			
 			$this->zipClose($zip_file, $user_path);
 			$this->createManifest($zip_file, $user['user_id']);
 			$this->writePath($user['user_id'], $user_path); 
-		}
+		} 
 	}
 }
