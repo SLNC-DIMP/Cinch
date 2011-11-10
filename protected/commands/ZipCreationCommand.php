@@ -36,7 +36,7 @@ class ZipCreationCommand extends CConsoleCommand {
 	*/
 	public function getUserFiles($user_id) {
 		$user_files = Yii::app()->db->createCommand()
-			->select('id, temp_file_path, file_type_id, user_id')
+			->select('id, temp_file_path, user_id')
 			->from($this->file_info)
 			->where(':user_id = user_id', array(':user_id' => $user_id))
 			->queryAll();
@@ -101,7 +101,6 @@ class ZipCreationCommand extends CConsoleCommand {
 	*/
 	public function zipWrite(ZipArchive $zip, $file) {
 		if(file_exists($file)) {
-		//	$dir_sep = (PHP_OS != 'WINNT') ? '/' : '\\';
 			$short_path = str_replace('/', '', strrchr($file, '/'));
 			echo $short_path . "\r\n";
 			$zip->addFile($file, $short_path);
@@ -142,8 +141,6 @@ class ZipCreationCommand extends CConsoleCommand {
 				}
 				$this->zipWrite($zip_file, $file['temp_file_path']);
 			}
-			
-			$this->meta_text->findMetadata($meta_type, $file_id, $user_id);
 			
 			$this->zipClose($zip_file, $user_path);
 			$this->createManifest($zip_file, $user['user_id']);
