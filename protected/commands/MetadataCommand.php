@@ -135,9 +135,8 @@ class MetadataCommand extends CConsoleCommand {
 		foreach($files as $file) {
 			$metadata = $this->getMetadata($file['temp_file_path']);
 			$file_type = $this->getTikaFileType($metadata);
-			$this->writeMetadata($file_type, $metadata, $file['upload_file_id'], $file['user_id']);
+			$this->writeMetadata($file_type, $metadata, $file['id'], $file['user_id']);
 			$this->updateFileInfo($file['id']);
 		}
 	}
 }
-// UPDATE `files_for_download` SET `processed`=0 WHERE `processed` = 1
