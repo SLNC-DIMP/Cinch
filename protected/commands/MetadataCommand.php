@@ -7,7 +7,8 @@ class MetadataCommand extends CConsoleCommand {
 	
 	/**
 	* Retrieves a list of uploaded files that need to have their metadata extracted
-	* @return object Data Access Object
+	* @access public
+	* @return object Yii DAO
 	*/
 	public function getFileList() {
 		$get_file_list =  Yii::app()->db->createCommand()
@@ -20,8 +21,13 @@ class MetadataCommand extends CConsoleCommand {
 	}
 	
 	/**
-	* Save metadata to correct
-	* @return object Data Access Object
+	* Save metadata to correct metadate table
+	* @param $file_type
+	* @param $metadata
+	* @param $file_id
+	* @param $user_id
+	* @access public
+	* @return object Yii DAO
 	*/
 	public function writeMetadata($file_type, $metadata, $file_id, $user_id) {
 		switch($file_type) {
@@ -45,6 +51,7 @@ class MetadataCommand extends CConsoleCommand {
 	* Write file processed for metadata
 	* @param $file_id
 	* @access public
+	* @return object Yii DAO
 	*/
 	public function updateFileInfo($file_id) {
 		$sql = "UPDATE file_info SET metadata = 1, file_type_id = 1 WHERE id = ?";
@@ -71,6 +78,7 @@ class MetadataCommand extends CConsoleCommand {
 	
 	/**
 	* Extracts file level metadata using Apache Tika
+	* @param $file
 	* @access private
 	* @return array
 	*/

@@ -11,7 +11,8 @@ class DownloadCommand extends CConsoleCommand {
 	
 	/**
 	* Retrieves a list of uploaded files with url links that need to be downloaded
-	* @return object Data Access Object
+	* @access public 
+	* @return object Yii DAO
 	*/
 	public function getUrls() {
 		$get_file_list = Yii::app()->db->createCommand()
@@ -25,6 +26,8 @@ class DownloadCommand extends CConsoleCommand {
 	
 	/**
 	* Retrieve the username associated with a particular file
+	* @param $user_id
+	* @access public 
 	* @return string
 	*/
 	public function getUrlOwner($user_id) {
@@ -39,6 +42,13 @@ class DownloadCommand extends CConsoleCommand {
 	
 	/**
 	* Inserts basic file information for downloaded file
+	* @param $url
+	* @param $curr_path
+	* @param $last_mod
+	* @param $user_id
+	* @param $upload_file_id
+	* @access public 
+	* @return object Yii DAO
 	*/
 	public function setFileInfo($url, $curr_path, $last_mod, $user_id, $upload_file_id) {
 		$dynamic_file = ($this->initFileType($url) == 1) ? 0 : 1;
@@ -57,6 +67,9 @@ class DownloadCommand extends CConsoleCommand {
 	
 	/**
 	* Update file as processed
+	* @param $id
+	* @access public 
+	* @return object Yii DAO
 	*/
 	public function updateFileList($id) {
 		$sql = "UPDATE files_for_download SET processed = 1 WHERE id = :id";
@@ -67,6 +80,12 @@ class DownloadCommand extends CConsoleCommand {
 	
 	/**
 	* On error write file info to problem_downloads table
+	* @param $url
+	* @param $error
+	* @param $list_id
+	* @param $current_user_id
+	* @access public 
+	* @return object Yii DAO
 	*/
 	public function writeError($url, $error, $list_id, $current_user_id) {
 		$sql = "INSERT INTO problem_downloads(url, error_code, list_id, current_user_id) 
@@ -82,6 +101,8 @@ class DownloadCommand extends CConsoleCommand {
 /***************** End of Queries - Maybe move into a model ****************************************************/	
 	/**
 	* Removes illegal filename characters
+	* @param $file
+	* @access public
 	* @return string
 	*/
 	public function cleanName($file) {
@@ -97,6 +118,8 @@ class DownloadCommand extends CConsoleCommand {
 	
 	/**
 	* Returns self reporting file extension.  Defaults to PDF if no extension given.
+	* @param $file
+	* @access public
 	* @return string
 	*/
 	public function initFileType($file) {
@@ -113,6 +136,8 @@ class DownloadCommand extends CConsoleCommand {
 	/**
 	* Finds first directory files should be added to under a given user's main directory
 	* $dirs always has at least two directories (. and ..).
+	* @param $file_list_owner
+	* @access public
 	* @return string directory name
 	*/
 	public function getStartDir($file_list_owner) {
@@ -139,6 +164,8 @@ class DownloadCommand extends CConsoleCommand {
 	/**
 	* See if currently downloading directory needs to be updated if 500 file limit has been reached.
 	* Takes the 2 default sub-directories into account.
+	* @param $current_dir
+	* @access public
 	* @return string
 	*/
 	public function currentDir($current_dir) {
@@ -162,6 +189,9 @@ class DownloadCommand extends CConsoleCommand {
 	* opens a CURL connection and writes CURL contents to a file
 	* Tries to get last modified of remote file
 	* Rewrites file name from original url
+	* @param $user
+	* @param $current_user_id
+	* @param $file_id
 	* @access public
 	* @return array file info including: file type id, and boolean on whether it's a dynamic file. 
 	* As well as File name and last modified time

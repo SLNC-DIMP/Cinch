@@ -4,6 +4,8 @@ class ChecksumCommand extends CConsoleCommand {
 	
 	/**
 	* Get list of downloaded files without checksums
+	* @access public
+	* @return object Yii DAO
 	*/
 	public function getFileList() {
 		$get_files = Yii::app()->db->createCommand()
@@ -17,6 +19,7 @@ class ChecksumCommand extends CConsoleCommand {
 	
 	/**
 	* Get count of files in file info table
+	* @access public
 	* @return integer
 	*/
 	public function getCheckedFileCount() {
@@ -32,8 +35,10 @@ class ChecksumCommand extends CConsoleCommand {
 	
 	/**
 	* Retrieves a list of checksums for files.  If more than 5000 files to check 
-	* it starts from a random point of less than or equal to 5000 files from the total # of files. 
-	* @return object Data Access Object
+	* it starts from a random point of less than or equal to 5000 files from the total # of files.
+	* @param $count
+	* @access public 
+	* @return object Yii DAO
 	*/
 	public function getFileChecksums($count) {
 		if($count <= 5000) {
@@ -56,7 +61,10 @@ class ChecksumCommand extends CConsoleCommand {
 	/**
 	* Write checksum mismatch error. 
 	* 5 is id of checksum mismatch in error_type table
-	* @return object Data Access Object
+	* @param $id
+	* @param $error
+	* @access public 
+	* @return object Yii DAO
 	*/
 	public function writeError($id, $error = 5) {
 		$sql = "UPDATE " . $this->table . " SET problem_file = ? WHERE id = ?";
@@ -65,7 +73,11 @@ class ChecksumCommand extends CConsoleCommand {
 	}
 	
 	/**
-	*	Write checksum errors to the database
+	* Write checksum errors to the database
+	* @param $checksum
+	* @param $id
+	* @access public 
+	* @return object Yii DAO
 	*/
 	public function writeSuccess($checksum, $id) {
 		$sql = "UPDATE " . $this->table . " SET checksum = ? WHERE id = ?";
@@ -75,6 +87,9 @@ class ChecksumCommand extends CConsoleCommand {
 	
 	/**
 	* Create an MD5 or SHA1 checksum.  Default is MD5
+	* @param $file
+	* @param $type
+	* @access public
 	* @return string
 	*/
 	public function createChecksum($file, $type = 'md5') {
@@ -85,7 +100,8 @@ class ChecksumCommand extends CConsoleCommand {
 	
 	/**
 	* Calculates a checksum for each file and compares it to the file's initial checksum
-	* Write error to DB if mismatch detected. 
+	* Write error to DB if mismatch detected.
+	* @access public 
 	*/
 	public function actionCheck() {
 		$file_count = $this->getCheckedFileCount();

@@ -2,7 +2,8 @@
 class ReadFileCommand extends CConsoleCommand {
     /**
 	 * Retrieves a list of uploaded files with url links that need to be downloaded
-	 * @return object Data Access Object
+	 * @access public
+	 * @return object Yii DAO
 	 */
 	public function getLists() {
 		$get_file_lists = Yii::app()->db->createCommand()
@@ -16,6 +17,11 @@ class ReadFileCommand extends CConsoleCommand {
 	
 	/**
 	* Writes URL listings, user id and list id to files_for_download table
+	* @param $url
+	* @param $user_uploads_id
+	* @param $user_id
+	* @access public
+	* @return object Yii DAO
 	*/
 	public function addUrl($url, $user_uploads_id, $user_id) {
 		if(trim($url)!='')
@@ -31,6 +37,9 @@ class ReadFileCommand extends CConsoleCommand {
 	
 	/**
 	* Update file list as processed
+	* @param $id
+	* @access public
+	* @return object Yii DAO
 	*/
 	public function updateFileList($id) {
 		$sql = "UPDATE upload SET processed = 1 WHERE id = :id";

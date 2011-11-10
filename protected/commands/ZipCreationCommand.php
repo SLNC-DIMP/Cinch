@@ -3,14 +3,21 @@
 * @TODO create metadata txt files (add to each folder)
 * @TODO create error listing txt files (add to zip directory)
 * @TODO create manifest of all files included (add to zip directory)
-* @TODO only dump the specified users files into a zip file
+* @TODO only dump the specified users files into a zip file (Done)
 */
 class ZipCreationCommand extends CConsoleCommand {
 	public $file_info = 'file_info';
 	
+/*	public function __construct() {
+		$this->manifest = new Manifest();
+		$this->meta_text = new MetaText();	
+		$this->error_list = new ErrorList();
+	} */
+	
 	/**
 	* Get list of users who have files to download grouped by user and number of files to zip.
-	* @return Yii DAO object
+	* @access public
+	* @return object Yii DAO object
 	*/
 	public function getUserFileCount() {
 		$users_with_files = Yii::app()->db->createCommand()
@@ -25,7 +32,9 @@ class ZipCreationCommand extends CConsoleCommand {
 	
 	/**
 	* Gets all a user's files for which zip files haven't been created.
-	* @return Yii DAO object
+	* @param $user_id
+	* @access public
+	* @return object Yii DAO object
 	*/
 	public function getUserFiles($user_id) {
 		$user_files = Yii::app()->db->createCommand()
@@ -39,6 +48,9 @@ class ZipCreationCommand extends CConsoleCommand {
 	
 	/**
 	* Get user's base download path for Zip file creation
+	* @param $user_id
+	* @param $type
+	* @access public
 	* @return string
 	*/
 	private function getUserPath($user_id, $type = 'curl') {
@@ -55,6 +67,10 @@ class ZipCreationCommand extends CConsoleCommand {
 	
 	/**
 	* Write the Zip archive path to the db
+	* @param $user_id
+	* @param $path
+	* @access public
+	* @return object Yii DAO object
 	*/
 	public function writePath($user_id, $path) {
 		$sql = "INSERT INTO zip_gz_downloads(user_id, archive_path) VALUES(?, ?)";
@@ -64,9 +80,11 @@ class ZipCreationCommand extends CConsoleCommand {
 	
 	/**
 	* Creates a new zip archive
-	* @return Zip archive object
+	* @param $zip_path
+	* @access public
+	* @return object Zip archive object
 	*/
-	public function createArchive($zip_path) {
+	public function zipOpen($zip_path) {
 		$zip = new ZipArchive();
 		if ($zip->open($zip_path, ZIPARCHIVE::CREATE) !== true) {
 			echo "cannot open <$path>\r\n";
@@ -78,9 +96,12 @@ class ZipCreationCommand extends CConsoleCommand {
 	
 	/**
 	* Write a file to a zip archive
-	* @return Zip archive object
+	* @param $zip ZipArchive object
+	* @param $file
+	* @access public
+	* @return object Zip archive object
 	*/
-	public function ZipWrite(ZipArchive $zip, $file) {
+	public function zipWrite(ZipArchive $zip, $file) {
 		if(file_exists($file)) {
 		//	$dir_sep = (PHP_OS != 'WINNT') ? '/' : '\\';
 			$short_path = str_replace('/', '', strrchr($file, '/'));
@@ -91,9 +112,12 @@ class ZipCreationCommand extends CConsoleCommand {
 	
 	/**
 	* Close a zip archive
-	* @return Zip archive object
+	* @param $zip ZipArchive object
+	* @param $path
+	* @access public
+	* @return object Zip archive object
 	*/
-	public function ZipClose(ZipArchive $zip, $path) {
+	public function zipClose(ZipArchive $zip, $path) {
 		return $zip->close($path);
 	}
 	
@@ -106,21 +130,22 @@ class ZipCreationCommand extends CConsoleCommand {
 		foreach($users as $user) {
 			$user_files = $this->getUserFiles($user['user_id']);
 			$user_path = $this->getUserPath($user['user_id']);
-			$zip_file = $this->createArchive($user_path);
+			$zip_file = $this->zipOpen($user_path);
 			
 			$file_count = 0;
 			foreach($user_files as $file) {
 				if($file_count < 10) { 
 					$file_count++;
 				} else {
-					$this->ZipClose($zip_file, $user_path);
-					$zip_file = $this->createArchive($user_path);
+					$this->zipClose($zip_file, $user_path);
+					$zip_file = $this->zipOpen($user_path);
 					$file_count = 0;
 				}
-				$this->ZipWrite($zip_file, $file['temp_file_path']);
+				$this->zipWrite($zip_file, $file['temp_file_path']);
 			}
 			
-			$this->ZipClose($zip_file, $user_path);
+			$this->zipClose($zip_file, $user_path);
+			$this->createManifest($zip_file, $user['user_id']);
 			$this->writePath($user['user_id'], $user_path); 
 		}
 	}
