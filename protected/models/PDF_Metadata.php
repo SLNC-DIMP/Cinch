@@ -1,5 +1,13 @@
 <?php
 class PDF_Metadata extends FileTypeActiveRecord {
+	/**
+	* Writes extracted PDF metadata to the database
+	* @param $metadata
+	* @param $file_id
+	* @param $user_id
+	* @access public
+	* @return object.  Yii DAO object
+	*/
 	public function writeMetadata(array $metadata, $file_id, $user_id) {
 		$possible_fields = array(
 			'Author' => 'author',  
@@ -26,6 +34,6 @@ class PDF_Metadata extends FileTypeActiveRecord {
 			VALUES(' . $this->queryBuilder($query_fields, true) . ')';
 		
 		$write_files = Yii::app()->db->createCommand($sql);
-		$write_files->execute($bind_params);
+		$done = $write_files->execute($bind_params);
 	}
 }

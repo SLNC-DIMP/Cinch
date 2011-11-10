@@ -1,11 +1,18 @@
 <?php
 abstract class FileTypeActiveRecord extends CActiveRecord {
-
-	public function writeMetadata() {}
+	/**
+	* Should be an abstract write method, but Yii doesn't seem to care for abstract methods
+	* @abstract
+	* @access public
+	* @return Yii
+	*/
+	 public function writeMetadata() {}
 	
 	/**
 	* Returned metadata fields vary by document, not just doc type.
 	* This finds the interection of returned metadata with file type table fields.
+	* @param $possible_query_fields
+	* @param $metadata
 	* @access public
 	* @return array
 	*/
@@ -16,6 +23,8 @@ abstract class FileTypeActiveRecord extends CActiveRecord {
 	/**
 	* Flattens table fields into a string for query building.
 	* Adds : if creating prepared statement bindings.
+	* @param $fields
+	* @param $prepare
 	* @access public
 	* @return string
 	*/
@@ -31,6 +40,8 @@ abstract class FileTypeActiveRecord extends CActiveRecord {
 	/**
 	* Generates bind parameters on queries and cleans field values for insertion.
 	* Each tika value starts with : so need to remove it.
+	* @param $fields
+	* @param $metadata
 	* @access public
 	* @return array
 	*/
@@ -51,6 +62,8 @@ abstract class FileTypeActiveRecord extends CActiveRecord {
 	
 	/**
 	* Merges file and/or user id info onto the end of the metadata array
+	* @param $metadata_fields
+	* @param $id_values
 	* @access public
 	* @return array
 	*/
