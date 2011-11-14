@@ -4,7 +4,6 @@ abstract class FileTypeActiveRecord extends CActiveRecord {
 	* Should be an abstract write method, but Yii doesn't seem to care for abstract methods
 	* @abstract
 	* @access public
-	* @return Yii
 	*/
 	 public function writeMetadata() {}
 	

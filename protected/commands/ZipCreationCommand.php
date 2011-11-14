@@ -122,7 +122,7 @@ class ZipCreationCommand extends CConsoleCommand {
 	* Write File level metadata
 	* Add zip files 10 at a time.
 	*/
-	public function run() {
+	public function run($args) {
 		$users = $this->getUserFileCount();
 		
 		foreach($users as $user) {
@@ -143,7 +143,7 @@ class ZipCreationCommand extends CConsoleCommand {
 			}
 			
 			$this->zipClose($zip_file, $user_path);
-			$this->createManifest($zip_file, $user['user_id']);
+		//	$this->createManifest($zip_file, $user['user_id']);
 			$this->writePath($user['user_id'], $user_path); 
 		} 
 	}
