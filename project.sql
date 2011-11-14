@@ -124,6 +124,24 @@ CREATE TABLE IF NOT EXISTS `problem_downloads` (
 -- Dumping data for table `problem_downloads`
 --
 
+
+--
+-- Table structure for table `csv_meta_paths`
+--
+
+CREATE TABLE IF NOT EXISTS `csv_meta_paths` (
+  `id` int(10) NOT NULL auto_increment,
+  `user_id` int(7) NOT NULL,
+  `path` varchar(255) collate utf8_unicode_ci NOT NULL,
+  `add_to_archives` int(1) NOT NULL default '0',
+  `creationdate` timestamp NOT NULL default CURRENT_TIMESTAMP,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `csv_meta_paths`
+--
+
 --
 -- Table structure for table `file_type`
 --
@@ -145,7 +163,8 @@ INSERT INTO `file_type` (`id`, `file_type`, `file_type_name`) VALUES
 (3, 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'MS Word 2007 format'),
 (4, 'image/tiff', 'TIFF'),
 (5, 'image/jpeg', 'JPEG'),
-(6, 'image/gif', 'GIF');
+(6, 'image/gif', 'GIF'),
+(7, 'text/plain', 'Text File');
 
 --
 -- Table structure for table `file_info`
@@ -285,12 +304,28 @@ CREATE TABLE IF NOT EXISTS `upload` (
   `upload_path` varchar(250) collate utf8_unicode_ci NOT NULL,
   `processed` int(1) NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `upload`
 --
 
+--
+-- Table structure for table `zip_gz_downloads`
+--
+
+CREATE TABLE IF NOT EXISTS `zip_gz_downloads` (
+  `id` int(9) NOT NULL auto_increment,
+  `user_id` int(7) NOT NULL,
+  `archive_path` varchar(500) collate utf8_unicode_ci NOT NULL,
+  `downloaded` int(1) NOT NULL default '0',
+  `creationdate` timestamp NOT NULL default CURRENT_TIMESTAMP,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `zip_gz_downloads`
+--
 
 
 --
