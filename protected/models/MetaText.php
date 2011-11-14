@@ -76,11 +76,23 @@ class MetaText {
 	}
 	
 	/**
+	* Write CSV file path to $db
+	* @param $file_path
+	* @param $user_id
+	* @access protected
+	*/
+	protected function addPath($user_id, $file_path) {
+		$sql = "INSERT INTO zip_gz_downloads(user_id, archive_path) VALUES(?, ?)";
+		$fields = Yii::app()->db->createCommand($sql)
+			->execute(array($user_id, $file_path));
+	}
+	
+	/**
 	* Writes column headers and returned metadata to a .csv file
 	* @param $metadata
 	* @access public
 	*/
-	public function write($user_path, $table_name, $metadata) {
+	public function write($user_path, $table_name, $metadata,$user_id) {
 		$file_path = $user_path . '/' . $table_name . '.csv';
 		$column_headers = array();
 		
@@ -92,6 +104,7 @@ class MetaText {
 		
 		if(!empty($column_headers)) {
 			fputcsv($fh, $column_headers);
+			$this->addPath($user_id, $file_path);
 		}
 		
 		foreach($metadata as $row) {
