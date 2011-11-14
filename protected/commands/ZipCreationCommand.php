@@ -76,6 +76,12 @@ class ZipCreationCommand extends CConsoleCommand {
 			->execute(array($user_id, $path));
 	}
 	
+	public function updateFileInfo($user_id) {
+		$sql = "UPDATE " . $this->file_info . " SET zipped = 1 WHERE id = ?";
+		$write_zip = Yii::app()->db->createCommand($sql)
+			->execute(array($user_id));
+	}
+	
 	/**
 	* Creates a new zip archive
 	* @param $zip_path
@@ -126,8 +132,9 @@ class ZipCreationCommand extends CConsoleCommand {
 		$users = $this->getUserFileCount();
 		
 		foreach($users as $user) {
-			$user_files = $this->getUserFiles($user['user_id']);
-			$user_path = $this->getUserPath($user['user_id']);
+			$user_id = $user['user_id'];
+			$user_files = $this->getUserFiles($user_id);
+			$user_path = $this->getUserPath($user_id);
 			$zip_file = $this->zipOpen($user_path);
 			
 			$file_count = 0;
@@ -140,11 +147,12 @@ class ZipCreationCommand extends CConsoleCommand {
 					$file_count = 0;
 				}
 				$this->zipWrite($zip_file, $file['temp_file_path']);
+				$this->updateFileInfo($user_id);
 			}
 			
 			$this->zipClose($zip_file, $user_path);
 		//	$this->createManifest($zip_file, $user['user_id']);
-			$this->writePath($user['user_id'], $user_path); 
+			$this->writePath($user_id, $user_path); 
 		} 
 	}
 }

@@ -82,7 +82,7 @@ class MetaText {
 	* @access protected
 	*/
 	protected function addPath($user_id, $file_path) {
-		$sql = "INSERT INTO zip_gz_downloads(user_id, archive_path) VALUES(?, ?)";
+		$sql = "INSERT INTO csv_meta_paths(user_id, path) VALUES(?, ?)";
 		$fields = Yii::app()->db->createCommand($sql)
 			->execute(array($user_id, $file_path));
 	}
@@ -92,7 +92,7 @@ class MetaText {
 	* @param $metadata
 	* @access public
 	*/
-	public function write($user_path, $table_name, $metadata,$user_id) {
+	public function write($user_path, $table_name, $metadata, $user_id) {
 		$file_path = $user_path . '/' . $table_name . '.csv';
 		$column_headers = array();
 		
