@@ -147,7 +147,7 @@ class ZipCreationCommand extends CConsoleCommand {
 					$file_count = 0;
 				}
 				$this->zipWrite($zip_file, $file['temp_file_path']);
-				$this->updateFileInfo($user_id);
+				$this->updateFileInfo($file['id']);
 			}
 			
 			$this->zipClose($zip_file, $user_path);
