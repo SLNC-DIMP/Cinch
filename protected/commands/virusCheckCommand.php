@@ -1,5 +1,5 @@
 <?php
-class virusCheck extends CConsoleCommand {
+class virusCheckCommand extends CConsoleCommand {
 	/**
 	* Get file list for virus checks
 	* @access public
