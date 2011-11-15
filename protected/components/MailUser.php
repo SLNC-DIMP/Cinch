@@ -10,7 +10,7 @@ class MailUser {
 		return $user_info[0];
 	}
 	
-	public function mailUser($user_id) {
+	public function UserMail($user_id) {
 		$user = $this->getUser($user_id);
 		
 		$to = $user['email'];
