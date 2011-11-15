@@ -133,7 +133,7 @@ CREATE TABLE IF NOT EXISTS `csv_meta_paths` (
   `id` int(10) NOT NULL auto_increment,
   `user_id` int(7) NOT NULL,
   `path` varchar(255) collate utf8_unicode_ci NOT NULL,
-  `add_to_archives` int(1) NOT NULL default '0',
+  `added_to_archives` int(1) NOT NULL default '0',
   `creationdate` timestamp NOT NULL default CURRENT_TIMESTAMP,
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
@@ -180,11 +180,13 @@ CREATE TABLE IF NOT EXISTS `file_info` (
   `metadata` int(1) NOT NULL default '0' COMMENT 'Whether metadata extraction has been run',
   `dynamic_file` int(1) NOT NULL default '0' COMMENT 'is the file dynamically generated from orginal URL',
   `last_modified` varchar(15) collate utf8_bin default NULL COMMENT 'file last modified timestamp',
+  `zipped` int(1) NOT NULL default '0' COMMENT 'Yes/No added to a Zip Archive',
   `problem_file` int(1) NOT NULL default '0',
   `user_id` int(6) NOT NULL default '0' COMMENT 'CONSTRAINT FOREIGN KEY (user_id) REFERENCES user(id)',
   `upload_file_id` int(6) NOT NULL default '0' COMMENT 'CONSTRAINT FOREIGN KEY (upload_file_id) REFERENCES user_uploads(id)',
+  `download_time` timestamp NOT NULL default CURRENT_TIMESTAMP COMMENT 'time file was downloaded for processing',
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='downloaded file information' AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='downloaded file information' AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `file_info`
