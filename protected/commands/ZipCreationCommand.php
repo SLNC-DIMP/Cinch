@@ -47,6 +47,37 @@ class ZipCreationCommand extends CConsoleCommand {
 	}
 	
 	/**
+	* Gets all a user's csv metadata files which haven't been added to a zip archive.
+	* @param $user_id
+	* @access public
+	* @return object Yii DAO object
+	*/
+	public function getCsvFiles($user_id) {
+		$csv_files = Yii::app()->db->createCommand()
+			->select('id, path')
+			->from('csv_meta_paths')
+			->where(':user_id = user_id and :added_to_archives = added_to_archives', 
+				array(':user_id' => $user_id, ':added_to_archives' => 0))
+			->queryAll();
+		
+		return $csv_files;
+	}
+	
+	/**
+	* Updates csv_meta_paths table that a CSV file has been added to a Zip archive.
+	* @param $file_id
+	* @access public
+	* @return object Yii DAO object
+	*/
+	public function updateCsv($file_id) {
+		$sql = "UPDATE csv_meta_paths SET added_to_archives = 1 WHERE id = ?";
+		$csv_updated = Yii::app()->db->createCommand($sql);
+		$csv_updated->execute(array($file_id));
+		
+		return $csv_updated;
+	}
+	
+	/**
 	* Get user's base download path for Zip file creation
 	* @param $user_id
 	* @param $type
@@ -78,10 +109,16 @@ class ZipCreationCommand extends CConsoleCommand {
 			->execute(array($user_id, $path));
 	}
 	
-	public function updateFileInfo($user_id) {
+	/**
+	* Write the Zip archive path to the db
+	* @param $file_id
+	* @access public
+	* @return object Yii DAO object
+	*/
+	public function updateFileInfo($file_id) {
 		$sql = "UPDATE " . $this->file_info . " SET zipped = 1 WHERE id = ?";
 		$write_zip = Yii::app()->db->createCommand($sql)
-			->execute(array($user_id));
+			->execute(array($file_id));
 	}
 	
 	/**
@@ -128,16 +165,26 @@ class ZipCreationCommand extends CConsoleCommand {
 	
 	/**
 	* Write File level metadata
-	* Add zip files 10 at a time.
+	* Add CSV files first.  This should usually be one file.
+	* Add files to zip archive 10 to zip archive at a time.
+	* This won't hold true for 1st 10 file loop.  Since CSV files won't be counted.  
 	*/
 	public function run($args) {
 		$users = $this->getUserFileCount();
 		
 		foreach($users as $user) {
 			$user_id = $user['user_id'];
-			$user_files = $this->getUserFiles($user_id);
+			
 			$user_path = $this->getUserPath($user_id);
+			$user_files = $this->getUserFiles($user_id);
+			$user_csv_files = $this->getCsvFiles($user_id);
+			
 			$zip_file = $this->zipOpen($user_path);
+			
+			foreach($user_csv_files as $user_csv_file) {
+				$this->zipWrite($zip_file, $user_csv_file['path']);
+				$this->updateCsv($user_csv_file['id']);
+			}
 			
 			$file_count = 0;
 			foreach($user_files as $file) {
