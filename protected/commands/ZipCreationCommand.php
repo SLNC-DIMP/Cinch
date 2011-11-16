@@ -122,6 +122,33 @@ class ZipCreationCommand extends CConsoleCommand {
 	}
 	
 	/**
+	* Creates a list of the files in a Zip archive
+	* See Yeslifer commnet at http://us3.php.net/manual/en/function.ziparchive-getnameindex.php
+	* as numFiles appears to be an undocumented method
+	* Using preg_split as explode might not work with Windows in this case
+	* @param $zip
+	* @param $zip_path
+	* @access public
+	*/
+	public function createManifest(ZipArchive $zip, $zip_path) {
+		$manifest_pieces = preg_split('/(\/|\\\)/', $zip_path);
+		array_pop($manifest_pieces);
+		$manifest_path = implode('/', $manifest_pieces);
+		$full_path = $manifest_path . '/' . 'file_manifest.csv';
+		$file_count = $zip->numFiles;
+		
+		$fh = fopen($full_path, 'wb');
+		fputcsv($fh, array('This Zip file contains: ' . $file_count . " files, listed below."));
+		fputcsv($fh, array('id', 'Filename'));
+		for($i = 0; $i < $file_count; $i++) {  
+			fputcsv($fh, array($i + 1, $zip->getNameIndex($i)));
+		} 
+		fclose($fh);
+		
+		return $full_path;
+	}
+	
+	/**
 	* Creates a new zip archive
 	* @param $zip_path
 	* @access public
@@ -197,12 +224,13 @@ class ZipCreationCommand extends CConsoleCommand {
 				}
 				$this->zipWrite($zip_file, $file['temp_file_path']);
 				$this->updateFileInfo($file['id']);
-			}
-			
+			} 
+			$manifest = $this->createManifest($zip_file, $user_path);
+			$this->zipWrite($zip_file, $manifest);
 			$this->zipClose($zip_file, $user_path);
-		//	$this->createManifest($zip_file, $user['user_id']);
+			
 			$this->writePath($user_id, $user_path); 
-			$this->mail_user->UserMail($user_id);
+		//	$this->mail_user->UserMail($user_id);
 		} 
 	}
 }
