@@ -230,7 +230,7 @@ class ZipCreationCommand extends CConsoleCommand {
 			$this->zipClose($zip_file, $user_path);
 			
 			$this->writePath($user_id, $user_path); 
-		//	$this->mail_user->UserMail($user_id);
+			$this->mail_user->UserMail($user_id);
 		} 
 	}
 }
