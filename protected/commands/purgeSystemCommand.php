@@ -44,7 +44,7 @@ class purgeSystemCommand extends CConsoleCommand {
 			$delete_file = @unlink($file_path);
 			
 			if($delete_file == false) {
-		
+				
 			} 
 		}
 		$this->clearDb($file_id);

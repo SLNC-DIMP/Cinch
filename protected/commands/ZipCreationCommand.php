@@ -6,10 +6,12 @@
 * @todo only dump the specified users files into a zip file (Done)
 */
 class ZipCreationCommand extends CConsoleCommand {
+	public $mail_user;
 	public $file_info = 'file_info';
 	
 	public function __construct() {
 	//	$this->manifest = new Manifest();
+		$this->mail_user = new MailUser();
 	} 
 	
 	/**
@@ -153,6 +155,7 @@ class ZipCreationCommand extends CConsoleCommand {
 			$this->zipClose($zip_file, $user_path);
 		//	$this->createManifest($zip_file, $user['user_id']);
 			$this->writePath($user_id, $user_path); 
+			$this->mail_user->UserMail($user_id);
 		} 
 	}
 }
