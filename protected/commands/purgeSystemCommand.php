@@ -64,6 +64,7 @@ class purgeSystemCommand extends CConsoleCommand {
 	
 	public function run() {
 		$files = $this->filesToDelete();
+		if(empty($files)) { exit; }
 		
 		foreach($files as $file) {
 			$this->removeFile($file['temp_file_path'], $file['id']);

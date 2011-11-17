@@ -48,6 +48,7 @@ class MakeCsvCommand extends CConsoleCommand {
 	
 	public function run($args) {
 		$files = $this->getFiles();
+		if(empty($files)) { exit; }
 		
 		foreach($files as $file) {
 			$csv_path = $this->getUserPath($file['user_id']);

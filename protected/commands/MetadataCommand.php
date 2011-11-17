@@ -128,6 +128,10 @@ class MetadataCommand extends CConsoleCommand {
 		return $formatted_metadata;
 	}
 	
+	/**
+	* Extracts and writes file level metadata
+	* If nothing needs to be done command exits
+	*/
 	public function run() {
 		$files = $this->getFileList();
 		if(empty($files)) { exit; }

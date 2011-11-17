@@ -259,6 +259,7 @@ class DownloadCommand extends CConsoleCommand {
 	
 	public function run() {
         $urls = $this->getUrls();
+		if(empty($urls)) { exit; }
 		
 		foreach($urls as $url) {
 			$download = $this->CurlProcessing($url['url'], $url['user_id'], $url['user_uploads_id']);

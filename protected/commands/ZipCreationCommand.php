@@ -198,6 +198,7 @@ class ZipCreationCommand extends CConsoleCommand {
 	*/
 	public function run($args) {
 		$users = $this->getUserFileCount();
+		if(empty($users)) { exit; }
 		
 		foreach($users as $user) {
 			$user_id = $user['user_id'];

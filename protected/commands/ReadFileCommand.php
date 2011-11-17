@@ -52,7 +52,8 @@ class ReadFileCommand extends CConsoleCommand {
 	* Process all unprocessed lists and add urls to database.  When list completes updates list as processed.
 	*/
 	public function run() {
-     $file_lists = $file_lists = $this->getLists();
+    	$file_lists = $file_lists = $this->getLists();
+		if(empty($file_lists)) { exit; }
      
 		foreach($file_lists as $file_list) {
 			$url_list = SplFixedArray::fromArray(file($file_list['upload_path'], FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES));
