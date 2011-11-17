@@ -3,6 +3,13 @@ class MetadataCommand extends CConsoleCommand {
 	const PDF = 'application/pdf';
 	const WORD2003 = 'application/msword';
 	const WORD2007 = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+	const PPT = 'application/vnd.ms-powerpoint';
+	const PPT2007 = 'application/vnd.openxmlformats-officedocument.presentationml.presentation';
+	const EXCEL = 'application/vnd.ms-excel';
+	const EXCEL2007 = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+	const JPEG = 'image/jpeg';
+	const PNG = 'image/png';
+	const GIF = 'image/gif';
 	const TEXT = 'text/plain';
 	
 	/**
@@ -35,10 +42,25 @@ class MetadataCommand extends CConsoleCommand {
 				$write = new PDF_Metadata;
 				break;
 			case self::WORD2003:
-				$write = new WORD2003_Metadata;
-				break;
 			case self::WORD2007:
-				$write = new WORD2007_Metadata;
+				$write = new WORD_Metadata;
+				break;
+			case self::PPT:
+			case self::PPT2007:
+				$write = new PPT_Metadata;
+				break;
+			case self::EXCEL:
+			case self::EXCEL2007:
+				$write = new EXCEL_Metadata;
+				break;
+			case self::GIF:
+				$write = new GIF_Metadata;
+				break;
+			case self::JPEG:
+				$write = new JPEG_Metadata;
+				break;
+			case self::PNG:
+				$write = new PNG_Metadata;
 				break;
 			case self::TEXT:
 				$write = new Text_Metadata;
