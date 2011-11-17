@@ -11,6 +11,11 @@ class MakeCsvCommand extends CConsoleCommand {
 	/**
 	* Gets all downloaded files that have been fully processed.
 	* @todo get this working "AND virus_check != 0"
+	* Error 1 File not downloaded
+	* Error 2 checksum couldn't be created
+	* Error 4 metadata couldn't be extracted
+	* Error 11 Virus detected
+	* Want to add these files
 	* @access public
 	* @return object Yii DAO object
 	*/
@@ -19,7 +24,8 @@ class MakeCsvCommand extends CConsoleCommand {
 		FROM file_info 
 		WHERE file_type_id != 0
 		AND	checksum IS NOT NULL
-		AND metadata != 0";
+		AND metadata != 0
+		AND (problem_file != 1 OR problem_file != 11)";
 		
 		$user_files = Yii::app()->db->createCommand($sql)
 			->queryAll();

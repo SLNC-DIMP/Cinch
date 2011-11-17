@@ -9,7 +9,8 @@ class virusCheckCommand extends CConsoleCommand {
 		$files = Yii::app()->db->createCommand()
 			->select('id, temp_file_path')
 			->from('file_info')
-			->where(':virus_check = virus_check', array(':virus_check' => 0))
+			->where(':virus_check = virus_check or :problem_file = problem_file', 
+			  array(':virus_check' => 0, ':problem_file' => 1))
 			->queryAll();
 			
 		return $files;

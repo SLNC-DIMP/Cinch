@@ -4,6 +4,8 @@ class ChecksumCommand extends CConsoleCommand {
 	
 	/**
 	* Get list of downloaded files without checksums
+	* 1 file not downloaded
+	* 11 virus detected
 	* @access public
 	* @return object Yii DAO
 	*/
@@ -11,7 +13,7 @@ class ChecksumCommand extends CConsoleCommand {
 		$get_files = Yii::app()->db->createCommand()
 			->select("id, temp_file_path, user_id")
 			->from($this->table)
-			->where("checksum IS NULL")
+			->where(array('and', "checksum IS NULL", array('or', 'problem_file != 1', 'problem_file != 11')))
 			->queryAll();
 			
 		return $get_files;

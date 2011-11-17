@@ -1,7 +1,7 @@
 <?php
 class MetadataCommand extends CConsoleCommand {
 	const PDF = 'application/pdf';
-	const WORD2003 = 'application/msword';
+	const WORD = 'application/msword';
 	const WORD2007 = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
 	const PPT = 'application/vnd.ms-powerpoint';
 	const PPT2007 = 'application/vnd.openxmlformats-officedocument.presentationml.presentation';
@@ -14,6 +14,7 @@ class MetadataCommand extends CConsoleCommand {
 	
 	/**
 	* Retrieves a list of uploaded files that need to have their metadata extracted
+	* Ignores 404 and virus check error files
 	* @access public
 	* @return object Yii DAO
 	*/
@@ -21,7 +22,8 @@ class MetadataCommand extends CConsoleCommand {
 		$get_file_list =  Yii::app()->db->createCommand()
 			->select('id, temp_file_path, user_id, upload_file_id')
 			->from('file_info')
-			->where('metadata = :metadata', array(':metadata' => 0))
+			->where(array('and', 'metadata = 0', 
+					array('or', 'problem_file != 1', 'problem_file != 11')))
 			->queryAll();
 			
 		return $get_file_list;
@@ -41,7 +43,7 @@ class MetadataCommand extends CConsoleCommand {
 			case self::PDF:
 				$write = new PDF_Metadata;
 				break;
-			case self::WORD2003:
+			case self::WORD:
 			case self::WORD2007:
 				$write = new WORD_Metadata;
 				break;
@@ -85,12 +87,13 @@ class MetadataCommand extends CConsoleCommand {
 	* Writes error to database if metadata could not be extracted from a file
 	* Metadata extraction error code is 4
 	* @param $file_id
-	* @access public
+	* @access private
 	* @return boolean
 	*/
-	public function tikaError($file_id) {
-		$sql = "UPDATE file_info SET problem_file = 4 WHERE id = :id";
+	private function tikaError($problem, $file_id) {
+		$sql = "UPDATE file_info SET problem_file = :problem WHERE id = :id";
 		$tika_error = Yii::app()->db->createCommand($sql);
+		$tika_error->bindParam(":problem", $problem, PDO::PARAM_INT);
 		$tika_error->bindParam(":id", $file_id, PDO::PARAM_INT);
 		$tika_error->execute();	
 		
@@ -121,13 +124,25 @@ class MetadataCommand extends CConsoleCommand {
 	/**
 	* Extracts file type from metadata array via Apache Tika making a call to a Java jar file
 	* Array value will be of Content-Type: whatever/whatever
+	* Code 4 Unable to extract metadata
+	* Code 12 Unsupported file type
 	* @param $metadata (array)
 	* @access public
 	* @return string
 	*/
 	public function getTikaFileType(array $metadata) {
-		$clean_file_type = trim(substr_replace($metadata['Content-Type'], '', 0, 1));
-	
+		$contants = new ReflectionClass('MetadataCommand');
+		$file_types = $contants->getConstants();
+		
+		if(!empty($metadata)) {
+			$clean_file_type = trim(substr_replace($metadata['Content-Type'], '', 0, 1));
+			if(!in_array($clean_file_type, $file_types)) {
+				$clean_file_type = 12;
+			}
+		} else {
+			$clean_file_type = 4; 
+		}
+		
 		return $clean_file_type;
 	} 
 	
@@ -153,6 +168,7 @@ class MetadataCommand extends CConsoleCommand {
 	/**
 	* Extracts and writes file level metadata
 	* If nothing needs to be done command exits
+	* 4 and 12 error codes for can't grab metadata or unsupported file type
 	*/
 	public function run() {
 		$files = $this->getFileList();
@@ -161,8 +177,13 @@ class MetadataCommand extends CConsoleCommand {
 		foreach($files as $file) {
 			$metadata = $this->getMetadata($file['temp_file_path']);
 			$file_type = $this->getTikaFileType($metadata);
-			$this->writeMetadata($file_type, $metadata, $file['id'], $file['user_id']);
-			$this->updateFileInfo($file['id']);
+			
+			if($file_type != 4 || $file_type != 12) {
+				$this->writeMetadata($file_type, $metadata, $file['id'], $file['user_id']);
+				$this->updateFileInfo($file['id']);
+			} else {
+				$this->tikaError($file_type, $file['id']);
+			} 
 		}
 	}
 }

@@ -32,6 +32,7 @@ class ZipCreationCommand extends CConsoleCommand {
 	
 	/**
 	* Gets all a user's files for which zip files haven't been created.
+	* Problem file error 4 is couldn't get metadata
 	* @param $user_id
 	* @access public
 	* @return object Yii DAO object
@@ -40,7 +41,9 @@ class ZipCreationCommand extends CConsoleCommand {
 		$user_files = Yii::app()->db->createCommand()
 			->select('id, temp_file_path, user_id')
 			->from($this->file_info)
-			->where(':user_id = user_id', array(':user_id' => $user_id))
+			->where(array('and', ':user_id = user_id', 
+					array('or', 'metadata = 1', 'problem_file = 11')))
+			->bindParam(":user_id", $user_id, PDO::PARAM_INT)
 			->queryAll();
 	
 		return $user_files;
@@ -205,33 +208,34 @@ class ZipCreationCommand extends CConsoleCommand {
 			
 			$user_path = $this->getUserPath($user_id);
 			$user_files = $this->getUserFiles($user_id);
-			$user_csv_files = $this->getCsvFiles($user_id);
+		//	$user_csv_files = $this->getCsvFiles($user_id);
 			
-			$zip_file = $this->zipOpen($user_path);
+		//	$zip_file = $this->zipOpen($user_path);
 			
-			foreach($user_csv_files as $user_csv_file) {
-				$this->zipWrite($zip_file, $user_csv_file['path']);
-				$this->updateCsv($user_csv_file['id']);
-			}
+	//		foreach($user_csv_files as $user_csv_file) {
+	//			$this->zipWrite($zip_file, $user_csv_file['path']);
+	//			$this->updateCsv($user_csv_file['id']);
+	//		}
 			
 			$file_count = 0;
 			foreach($user_files as $file) {
-				if($file_count < 10) { 
+			/*	if($file_count < 10) { 
 					$file_count++;
 				} else {
-					$this->zipClose($zip_file, $user_path);
-					$zip_file = $this->zipOpen($user_path);
+				//	$this->zipClose($zip_file, $user_path);
+				//	$zip_file = $this->zipOpen($user_path);
 					$file_count = 0;
 				}
 				$this->zipWrite($zip_file, $file['temp_file_path']);
-				$this->updateFileInfo($file['id']);
+				$this->updateFileInfo($file['id']); */
+				echo $file['temp_file_path'] . "\r\n";
 			} 
-			$manifest = $this->createManifest($zip_file, $user_path);
-			$this->zipWrite($zip_file, $manifest);
-			$this->zipClose($zip_file, $user_path);
+		//	$manifest = $this->createManifest($zip_file, $user_path);
+		//	$this->zipWrite($zip_file, $manifest);
+		//	$this->zipClose($zip_file, $user_path);
 			
-			$this->writePath($user_id, $user_path); 
-			$this->mail_user->UserMail($user_id);
+		//	$this->writePath($user_id, $user_path); 
+		//	$this->mail_user->UserMail($user_id);
 		} 
 	}
 }
