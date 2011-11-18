@@ -32,6 +32,7 @@ class ZipCreationCommand extends CConsoleCommand {
 	
 	/**
 	* Gets all a user's files for which zip files haven't been created.
+	* Problem file error 2 is checksum not created
 	* Problem file error 4 is couldn't get metadata
 	* @param $user_id
 	* @access public
@@ -42,7 +43,7 @@ class ZipCreationCommand extends CConsoleCommand {
 			->select('id, temp_file_path, user_id')
 			->from($this->file_info)
 			->where(array('and', ':user_id = user_id', 
-					array('or', 'metadata = 1', 'problem_file = 11')))
+					array('or', 'metadata = 1', 'problem_file = 2', 'problem_file = 4')))
 			->bindParam(":user_id", $user_id, PDO::PARAM_INT)
 			->queryAll();
 	
@@ -235,7 +236,7 @@ class ZipCreationCommand extends CConsoleCommand {
 			$this->zipClose($zip_file, $user_path);
 			
 			$this->writePath($user_id, $user_path); 
-			$this->mail_user->UserMail($user_id);
+		//	$this->mail_user->UserMail($user_id);
 		} 
 	}
 }
