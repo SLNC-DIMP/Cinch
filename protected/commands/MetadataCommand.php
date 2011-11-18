@@ -131,8 +131,8 @@ class MetadataCommand extends CConsoleCommand {
 	* @return string
 	*/
 	public function getTikaFileType(array $metadata) {
-		$contants = new ReflectionClass('MetadataCommand');
-		$file_types = $contants->getConstants();
+		$constants = new ReflectionClass('MetadataCommand');
+		$file_types = $constants->getConstants();
 		
 		if(!empty($metadata)) {
 			$clean_file_type = trim(substr_replace($metadata['Content-Type'], '', 0, 1));
