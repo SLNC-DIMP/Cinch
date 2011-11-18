@@ -23,7 +23,7 @@ class ErrorCsvCommand extends MakeCsv {
 	}
 	
 	/**
-	* Writes user error file list to a csv file
+	* Writes user error file list to a csv file and add csv file path to db.
 	* Writes column headers only on first iteration
 	* @access public
 	*/
@@ -40,6 +40,7 @@ class ErrorCsvCommand extends MakeCsv {
 			
 			if(is_array($headers)) {
 				fputcsv($fh, $headers);
+				$this->addPath($file['user_id'], $error_file);
 			}
 				
 			if($file['temp_file_path'] != '') {
@@ -64,8 +65,6 @@ class ErrorCsvCommand extends MakeCsv {
 				$csv_path = $this->getUserPath($error['user_id']);
 				$this->makeReport($error, $csv_path);
 			}
-		} else {
-			echo 'No errors';
 		}
 	}
 }

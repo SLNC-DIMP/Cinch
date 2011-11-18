@@ -195,7 +195,7 @@ class ZipCreationCommand extends CConsoleCommand {
 	
 	/**
 	* Write File level metadata
-	* Add CSV files first.  This should usually be one file.
+	* Add CSV files first.  Metadata files and error file if it exists.
 	* Add files to zip archive 10 to zip archive at a time.
 	* This won't hold true for 1st 10 file loop.  Since CSV files won't be counted.  
 	*/

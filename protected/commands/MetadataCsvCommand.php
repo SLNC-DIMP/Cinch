@@ -108,18 +108,6 @@ class MetadataCsvCommand extends MakeCsv {
 	}
 	
 	/**
-	* Write CSV file path to $db
-	* @param $file_path
-	* @param $user_id
-	* @access protected
-	*/
-	protected function addPath($user_id, $file_path) {
-		$sql = "INSERT INTO csv_meta_paths(user_id, path) VALUES(?, ?)";
-		$fields = Yii::app()->db->createCommand($sql)
-			->execute(array($user_id, $file_path));
-	}
-	
-	/**
 	* Writes column headers and returned metadata to a .csv file
 	* @param $metadata
 	* @access public
