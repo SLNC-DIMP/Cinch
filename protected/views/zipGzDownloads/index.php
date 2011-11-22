@@ -1,10 +1,9 @@
 <?php
 $this->breadcrumbs=array(
-	'Zip Gz Downloads',
+	'Download Your Files',
 );
 
 $this->menu=array(
-	array('label'=>'Create ZipGzDownloads', 'url'=>array('create')),
 	array('label'=>'Manage ZipGzDownloads', 'url'=>array('admin')),
 );
 ?>

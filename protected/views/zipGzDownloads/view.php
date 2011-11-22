@@ -1,6 +1,6 @@
 <?php
 $this->breadcrumbs=array(
-	'Zip Gz Downloads'=>array('index'),
+	'Download Your Files'=>array('index'),
 	$model->id,
 );
 
@@ -13,7 +13,7 @@ $this->menu=array(
 );
 ?>
 
-<h1>View ZipGzDownloads #<?php echo $model->id; ?></h1>
+<h1>View Your Downloads</h1>
 
 <?php $this->widget('zii.widgets.CDetailView', array(
 	'data'=>$model,

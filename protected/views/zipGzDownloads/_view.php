@@ -1,7 +1,7 @@
 <div class="view">
 
-	<b><?php echo CHtml::encode($data->getAttributeLabel('archive_path')); ?>:<br /></b>
-	<?php echo CHtml::encode($data->archive_path); ?>
+	<b>Download File:<br /></b>
+	<?php echo CHtml::link('Download this File', CHtml::encode('zipGzDownloads/download/'. $data->id)); ?>
 	<br />
 
 </div>
