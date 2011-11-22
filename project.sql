@@ -73,7 +73,13 @@ INSERT INTO `AuthItem` (`name`, `type`, `description`, `bizrule`, `data`) VALUES
 ('User.Delete', 0, NULL, NULL, 'N;'),
 ('User.Index', 0, NULL, NULL, 'N;'),
 ('User.Update', 0, NULL, NULL, 'N;'),
-('User.View', 0, NULL, NULL, 'N;');
+('User.View', 0, NULL, NULL, 'N;'),
+('ZipGzDownloads.Admin', 0, NULL, NULL, 'N;'),
+('ZipGzDownloads.Delete', 0, NULL, NULL, 'N;'),
+('ZipGzDownloads.Download', 0, NULL, NULL, 'N;'),
+('ZipGzDownloads.Index', 0, NULL, NULL, 'N;'),
+('ZipGzDownloads.Update', 0, NULL, NULL, 'N;'),
+('ZipGzDownloads.View', 0, NULL, NULL, 'N;');
 
 -- --------------------------------------------------------
 
@@ -107,7 +113,10 @@ INSERT INTO `authitemchild` (`parent`, `child`) VALUES
 ('Authenticated', 'Site.Logout'),
 ('Guest', 'Site.Logout'),
 ('Authenticated', 'Upload.*'),
-('Authenticated', 'Upload.Index');
+('Authenticated', 'Upload.Index'),
+('Authenticated', 'ZipGzDownloads.Download'),
+('Authenticated', 'ZipGzDownloads.Index'),
+('Authenticated', 'ZipGzDownloads.View');
 -- --------------------------------------------------------
 
 
