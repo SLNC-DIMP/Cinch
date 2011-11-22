@@ -85,6 +85,7 @@ class MetadataCsvCommand extends MakeCsv {
 	/**
 	* Gets table fields for column headers for metadata CSV files
 	* Removes id fields
+	* Add file checksum to the array
 	* See http://stackoverflow.com/questions/5428262/php-pdo-get-the-columns-name-of-a-table
 	* @param $table_name
 	* @access protected
@@ -103,6 +104,7 @@ class MetadataCsvCommand extends MakeCsv {
 				$columns[] = $col_name;
 			}
 		}
+		$columns[] = 'Checksum';
 		
 		return $columns;
 	}

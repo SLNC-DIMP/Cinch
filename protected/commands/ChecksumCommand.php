@@ -61,6 +61,22 @@ class ChecksumCommand extends CConsoleCommand {
 	}
 	
 	/**
+	* Retrieves a checksum for an individual file. 
+	* @param $file_id
+	* @access public 
+	* @return string
+	*/
+	public function getOneFileChecksum($file_id) {
+		$checksum = Yii::app()->db->createCommand()
+		->select('checksum')
+		->from($this->table)
+		->where("id = :file_id", array(":file_id" => $file_id))
+		->queryColumn();
+		
+		return $checksum[0];
+	}
+	
+	/**
 	* Write checksum mismatch error. 
 	* 5 is id of checksum mismatch in error_type table
 	* @param $id
