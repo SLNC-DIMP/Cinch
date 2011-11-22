@@ -156,7 +156,9 @@ class ZipGzDownloadsController extends Controller
 	*/
 	public function actionDownload($id) {
 		$model = $this->loadModel($id);
-		 // Must be fresh start
+		$fullPath = $model['archive_path'];
+		
+		// Must be fresh start
 		if( headers_sent() ) {
 			die('Headers Sent');
 		}
@@ -167,7 +169,7 @@ class ZipGzDownloadsController extends Controller
 		}
 	  
 		// File Exists?
-		if(file_exists($fullPath)) {
+		if(file_exists($fullPath) && $model['user_id'] == Yii::app()->user->id) {
 			// Parse Info / Get Extension
 			$path_parts = pathinfo($fullPath);
 			   
@@ -182,8 +184,10 @@ class ZipGzDownloadsController extends Controller
 			ob_clean();
 			flush();
 			readfile($fullPath);
+		} elseif(file_exists($fullPath) && $model['user_id'] != Yii::app()->user->id) {
+			throw new CHttpException(403,'Permissions error. You do not have access to this file.');
 		} else {
-			die('File Not Found');
+			throw new CHttpException(400,'The requested file does not exist.');
 		}
 	} 
 }
