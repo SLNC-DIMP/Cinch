@@ -35,7 +35,7 @@
 			if(!Yii::app()->user->isGuest) {
 				$menu_items[] =  array('label'=>'Upload', 'url'=>array('/upload'));
 				$menu_items[] =  array('label'=>'FTP', 'url'=>array('/ftp'));
-				$menu_items[] =  array('label'=>'Download Your Files', 'url'=>array('/download'));
+				$menu_items[] =  array('label'=>'Download Your Files', 'url'=>array('/zipGzDownloads'));
 			}
 			if(Yii::app()->user->checkAccess('deleteUser')) {
 				$menu_items[] =  array('label'=>'Admin', 'url'=>array('/admin'));
