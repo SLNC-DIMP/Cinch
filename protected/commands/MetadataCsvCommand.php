@@ -7,6 +7,11 @@ Yii::import('application.commands.MakeCsv');
 
 class MetadataCsvCommand extends MakeCsv {
 	public $compare = '/(id|id$)/i';
+	public $checksum;
+	
+	public function __construct() {
+		$this->checksum = new Checksum;
+	}
 	
 	/**
 	* Gets all downloaded files that have been fully processed.
@@ -110,7 +115,7 @@ class MetadataCsvCommand extends MakeCsv {
 	}
 	
 	/**
-	* Writes column headers and returned metadata to a .csv file
+	* Writes column headers, returned metadata and checksum to a .csv file
 	* @param $metadata
 	* @access public
 	*/
@@ -130,13 +135,17 @@ class MetadataCsvCommand extends MakeCsv {
 		}
 		
 		foreach($metadata as $row) {
+			$row['checksum'] = $this->checksum->getOneFileChecksum($row['file_id']);
+			
 			foreach($row as $key => $value) {
 				if(preg_match($this->compare, $key)) {
 					unset($row[$key]);
 				}
 			}
+			
 			fputcsv($fh, $row);
 		}
+		
 		fclose($fh);
 	}
 	

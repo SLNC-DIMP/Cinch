@@ -1,106 +1,9 @@
 <?php
 class ChecksumCommand extends CConsoleCommand {
-	public $table = 'file_info';
+	public $checksum;
 	
-	/**
-	* Get list of downloaded files without checksums
-	* 1 file not downloaded
-	* 11 virus detected
-	* @access public
-	* @return object Yii DAO
-	*/
-	public function getFileList() {
-		$get_files = Yii::app()->db->createCommand()
-			->select("id, temp_file_path, user_id")
-			->from($this->table)
-			->where(array('and', "checksum IS NULL", array('or', 'problem_file != 1', 'problem_file != 11')))
-			->queryAll();
-			
-		return $get_files;
-	}
-	
-	/**
-	* Get count of files in file info table
-	* @access public
-	* @return integer
-	*/
-	public function getCheckedFileCount() {
-		$get_file_count = Yii::app()->db->createCommand()
-			->select("COUNT(*)")
-			->from($this->table)
-			->where("checksum IS NOT NULL")
-			->queryColumn();
-		
-		return $get_file_count[0];
-		
-	}
-	
-	/**
-	* Retrieves a list of checksums for files.  If more than 5000 files to check 
-	* it starts from a random point of less than or equal to 5000 files from the total # of files.
-	* @param $count
-	* @access public 
-	* @return object Yii DAO
-	*/
-	public function getFileChecksums($count) {
-		if($count <= 5000) {
-			$offset = 0;
-			$limit = $count;
-		} else {
-			$offset = mt_rand(0, ($count - 5000));
-			$limit = 5000;
-		}
-		
-		$get_file_checksums = Yii::app()->db->createCommand()
-			->select('id, temp_file_path, checksum')
-			->from($this->table)
-			->limit($limit, $offset)
-			->queryAll();
-			
-		return $get_file_checksums;
-	}
-	
-	/**
-	* Retrieves a checksum for an individual file. 
-	* @param $file_id
-	* @access public 
-	* @return string
-	*/
-	public function getOneFileChecksum($file_id) {
-		$checksum = Yii::app()->db->createCommand()
-		->select('checksum')
-		->from($this->table)
-		->where("id = :file_id", array(":file_id" => $file_id))
-		->queryColumn();
-		
-		return $checksum[0];
-	}
-	
-	/**
-	* Write checksum mismatch error. 
-	* 5 is id of checksum mismatch in error_type table
-	* @param $id
-	* @param $error
-	* @access public 
-	* @return object Yii DAO
-	*/
-	public function writeError($id, $error = 5) {
-		$sql = "UPDATE " . $this->table . " SET problem_file = ? WHERE id = ?";
-		$write_error = Yii::app()->db->createCommand()
-			->execute(array($error, $id));
-	}
-	
-	/**
-	* Write checksum errors to the database
-	* @param $checksum
-	* @param $id
-	* @access public 
-	* @return object Yii DAO
-	*/
-	public function writeSuccess($checksum, $id) {
-		$sql = "UPDATE " . $this->table . " SET checksum = ? WHERE id = ?";
-		$write = Yii::app()->db->createCommand($sql)
-			->execute(array($checksum, $id));
+	public function __construct() {
+		$this->checksum = new Checksum;
 	}
 	
 	/**
@@ -122,15 +25,15 @@ class ChecksumCommand extends CConsoleCommand {
 	* @access public 
 	*/
 	public function actionCheck() {
-		$file_count = $this->getCheckedFileCount();
+		$file_count = $this->checksum->getCheckedFileCount();
 	
 		if($file_count > 0) {
-			$file_list = $this->getFileChecksums($file_count);
+			$file_list = $this->checksum->getFileChecksums($file_count);
 			
 			foreach($file_list as $file) {
-				$current_checksum = $this->createChecksum($file['temp_file_path']);
+				$current_checksum = $this->checksum->createChecksum($file['temp_file_path']);
 				if($current_checksum != $file['checksum']) {
-					$this->writeError($file['id']);
+					$this->checksum->writeError($file['id']);
 					echo 'checksum not ok for: ' . $file['temp_file_path'] . "\r\n";
 				} else {
 					echo 'checksum ok for: ' . $file['temp_file_path'] . "\r\n";
@@ -147,21 +50,20 @@ class ChecksumCommand extends CConsoleCommand {
 	* 3 is value for "Duplicate Checksum. File deleted or not downloaded"
 	*/
 	public function actionCreate($args) {
-		$file_lists = $this->getFileList();
+		$file_lists = $this->checksum->getFileList();
 		
 		if(count($file_lists) > 0) {
 			foreach($file_lists as $file_list) { 
-				$checksum = $this->createChecksum($file_list['temp_file_path']);
+				$checksum = $this->checksum->createChecksum($file_list['temp_file_path']);
 				
 				if($checksum) {
-					$this->writeSuccess($checksum, $file_list['id']);
+					$this->checksum->writeSuccess($checksum, $file_list['id']);
 					echo "checksum for:" . $file_list['temp_file_path'] . " is " . $checksum . "\r\n";
 				} else {
-					$this->writeError($file_list['id'], 2);
+					$this->checksum->writeError($file_list['id'], 2);
 					echo "Checksum not created. for: " . $file_list['temp_file_path'] . "\r\n";
 				}
 			}
 		}
 	}
 }
-// UPDATE `file_info` SET `checksum` = NULL WHERE `checksum`IS NOT NULL
