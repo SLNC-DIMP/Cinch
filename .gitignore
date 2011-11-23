@@ -3,6 +3,5 @@
 /.project
 protected/config/test.php
 protected/config/console.php
-protected/config/main.php
 assets/*
 uploads/*
