@@ -29,6 +29,8 @@ return array(
 		 	// If removed, Gii defaults to localhost only. Edit carefully to taste.
 			'ipFilters'=>array('127.0.0.1','::1'),
 		), 
+		// admin module created by Dean Farrell 11-23-11
+		'admin',
 		// used by rights module
 		'rights'=>array(
 			//'install'=>true,
@@ -78,7 +80,7 @@ return array(
 		'session' => array (
 			'class' => 'system.web.CDbHttpSession',
 			'connectionID' => 'db',
-			'sessionTableName' => '',
+			'sessionTableName' => 'user_session_info',
 		),
 	
 		'errorHandler'=>array(
@@ -113,7 +115,6 @@ return array(
             'host'  => '127.0.0.1'
         ),
 		
-		// added zip file extension
 		'zip' => array(
 			'class'=>'application.extensions.zip.EZip'
 		),
