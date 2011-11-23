@@ -12,6 +12,8 @@ class AdminModule extends CWebModule
 			'admin.models.*',
 			'admin.components.*',
 		));
+		
+		$this->layout = 'main';
 	}
 
 	public function beforeControllerAction($controller, $action)
@@ -20,7 +22,11 @@ class AdminModule extends CWebModule
 		{
 			// this method is called before any module controller action is performed
 			// you may place customized code here
-			return true;
+			if(!Yii::app()->authManager->checkAccess('Admin', Yii::app()->user->id)) {
+				throw new CHttpException(403, Yii::t('yii', 'Access denied.  Please contact Cinch with any questions'));
+			} else {
+				return true;
+			}
 		}
 		else
 			return false;
