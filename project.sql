@@ -24,9 +24,8 @@ CREATE TABLE IF NOT EXISTS `AuthAssignment` (
 --
 -- Dumping data for table `authassignment`
 --
-INSERT INTO `AuthAssignment` (`itemname`, `userid`, `bizrule`, `data`) VALUES
+INSERT INTO `AuthAssignment` (`itemname`, `userid`, `bizrule`, `data`)VALUES
 ('Admin', '1', NULL, 'N;'),
-('Admin', '2', NULL, 'N;'),
 ('Admin', 'admin', NULL, 'N;');
 
 -- --------------------------------------------------------
@@ -50,6 +49,7 @@ CREATE TABLE IF NOT EXISTS `AuthItem` (
 
 INSERT INTO `AuthItem` (`name`, `type`, `description`, `bizrule`, `data`) VALUES
 ('Admin', 2, NULL, NULL, 'N;'),
+('Admin.Default.*', 1, NULL, NULL, 'N;'),
 ('Authenticated', 2, NULL, NULL, 'N;'),
 ('FileInfo.*', 1, NULL, NULL, 'N;'),
 ('FileInfo.Admin', 0, NULL, NULL, 'N;'),
@@ -99,7 +99,9 @@ CREATE TABLE IF NOT EXISTS `authitemchild` (
 --
 --
 INSERT INTO `authitemchild` (`parent`, `child`) VALUES
+('Admin.Default.*', 'FileInfo.*'),
 ('Authenticated', 'Guest'),
+('Admin.Default.*', 'Site.*'),
 ('Authenticated', 'Site.*'),
 ('Guest', 'Site.*'),
 ('Authenticated', 'Site.Contact'),
@@ -112,8 +114,11 @@ INSERT INTO `authitemchild` (`parent`, `child`) VALUES
 ('Guest', 'Site.Login'),
 ('Authenticated', 'Site.Logout'),
 ('Guest', 'Site.Logout'),
+('Admin.Default.*', 'Upload.*'),
 ('Authenticated', 'Upload.*'),
 ('Authenticated', 'Upload.Index'),
+('Admin.Default.*', 'User.*'),
+('Admin.Default.*', 'ZipGzDownloads.Admin'),
 ('Authenticated', 'ZipGzDownloads.Download'),
 ('Authenticated', 'ZipGzDownloads.Index'),
 ('Authenticated', 'ZipGzDownloads.View');
