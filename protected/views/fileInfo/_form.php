@@ -28,12 +28,6 @@
 	</div>
 
 	<div class="row">
-		<?php echo $form->labelEx($model,'checksum_created'); ?>
-		<?php echo $form->textField($model,'checksum_created'); ?>
-		<?php echo $form->error($model,'checksum_created'); ?>
-	</div>
-
-	<div class="row">
 		<?php echo $form->labelEx($model,'checksum'); ?>
 		<?php echo $form->textField($model,'checksum',array('size'=>40,'maxlength'=>40)); ?>
 		<?php echo $form->error($model,'checksum'); ?>

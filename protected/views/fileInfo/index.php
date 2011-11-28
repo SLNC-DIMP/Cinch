@@ -1,15 +1,14 @@
 <?php
 $this->breadcrumbs=array(
-	'File Infos',
+	'File Information',
 );
 
 $this->menu=array(
-	array('label'=>'Create FileInfo', 'url'=>array('create')),
-	array('label'=>'Manage FileInfo', 'url'=>array('admin')),
+	array('label'=>'Manage File Information', 'url'=>array('admin')),
 );
 ?>
 
-<h1>File Infos</h1>
+<h1>File Information</h1>
 
 <?php $this->widget('zii.widgets.CListView', array(
 	'dataProvider'=>$dataProvider,

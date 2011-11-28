@@ -1,15 +1,14 @@
 <?php
 $this->breadcrumbs=array(
-	'File Infos'=>array('index'),
+	'File File Information'=>array('index'),
 	$model->id=>array('view','id'=>$model->id),
 	'Update',
 );
 
 $this->menu=array(
-	array('label'=>'List FileInfo', 'url'=>array('index')),
-	array('label'=>'Create FileInfo', 'url'=>array('create')),
-	array('label'=>'View FileInfo', 'url'=>array('view', 'id'=>$model->id)),
-	array('label'=>'Manage FileInfo', 'url'=>array('admin')),
+	array('label'=>'List File Information', 'url'=>array('index')),
+	array('label'=>'View File Information', 'url'=>array('view', 'id'=>$model->id)),
+	array('label'=>'Manage File Information', 'url'=>array('admin')),
 );
 ?>
 

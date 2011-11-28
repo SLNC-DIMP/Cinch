@@ -5,8 +5,8 @@ $this->breadcrumbs=array(
 );
 
 $this->menu=array(
-	array('label'=>'List FileInfo', 'url'=>array('index')),
-	array('label'=>'Manage FileInfo', 'url'=>array('admin')),
+	array('label'=>'List File Information', 'url'=>array('index')),
+	array('label'=>'Manage File Information', 'url'=>array('admin')),
 );
 ?>
 

@@ -16,9 +16,6 @@
 	<?php echo CHtml::encode($data->file_type_id); ?>
 	<br />
 
-	<b><?php echo CHtml::encode($data->getAttributeLabel('checksum_created')); ?>:</b>
-	<?php echo CHtml::encode($data->checksum_created); ?>
-	<br />
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('checksum')); ?>:</b>
 	<?php echo CHtml::encode($data->checksum); ?>
@@ -28,7 +25,7 @@
 	<?php echo CHtml::encode($data->virus_check); ?>
 	<br />
 
-	<?php /*
+	
 	<b><?php echo CHtml::encode($data->getAttributeLabel('dynamic_file')); ?>:</b>
 	<?php echo CHtml::encode($data->dynamic_file); ?>
 	<br />
@@ -49,6 +46,6 @@
 	<?php echo CHtml::encode($data->upload_file_id); ?>
 	<br />
 
-	*/ ?>
+	
 
 </div>

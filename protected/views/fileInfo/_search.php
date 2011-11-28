@@ -26,11 +26,6 @@
 	</div>
 
 	<div class="row">
-		<?php echo $form->label($model,'checksum_created'); ?>
-		<?php echo $form->textField($model,'checksum_created'); ?>
-	</div>
-
-	<div class="row">
 		<?php echo $form->label($model,'checksum'); ?>
 		<?php echo $form->textField($model,'checksum',array('size'=>40,'maxlength'=>40)); ?>
 	</div>

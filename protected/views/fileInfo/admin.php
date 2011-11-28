@@ -1,12 +1,11 @@
 <?php
 $this->breadcrumbs=array(
-	'File Infos'=>array('index'),
+	'File Information'=>array('index'),
 	'Manage',
 );
 
 $this->menu=array(
-	array('label'=>'List FileInfo', 'url'=>array('index')),
-	array('label'=>'Create FileInfo', 'url'=>array('create')),
+	array('label'=>'List File Information', 'url'=>array('index')),
 );
 
 Yii::app()->clientScript->registerScript('search', "
@@ -23,7 +22,7 @@ $('.search-form form').submit(function(){
 ");
 ?>
 
-<h1>Manage File Infos</h1>
+<h1>Manage File Information</h1>
 
 <p>
 You may optionally enter a comparison operator (<b>&lt;</b>, <b>&lt;=</b>, <b>&gt;</b>, <b>&gt;=</b>, <b>&lt;&gt;</b>
@@ -46,16 +45,14 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 		'org_file_path',
 		'temp_file_path',
 		'file_type_id',
-		'checksum_created',
 		'checksum',
-		/*
 		'virus_check',
 		'dynamic_file',
 		'last_modified',
 		'problem_file',
 		'user_id',
 		'upload_file_id',
-		*/
+	
 		array(
 			'class'=>'CButtonColumn',
 		),
