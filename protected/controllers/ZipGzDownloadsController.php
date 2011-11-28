@@ -152,7 +152,8 @@ class ZipGzDownloadsController extends Controller
 	}
 	
 	/**
-	*  courtesy of phpnet at holodyn dot com http://us3.php.net/manual/en/function.header.php
+	* Courtesy of phpnet at holodyn dot com http://us3.php.net/manual/en/function.header.php
+	* @param $id id of file to download
 	*/
 	public function actionDownload($id) {
 		$model = $this->loadModel($id);

@@ -34,9 +34,8 @@ class MailUser {
 		$mail_sent = mail($to, $subject, $message, $headers);
 		
 		if($mail_sent == false) {
-		//	$log = fopen('', 'ab');
-		//	fwrite($log, date('c') . " Email could not be sent to: $to, regarding their downloads.\r\n");
-		//	fclose($log);
+			$error = date('c') . " Email could not be sent to: $to, regarding their downloads.\r\n";
+			Yii::log($message, 'system.console.CConsoleCommand', 'warning');
 		}
 	}
 }

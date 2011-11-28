@@ -3,13 +3,15 @@ $this->breadcrumbs=array(
 	$this->module->id,
 );
 ?>
-<h1><?php echo $this->uniqueId . '/' . $this->action->id; ?></h1>
+<h1>Administration Panel</h1>
+<?php
+$admin_menu = array(
+				array('label'=>'User Administration', 'url'=>array('/user')),
+				array('label'=>'Uploaded Files', 'url'=>array('/upload/admin')),
+			//	array('label'=>'Downloaded Files', 'url'=>array('/fileInfo')),
+				array('label'=>'Zip Files', 'url'=>array('/zipGzDownloads')),
+			); 
 
-<p>
-This is the view content for action "<?php echo $this->action->id; ?>".
-The action belongs to the controller "<?php echo get_class($this); ?>"
-in the "<?php echo $this->module->id; ?>" module.
-</p>
-<p>
-You may customize this page by editing <tt><?php echo __FILE__; ?></tt>
-</p>
+$this->widget('zii.widgets.CMenu',array(
+			'items'=>$admin_menu));
+?>
