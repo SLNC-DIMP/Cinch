@@ -4,7 +4,7 @@ $this->breadcrumbs=array(
 );
 
 $this->menu=array(
-	array('label'=>'Manage ZipGzDownloads', 'url'=>array('admin')),
+	array('label'=>'Manage Downloads', 'url'=>array('admin')),
 );
 ?>
 
