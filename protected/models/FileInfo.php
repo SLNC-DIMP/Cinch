@@ -48,14 +48,14 @@ class FileInfo extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('file_type_id, checksum_created, virus_check, dynamic_file, problem_file, user_id, upload_file_id', 'numerical', 'integerOnly'=>true),
+			array('file_type_id, virus_check, dynamic_file, problem_file, user_id, upload_file_id', 'numerical', 'integerOnly'=>true),
 			array('org_file_path', 'length', 'max'=>2084),
 			array('temp_file_path', 'length', 'max'=>1000),
 			array('checksum', 'length', 'max'=>40),
 			array('last_modified', 'length', 'max'=>15),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, org_file_path, temp_file_path, file_type_id, checksum_created, checksum, virus_check, dynamic_file, last_modified, problem_file, user_id, upload_file_id', 'safe', 'on'=>'search'),
+			array('id, org_file_path, temp_file_path, file_type_id, checksum, virus_check, dynamic_file, last_modified, problem_file, user_id, upload_file_id', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -82,7 +82,6 @@ class FileInfo extends CActiveRecord
 			'org_file_path' => 'Org File Path',
 			'temp_file_path' => 'Temp File Path',
 			'file_type_id' => 'File Type',
-			'checksum_created' => 'Checksum Created',
 			'checksum' => 'Checksum',
 			'virus_check' => 'Virus Check',
 			'dynamic_file' => 'Dynamic File',
@@ -108,7 +107,6 @@ class FileInfo extends CActiveRecord
 		$criteria->compare('org_file_path',$this->org_file_path,true);
 		$criteria->compare('temp_file_path',$this->temp_file_path,true);
 		$criteria->compare('file_type_id',$this->file_type_id);
-		$criteria->compare('checksum_created',$this->checksum_created);
 		$criteria->compare('checksum',$this->checksum,true);
 		$criteria->compare('virus_check',$this->virus_check);
 		$criteria->compare('dynamic_file',$this->dynamic_file);

@@ -37,7 +37,7 @@ class Upload extends CActiveRecord {
 	public function rules() {
 		return array(
 			array('upload_path', 'file', 'types'=>'txt, csv'),
-			array('user_id', 'safe')
+			array('user_id, processed', 'safe')
 		);
 	}
 	
