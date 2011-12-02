@@ -14,5 +14,4 @@ $this->menu=array(
 ?>
 
 <h1>Update Upload <?php echo $model->id; ?></h1>
-
 <?php echo $this->renderPartial('_form', array('model'=>$model)); ?>
