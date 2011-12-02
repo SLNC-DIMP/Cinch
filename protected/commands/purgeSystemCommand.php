@@ -70,17 +70,23 @@ class purgeSystemCommand extends CConsoleCommand {
 	}
 	
 	/**
-	* Remove directory from the file system if empty accounting for . and .. files.
+	* Remove directory from the file system if empty
+	* RecursiveDirectoryIterator should account for . and .. files.
+	* This should look at files beneath each user's root folder.
 	* @param $dir_path
 	* @access public
 	* @return boolean
 	*/
 	public function removeDir($dir_path) {
-		if(file_exists($dir_path) && count(scandir($dir_path)) == 2) {
-			$delete_dir = @rmdir($dir_path);
-			
-			if($delete_dir == false) {
-				$this->logError("Directory: $dir_path could not be deleted.");
+		$dir_list = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir_path, FilesystemIterator::SKIP_DOTS));
+		
+		foreach($dir_list as $dir) {
+			if($dir->isDir() && empty($dir)) {
+				$delete_dir = @rmdir($dir);
+				
+				if($delete_dir == false) {
+					$this->logError("Directory: $dir_path could not be deleted.");
+				}
 			}
 		}
 	}
@@ -126,6 +132,7 @@ class purgeSystemCommand extends CConsoleCommand {
 			$this->removeFile($file['temp_file_path'], $file['id']);
 		}
 		
+		$this->removeDir(Yii::getPathOfAlias('application.uploads'));
 		$this->mailError();
 	}
 }
