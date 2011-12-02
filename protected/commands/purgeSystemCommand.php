@@ -4,6 +4,11 @@
 */
 class purgeSystemCommand extends CConsoleCommand {
 	public $file_info = 'file_info';
+	public $error_list;
+	
+	public function __construct() {
+		$this->error_list = Yii::getPathOfAlias('application.messages') . '\/' . 'error_list_' . date('Y-m-d') . '.txt';
+	}
 	
 	/**
 	* Gets files that are more than 30 days old for deletion
@@ -37,6 +42,7 @@ class purgeSystemCommand extends CConsoleCommand {
 	/**
 	* Delete processed download lists, url lists, and ftp lists from the database.
 	* These records aren't linked to a file on the server
+	* 1 = processed
 	* @access protected
 	* @return object Yii DAO object
 	*/
@@ -57,7 +63,7 @@ class purgeSystemCommand extends CConsoleCommand {
 			$delete_file = @unlink($file_path);
 			
 			if($delete_file == false) {
-				
+				$this->logError("File Id: $file_id, with path: $file_path could not be deleted.");
 			} 
 		}
 		$this->clearDb($file_id);
@@ -71,7 +77,41 @@ class purgeSystemCommand extends CConsoleCommand {
 	*/
 	public function removeDir($dir_path) {
 		if(file_exists($dir_path) && count(scandir($dir_path)) == 2) {
-			@rmdir($dir_path);
+			$delete_dir = @rmdir($dir_path);
+			
+			if($delete_dir == false) {
+				$this->logError("Directory: $dir_path could not be deleted.");
+			}
+		}
+	}
+	
+	/**
+	* Writes file and directory deletion failures to file.
+	* @param $error_text
+	* @access protected
+	*/
+	protected function logError($error_text) {
+		$fh = fopen($this->error_list, 'ab');
+		fwrite($fh, $error_text . ",\r\n");
+		fclose($fh);
+	}
+	
+	/**
+	* Mails file and directory deletion failures to sys. admin
+	* @access protected
+	*/
+	protected function mailError() {
+		if(file_exists($this->error_list)) {
+			$to = 'webmaster@example.com';
+			$subject = 'Cinch file and directory deletion errors';
+			$from = 'From: webmaster@example.com' . "\r\n";
+			
+			$message = "The following deletion errors occured:\r\n";
+			$message .= file_get_contents($this->error_list);
+			
+			mail($to, $subject, $message, $headers);
+		} else {
+			return false;
 		}
 	}
 	
@@ -85,5 +125,7 @@ class purgeSystemCommand extends CConsoleCommand {
 		foreach($files as $file) {
 			$this->removeFile($file['temp_file_path'], $file['id']);
 		}
+		
+		$this->mailError();
 	}
 }
