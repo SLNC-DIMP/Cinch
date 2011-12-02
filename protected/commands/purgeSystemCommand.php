@@ -23,7 +23,8 @@ class purgeSystemCommand extends CConsoleCommand {
 	}
 	
 	/**
-	* Delete a files information from the database.
+	* Delete a downloaded (via Curl or FTP) file's information from the database.
+	* These records are linked to a file on the server
 	* @access protected
 	* @return object Yii DAO object
 	*/
@@ -31,6 +32,18 @@ class purgeSystemCommand extends CConsoleCommand {
 		$sql = "DELETE FROM " . $this->file_info . " WHERE id = ?";
 		$write_zip = Yii::app()->db->createCommand($sql)
 			->execute(array($file_id));
+	}
+	
+	/**
+	* Delete processed download lists, url lists, and ftp lists from the database.
+	* These records aren't linked to a file on the server
+	* @access protected
+	* @return object Yii DAO object
+	*/
+	protected function clearLists($table) {
+		$sql = "DELETE FROM $table WHERE processed = ?";
+		$write_zip = Yii::app()->db->createCommand($sql)
+			->execute(array(1));
 	}
 	
 	/**
@@ -63,6 +76,9 @@ class purgeSystemCommand extends CConsoleCommand {
 	}
 	
 	public function run() {
+		$this->clearLists('upload');
+		$this->clearLists('files_for_download');
+		
 		$files = $this->filesToDelete();
 		if(empty($files)) { exit; }
 		
