@@ -235,7 +235,7 @@ class DownloadCommand extends CConsoleCommand {
 	* @return array file info including: file type id, and boolean on whether it's a dynamic file. 
 	* As well as File name and last modified time
 	*/
-	public function CurlProcessing($url, $current_user_id, $file_id) {
+	public function CurlProcessing($url, $current_user_id, $file_id, $file_list_id) {
 		$error_id = $this->fileExists($url);
 		
 		if($error_id == 0) {
@@ -260,7 +260,7 @@ class DownloadCommand extends CConsoleCommand {
 			if(!curl_errno($ch)) {
 				$last_modified_time = curl_getinfo($ch, CURLINFO_FILETIME);
 				$set_modified_time = $this->updateLastModified($file_path, $last_modified_time);
-				$this->setFileInfo($url, $file_path, $set_modified_time, $current_user_id, $file_id);
+				$this->setFileInfo($url, $file_path, $set_modified_time, $current_user_id, $file_list_id);
 			} else {
 				$curl_error = curl_errno($ch);
 				$this->writeCurlError($url, $current_user_id, $file_id);
@@ -306,7 +306,7 @@ class DownloadCommand extends CConsoleCommand {
 		if(empty($urls)) { exit; }
 		
 		foreach($urls as $url) {
-			$download = $this->CurlProcessing($url['url'],  $url['user_id'], $url['id']);
+			$download = $this->CurlProcessing($url['url'],  $url['user_id'], $url['id'], $url['user_uploads_id']);
 			
 			if(is_array($download)) {
 				echo $url['url'] . " downloaded\r\n";			

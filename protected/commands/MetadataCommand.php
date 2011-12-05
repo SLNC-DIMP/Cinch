@@ -23,7 +23,7 @@ class MetadataCommand extends CConsoleCommand {
 			->select('id, temp_file_path, user_id, upload_file_id')
 			->from('file_info')
 			->where(array('and', 'metadata = 0', 
-					array('or', 'problem_file != 1', 'problem_file != 11')))
+					array('or', 'temp_file_path != ""', 'temp_file_path IS NULL')))
 			->queryAll();
 			
 		return $get_file_list;
