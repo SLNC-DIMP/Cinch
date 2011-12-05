@@ -195,7 +195,7 @@ class DownloadCommand extends CConsoleCommand {
 	
 	/**
 	* Checks to see if a file exists before trying to download it.
-	* @param $user
+	* @param $url
 	* @access protected
 	* @return string
 	*/

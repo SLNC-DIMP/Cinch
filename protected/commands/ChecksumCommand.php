@@ -54,7 +54,7 @@ class ChecksumCommand extends CConsoleCommand {
 		
 		if(count($file_lists) > 0) {
 			foreach($file_lists as $file_list) { 
-				$checksum = $this->checksum->createChecksum($file_list['temp_file_path']);
+				$checksum = $this->createChecksum($file_list['temp_file_path']);
 				
 				if($checksum) {
 					$this->checksum->writeSuccess($checksum, $file_list['id']);
