@@ -327,6 +327,43 @@ CREATE TABLE IF NOT EXISTS `upload` (
 -- Dumping data for table `upload`
 --
 
+
+--
+-- Table structure for table `word_metadata`
+--
+
+CREATE TABLE IF NOT EXISTS `word_metadata` (
+  `id` int(12) NOT NULL auto_increment,
+  `app_name` varchar(50) collate utf8_unicode_ci default NULL,
+  `app_version` varchar(50) collate utf8_unicode_ci default NULL,
+  `author` varchar(255) collate utf8_unicode_ci default NULL,
+  `comments` varchar(255) collate utf8_unicode_ci default NULL,
+  `company` varchar(255) collate utf8_unicode_ci default NULL,
+  `content_type` varchar(100) collate utf8_unicode_ci default NULL,
+  `creationdate` varchar(50) collate utf8_unicode_ci default NULL,
+  `keywords` varchar(255) collate utf8_unicode_ci default NULL,
+  `last_author` varchar(255) collate utf8_unicode_ci default NULL,
+  `last_modified` varchar(255) collate utf8_unicode_ci default NULL,
+  `pages` int(5) default NULL,
+  `revision_number` int(4) default NULL,
+  `template` varchar(50) collate utf8_unicode_ci default NULL,
+  `creator` varchar(255) collate utf8_unicode_ci default NULL,
+  `date_create` varchar(255) collate utf8_unicode_ci default NULL,
+  `publisher` varchar(255) collate utf8_unicode_ci default NULL,
+  `resourcename` varchar(255) collate utf8_unicode_ci default NULL,
+  `subject` varchar(255) collate utf8_unicode_ci default NULL,
+  `title` varchar(255) collate utf8_unicode_ci default NULL,
+  `file_id` int(12) NOT NULL,
+  `user_id` int(7) NOT NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `word_metadata`
+--
+
+
+
 --
 -- Table structure for table `zip_gz_downloads`
 --
