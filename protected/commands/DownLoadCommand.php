@@ -19,7 +19,7 @@ class DownloadCommand extends CConsoleCommand {
 			->select('*')
 			->from($this->download_file_list)
 			->where('processed = :processed', array(':processed' => 0))
-			->limit(1)
+			->limit(3)
 			->queryAll();
 			
 		return $get_file_list;
@@ -51,32 +51,22 @@ class DownloadCommand extends CConsoleCommand {
 	* @access public 
 	* @return object Yii DAO
 	*/
-	public function setFileInfo($url, $curr_path, $last_mod, $user_id, $upload_file_id) {
+	public function setFileInfo($url, $curr_path, $last_mod, $user_id, $upload_file_id, $problem_file = 0) {
 		$dynamic_file = ($this->initFileType($url) == 1) ? 0 : 1;
-		$sql = "INSERT INTO file_info(org_file_path, temp_file_path, dynamic_file, last_modified, user_id, upload_file_id) 
-			VALUES(:url, :curr_path, :dynamic_file, :last_mod, :user_id, :upload_file_id)";
+		$sql = "INSERT INTO file_info(org_file_path, temp_file_path, dynamic_file, last_modified, problem_file, user_id, upload_file_id) 
+			VALUES(:url, :curr_path, :dynamic_file, :last_mod, :problem_file, :user_id, :upload_file_id)";
 			
 			$write_files = Yii::app()->db->createCommand($sql);
 			$write_files->bindParam(":url", $url, PDO::PARAM_STR);
 			$write_files->bindParam(":curr_path", $curr_path, PDO::PARAM_STR);
 			$write_files->bindParam(":dynamic_file", $dynamic_file, PDO::PARAM_INT);
 			$write_files->bindParam(":last_mod", $last_mod, PDO::PARAM_INT);
+			$write_files->bindParam(":problem_file", $problem_file, PDO::PARAM_INT);
 			$write_files->bindParam(":user_id", $user_id, PDO::PARAM_INT);
 			$write_files->bindParam(":upload_file_id", $upload_file_id, PDO::PARAM_INT);
 			$write_files->execute();
-	}
-	
-	/**
-	* Gets last inserted record id
-	* Works with MySQL and SQLite
-	* @access public 
-	* @return string
-	*/
-	public function getLastInsertId() {
-		 $last_id = Yii::app()->db->createCommand()
-		 	->lastInsertId();
 			
-		return $last_id[0];
+			return Yii::app()->db->lastInsertID;
 	}
 	
 	/**
@@ -105,8 +95,8 @@ class DownloadCommand extends CConsoleCommand {
 		$sql = "INSERT INTO problem_files(error_id, file_id, user_id) 
 			VALUES(:error_id, :file_id, :user_id)";
 		$error = Yii::app()->db->createCommand($sql)
-			->bindParam(":error_id", $error, PDO::PARAM_INT)
-			->bindParam(":list_id", $list_id, PDO::PARAM_INT)
+			->bindParam(":error_id", $error_id, PDO::PARAM_INT)
+			->bindParam(":file_id", $file_id, PDO::PARAM_INT)
 			->bindParam(":user_id", $current_user_id, PDO::PARAM_INT)
 			->execute();
 	}
@@ -131,13 +121,17 @@ class DownloadCommand extends CConsoleCommand {
 	
 	/**
 	* Returns self reporting file extension.  Defaults to PDF if no extension given.
+	* Checks for some base url extensions
+	* $file_info length should sort out country codes
 	* @param $file
 	* @access public
 	* @return string
 	*/
 	public function initFileType($file) {
+		$bad_extensions = array('gov', 'com', 'edu', 'info', 'org');
 		$file_info = pathinfo($file, PATHINFO_EXTENSION);
-		if($file_info) {
+		
+		if($file_info && !in_array($file_info, $bad_extensions) && strlen($file_info) > 2) {
 			$file_type = 1;
 		} else {
 			$file_type = '.pdf';
@@ -158,19 +152,20 @@ class DownloadCommand extends CConsoleCommand {
 		if(!file_exists($user_base_dir)) { 
 			mkdir($user_base_dir); 
 		}
-		$dirs = scandir($user_base_dir);
+		
 
 		$first_download_dir = $user_base_dir . '/' . $file_list_owner . '_0';
 		if(!file_exists($first_download_dir)) { 
 			mkdir($first_download_dir); 
-		}
+		} 
 		
+		$dirs = scandir($user_base_dir);
 		if(count($dirs) > 2) {
 			$working_dir = $user_base_dir . '/' . end($dirs);
 		} else {
 			$working_dir = $first_download_dir;
 		}
-		
+	
 		return $working_dir;
 	}
 	
@@ -184,7 +179,7 @@ class DownloadCommand extends CConsoleCommand {
 	public function currentDir($current_dir) {
 		$file_count = count(scandir($current_dir)) - 2;
 		
-		if($file_count < 5) {
+		if($file_count < 2) {
 			$working_dir = $current_dir;
 		} else {
 			$dir_suffix = strrchr($current_dir, '_');
@@ -192,9 +187,10 @@ class DownloadCommand extends CConsoleCommand {
 			$dir_body = substr_replace($current_dir, '', - (int)strlen($dir_suffix));
 			$next_dir_num = str_replace('_', '', $dir_suffix) + 1;
 			$working_dir = $dir_body . '_' . $next_dir_num;
+			
 			if(!is_dir($working_dir)) { mkdir($working_dir); }
 		}
-	
+		
 		return $working_dir;
 	}
 	
@@ -212,12 +208,17 @@ class DownloadCommand extends CConsoleCommand {
 	*/
 	public function CurlProcessing($url, $current_user_id, $file_id) {
 		$current_username = $this->getUrlOwner($current_user_id);
+		echo $current_username . "\r\n";
+		
 		$start_dir = $this->getStartDir($current_username);
 		$current_dir = $this->currentDir($start_dir);
+		
 		$file_name = $this->cleanName($url);
 		
 		$file_path = $current_dir . '/' . $file_name;
+		
 		$ch = curl_init($url);
+		
 		$fp = @fopen($file_path, "wb");
 				
 	//	if($fp != false) {
@@ -235,21 +236,20 @@ class DownloadCommand extends CConsoleCommand {
 			$this->setFileInfo($url, $file_path, $set_modified_time, $current_user_id, $file_id);
 		} else {
 			$error_id = 1;
-			$this->setFileInfo($url, '', 0, $current_user_id, $file_id);
-			$file_info_id = $this->getLastInsertId();
-			$this->writeError($error_id, $file_info_id, $current_user_id);
+			$current_insert = $this->setFileInfo($url, '', 0, $current_user_id, $file_id, 1);
+			$this->writeError($error_id, $current_insert, $current_user_id);
 		}
 			
 		curl_close($ch);
 		fclose($fp);
 		
-		if(curl_errno($ch)) { 
+		if(isset($error_id)) { 
 			@unlink($file_path); 
-			 continue; 
+			return;
 		}
 	//	}
 		
-		return array('full_path' => $file_path, 'last_mod_time' => $last_modified_time);
+		return array('full_path' => $file_path, 'last_mod_time' => $last_modified_time); 
 	}
 	
 	/**
@@ -277,15 +277,15 @@ class DownloadCommand extends CConsoleCommand {
 		if(empty($urls)) { exit; }
 		
 		foreach($urls as $url) {
-			$download = $this->CurlProcessing($url['url'], $url['id'], $url['user_id']);
+			$download = $this->CurlProcessing($url['url'],  $url['user_id'], $url['id']);
 			
 			if(is_array($download)) {
 				echo $url['url'] . " downloaded\r\n";			
 			} else {
 				echo "Problem downloading: " . $url['url'] . "\r\n"; // text just a visual cue.  Can remove else statement
-				//continue;
 			}
-			$this->updateFileList($url['id']);
+			$this->updateFileList($url['id']); 
 		}
     }
 }
+// UPDATE `files_for_download` SET processed = 0 WHERE processed = 1
