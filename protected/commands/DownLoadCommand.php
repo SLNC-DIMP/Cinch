@@ -55,7 +55,7 @@ class DownloadCommand extends CConsoleCommand {
 		$sql = "INSERT INTO file_info(org_file_path, temp_file_path, dynamic_file, last_modified, user_id, upload_file_id) 
 			VALUES(:url, :curr_path, :dynamic_file, :last_mod, :user_id, :upload_file_id)";
 			
-			$write_files = Yii::app()->db->createCommand($sql);
+			$this->setFileInfo($url, $file_path, $set_modified_time, $current_user_id, $file_id);
 			$write_files->bindParam(":url", $url, PDO::PARAM_STR);
 			$write_files->bindParam(":curr_path", $curr_path, PDO::PARAM_STR);
 			$write_files->bindParam(":dynamic_file", $dynamic_file, PDO::PARAM_INT);
@@ -63,6 +63,19 @@ class DownloadCommand extends CConsoleCommand {
 			$write_files->bindParam(":user_id", $user_id, PDO::PARAM_INT);
 			$write_files->bindParam(":upload_file_id", $upload_file_id, PDO::PARAM_INT);
 			$write_files->execute();
+	}
+	
+	/**
+	* Gets last inserted record id
+	* Works with MySQL and SQLite
+	* @access public 
+	* @return string
+	*/
+	public function getLastInsertId() {
+		 $last_id = Yii::app()->db->createCommand()
+		 	->lastInsertId();
+			
+		return $last_id[0];
 	}
 	
 	/**
@@ -87,15 +100,14 @@ class DownloadCommand extends CConsoleCommand {
 	* @access public 
 	* @return object Yii DAO
 	*/
-	public function writeError($url, $error, $list_id, $current_user_id) {
-		$sql = "INSERT INTO problem_downloads(url, error_code, list_id, current_user_id) 
-			VALUES(:url, :error_code, :list_id, :current_user_id)";
-		$error = Yii::app()->db->createCommand($sql);
-		$error->bindParam(":url", $url, PDO::PARAM_STR);
-		$write_files->bindParam(":error_code", $error, PDO::PARAM_INT);
-		$write_files->bindParam(":list_id", $list_id, PDO::PARAM_INT);
-		$write_files->bindParam(":current_user_id", $current_user_id, PDO::PARAM_INT);
-		$write_files->execute();
+	public function writeError($error_id, $file_id, $current_user_id) {
+		$sql = "INSERT INTO problem_files(error_id, file_id, user_id) 
+			VALUES(:error_id, :file_id, :user_id)";
+		$error = Yii::app()->db->createCommand($sql)
+			->bindParam(":error_id", $error, PDO::PARAM_INT)
+			->bindParam(":list_id", $list_id, PDO::PARAM_INT)
+			->bindParam(":user_id", $current_user_id, PDO::PARAM_INT)
+			->execute();
 	}
 	
 /***************** End of Queries - Maybe move into a model ****************************************************/	
@@ -189,6 +201,7 @@ class DownloadCommand extends CConsoleCommand {
 	* opens a CURL connection and writes CURL contents to a file
 	* Tries to get last modified of remote file
 	* Rewrites file name from original url
+	* Error 1 - unable to download, Error 9 - unknown error
 	* @param $user
 	* @param $current_user_id
 	* @param $file_id
@@ -207,30 +220,31 @@ class DownloadCommand extends CConsoleCommand {
 		$fp = @fopen($file_path, "wb");
 				
 	//	if($fp != false) {
-			curl_setopt($ch, CURLOPT_FILE, $fp);
-			curl_setopt($ch, CURLOPT_HEADER, 0);
-			curl_setopt($ch, CURLOPT_AUTOREFERER, 1);
-			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-			curl_setopt($ch, CURLOPT_FILETIME, 1);
+		curl_setopt($ch, CURLOPT_FILE, $fp);
+		curl_setopt($ch, CURLOPT_HEADER, 0);
+		curl_setopt($ch, CURLOPT_AUTOREFERER, 1);
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+		curl_setopt($ch, CURLOPT_FILETIME, 1);
 					
-			curl_exec($ch);
+		curl_exec($ch);
 			
-			if(!curl_errno($ch)) {
-				$last_modified_time = curl_getinfo($ch, CURLINFO_FILETIME);
-				$set_modified_time = $this->updateLastModified($file_path, $last_modified_time);
-				$this->setFileInfo($url, $file_path, $set_modified_time, $current_user_id, $file_id);
+		if(!curl_errno($ch)) {
+			$last_modified_time = curl_getinfo($ch, CURLINFO_FILETIME);
+			$set_modified_time = $this->updateLastModified($file_path, $last_modified_time);
+			$this->setFileInfo($url, $file_path, $set_modified_time, $current_user_id, $file_id);
+		} else {
+			if(curl_errno($ch) == 7 || curl_errno($ch) == 9) {
+				$error_id = 1;
 			} else {
-				if(curl_errno($ch) == 7 || curl_errno($ch) == 9) {
-					$error = 1;
-				} else {
-					$error = 9;
-				}
-				$this->writeError($url, $error, $file_id, $current_user_id);
+				$error_id = 9;
 			}
+			$this->setFileInfo($url, '', 0, $current_user_id, $file_id);
+			$file_info_id = $this->getLastInsertId();
+			$this->writeError($error_id, $file_info_id, $current_user_id);
+		}
 			
-
-			curl_close($ch);
-			fclose($fp);
+		curl_close($ch);
+		fclose($fp);
 	//	}
 		
 		return array('full_path' => $file_path, 'last_mod_time' => $last_modified_time);
@@ -251,7 +265,6 @@ class DownloadCommand extends CConsoleCommand {
 		}
 		
 		$file_atime = fileatime($file);
-		
 		touch($file, $file_mtime, $file_atime);
 		
 		return $file_mtime;
@@ -262,13 +275,13 @@ class DownloadCommand extends CConsoleCommand {
 		if(empty($urls)) { exit; }
 		
 		foreach($urls as $url) {
-			$download = $this->CurlProcessing($url['url'], $url['user_id'], $url['user_uploads_id']);
+			$download = $this->CurlProcessing($url['url'], $url['id'], $url['user_id']);
 			
 			if(is_array($download)) {
 				$this->updateLastModified($download['full_path'], $download['last_mod_time']);
 			} else {
-				echo "Problem downloading: " . $url['url'] . "\r\n";
-				continue;
+				echo "Problem downloading: " . $url['url'] . "\r\n"; // text just a visual cue.  Can remove else statement
+				//continue;
 			}
 			$this->updateFileList($url['id']);
 			echo $url['url'] . " downloaded\r\n";
