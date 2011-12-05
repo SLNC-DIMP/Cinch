@@ -19,6 +19,7 @@ class DownloadCommand extends CConsoleCommand {
 			->select('*')
 			->from($this->download_file_list)
 			->where('processed = :processed', array(':processed' => 0))
+			->limit(1)
 			->queryAll();
 			
 		return $get_file_list;
@@ -55,7 +56,7 @@ class DownloadCommand extends CConsoleCommand {
 		$sql = "INSERT INTO file_info(org_file_path, temp_file_path, dynamic_file, last_modified, user_id, upload_file_id) 
 			VALUES(:url, :curr_path, :dynamic_file, :last_mod, :user_id, :upload_file_id)";
 			
-			$this->setFileInfo($url, $file_path, $set_modified_time, $current_user_id, $file_id);
+			$write_files = Yii::app()->db->createCommand($sql);
 			$write_files->bindParam(":url", $url, PDO::PARAM_STR);
 			$write_files->bindParam(":curr_path", $curr_path, PDO::PARAM_STR);
 			$write_files->bindParam(":dynamic_file", $dynamic_file, PDO::PARAM_INT);
@@ -183,7 +184,7 @@ class DownloadCommand extends CConsoleCommand {
 	public function currentDir($current_dir) {
 		$file_count = count(scandir($current_dir)) - 2;
 		
-		if($file_count < 500) {
+		if($file_count < 5) {
 			$working_dir = $current_dir;
 		} else {
 			$dir_suffix = strrchr($current_dir, '_');
@@ -201,7 +202,7 @@ class DownloadCommand extends CConsoleCommand {
 	* opens a CURL connection and writes CURL contents to a file
 	* Tries to get last modified of remote file
 	* Rewrites file name from original url
-	* Error 1 - unable to download, Error 9 - unknown error
+	* Error 1 - unable to download
 	* @param $user
 	* @param $current_user_id
 	* @param $file_id
@@ -233,11 +234,7 @@ class DownloadCommand extends CConsoleCommand {
 			$set_modified_time = $this->updateLastModified($file_path, $last_modified_time);
 			$this->setFileInfo($url, $file_path, $set_modified_time, $current_user_id, $file_id);
 		} else {
-			if(curl_errno($ch) == 7 || curl_errno($ch) == 9) {
-				$error_id = 1;
-			} else {
-				$error_id = 9;
-			}
+			$error_id = 1;
 			$this->setFileInfo($url, '', 0, $current_user_id, $file_id);
 			$file_info_id = $this->getLastInsertId();
 			$this->writeError($error_id, $file_info_id, $current_user_id);
@@ -245,6 +242,11 @@ class DownloadCommand extends CConsoleCommand {
 			
 		curl_close($ch);
 		fclose($fp);
+		
+		if(curl_errno($ch)) { 
+			@unlink($file_path); 
+			 continue; 
+		}
 	//	}
 		
 		return array('full_path' => $file_path, 'last_mod_time' => $last_modified_time);
@@ -278,13 +280,12 @@ class DownloadCommand extends CConsoleCommand {
 			$download = $this->CurlProcessing($url['url'], $url['id'], $url['user_id']);
 			
 			if(is_array($download)) {
-				$this->updateLastModified($download['full_path'], $download['last_mod_time']);
+				echo $url['url'] . " downloaded\r\n";			
 			} else {
 				echo "Problem downloading: " . $url['url'] . "\r\n"; // text just a visual cue.  Can remove else statement
 				//continue;
 			}
 			$this->updateFileList($url['id']);
-			echo $url['url'] . " downloaded\r\n";
 		}
     }
 }
