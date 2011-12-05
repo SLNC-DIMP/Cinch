@@ -262,13 +262,14 @@ class DownloadCommand extends CConsoleCommand {
 				$set_modified_time = $this->updateLastModified($file_path, $last_modified_time);
 				$this->setFileInfo($url, $file_path, $set_modified_time, $current_user_id, $file_id);
 			} else {
+				$curl_error = curl_errno($ch);
 				$this->writeCurlError($url, $current_user_id, $file_id);
 			}
 				
 			curl_close($ch);
 			fclose($fp);
 			
-			if($error_id == 1) { 
+			if(isset($curl_error)) { 
 				@unlink($file_path); 
 				return;
 			}
