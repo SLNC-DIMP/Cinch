@@ -4,8 +4,6 @@ class Checksum {
 	
 	/**
 	* Get list of downloaded files without checksums
-	* 1 file not downloaded
-	* 11 virus detected
 	* @access public
 	* @return object Yii DAO
 	*/
@@ -13,7 +11,7 @@ class Checksum {
 		$get_files = Yii::app()->db->createCommand()
 			->select("id, temp_file_path, user_id")
 			->from($this->table)
-			->where(array('and', "checksum IS NULL", array('or', 'problem_file != 1', 'problem_file != 11')))
+			->where(array('and', "checksum IS NULL", 'problem_file != 1'))
 			->queryAll();
 			
 		return $get_files;
