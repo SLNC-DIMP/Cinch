@@ -125,20 +125,6 @@ INSERT INTO `authitemchild` (`parent`, `child`) VALUES
 -- --------------------------------------------------------
 
 
-CREATE TABLE IF NOT EXISTS `problem_downloads` (
-  `id` int(11) NOT NULL auto_increment,
-  `url` varchar(2600) collate utf8_unicode_ci NOT NULL,
-  `error_code` int(4) NOT NULL,
-  `list_id` int(10) NOT NULL,
-  `user_id` int(7) NOT NULL,
-  PRIMARY KEY  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
-
---
--- Dumping data for table `problem_downloads`
---
-
-
 --
 -- Table structure for table `csv_meta_paths`
 --
@@ -151,23 +137,6 @@ CREATE TABLE IF NOT EXISTS `csv_meta_paths` (
   `creationdate` timestamp NOT NULL default CURRENT_TIMESTAMP,
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
-
-
---
--- Table structure for table `error_files`
---
-
-CREATE TABLE IF NOT EXISTS `error_files` (
-  `id` int(7) NOT NULL auto_increment,
-  `error_id` int(3) NOT NULL,
-  `file_id` int(10) default NULL,
-  `user_id` int(7) NOT NULL,
-  PRIMARY KEY  (`id`),
-  KEY `error_id` (`error_id`),
-  KEY `file_id` (`file_id`),
-  KEY `user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
-
 
 --
 -- Dumping data for table `csv_meta_paths`
@@ -272,6 +241,21 @@ CREATE TABLE IF NOT EXISTS `pdf_metadata` (
 --
 
 -- --------------------------------------------------------
+
+--
+-- Table structure for table `problem_files`
+--
+
+CREATE TABLE IF NOT EXISTS `problem_files` (
+  `id` int(7) NOT NULL auto_increment,
+  `error_id` int(3) NOT NULL,
+  `file_id` int(10) default NULL,
+  `user_id` int(7) NOT NULL,
+  PRIMARY KEY  (`id`),
+  KEY `error_id` (`error_id`),
+  KEY `file_id` (`file_id`),
+  KEY `user_id` (`user_id`)
+)
 
 --
 -- Table structure for table `rights`
@@ -385,10 +369,10 @@ ALTER TABLE `Rights`
   ADD CONSTRAINT `Rights_ibfk_1` FOREIGN KEY (`itemname`) REFERENCES `AuthItem` (`name`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Constraints for table `error_files`
+-- Constraints for table `problem_files`
 --
-ALTER TABLE `error_files`
-  ADD CONSTRAINT `error_files_ibfk_3` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
-  ADD CONSTRAINT `error_files_ibfk_1` FOREIGN KEY (`error_id`) REFERENCES `error_type` (`id`),
-  ADD CONSTRAINT `error_files_ibfk_2` FOREIGN KEY (`file_id`) REFERENCES `file_info` (`id`);
+ALTER TABLE `problem_files`
+  ADD CONSTRAINT `problem_files_ibfk_3` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
+  ADD CONSTRAINT `problem_files_ibfk_1` FOREIGN KEY (`error_id`) REFERENCES `error_type` (`id`),
+  ADD CONSTRAINT `problem_files_ibfk_2` FOREIGN KEY (`file_id`) REFERENCES `file_info` (`id`);
  
