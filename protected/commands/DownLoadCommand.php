@@ -19,7 +19,6 @@ class DownloadCommand extends CConsoleCommand {
 			->select('*')
 			->from($this->download_file_list)
 			->where('processed = :processed', array(':processed' => 0))
-			->limit(3)
 			->queryAll();
 			
 		return $get_file_list;
@@ -179,7 +178,7 @@ class DownloadCommand extends CConsoleCommand {
 	public function currentDir($current_dir) {
 		$file_count = count(scandir($current_dir)) - 2;
 		
-		if($file_count < 2) {
+		if($file_count < 500) {
 			$working_dir = $current_dir;
 		} else {
 			$dir_suffix = strrchr($current_dir, '_');
@@ -195,6 +194,36 @@ class DownloadCommand extends CConsoleCommand {
 	}
 	
 	/**
+	* Checks to see if a file exists before trying to download it.
+	* @param $user
+	* @access protected
+	* @return string
+	*/
+	protected function fileExists($url) {
+		$fn = @fopen($url, 'r');
+		$error_id = ($fn != false) ? 0 : 1;
+		if($fn) { fclose($fn); }
+		
+		return $error_id;
+	}
+	
+	/**
+	* Writes Curl/download errors to the db.
+	* @param $url
+	* @param $current_user_id
+	* @param $file_id
+	* @access private
+	* @return string
+	*/
+	private function writeCurlError($url, $current_user_id, $file_id) {
+		$error_id = 1;
+		$current_insert = $this->setFileInfo($url, '', 0, $current_user_id, $file_id, 1);
+		$this->writeError($error_id, $current_insert, $current_user_id);
+		
+		return $error_id;
+	}
+	
+	/**
 	* opens a CURL connection and writes CURL contents to a file
 	* Tries to get last modified of remote file
 	* Rewrites file name from original url
@@ -207,49 +236,48 @@ class DownloadCommand extends CConsoleCommand {
 	* As well as File name and last modified time
 	*/
 	public function CurlProcessing($url, $current_user_id, $file_id) {
-		$current_username = $this->getUrlOwner($current_user_id);
-		echo $current_username . "\r\n";
+		$error_id = $this->fileExists($url);
 		
-		$start_dir = $this->getStartDir($current_username);
-		$current_dir = $this->currentDir($start_dir);
-		
-		$file_name = $this->cleanName($url);
-		
-		$file_path = $current_dir . '/' . $file_name;
-		
-		$ch = curl_init($url);
-		
-		$fp = @fopen($file_path, "wb");
-				
-	//	if($fp != false) {
-		curl_setopt($ch, CURLOPT_FILE, $fp);
-		curl_setopt($ch, CURLOPT_HEADER, 0);
-		curl_setopt($ch, CURLOPT_AUTOREFERER, 1);
-		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-		curl_setopt($ch, CURLOPT_FILETIME, 1);
+		if($error_id == 0) {
+			$current_username = $this->getUrlOwner($current_user_id);
+			$start_dir = $this->getStartDir($current_username);
+			$current_dir = $this->currentDir($start_dir);
+			$file_name = $this->cleanName($url);
+			$file_path = $current_dir . '/' . $file_name;
+			
+			$ch = curl_init($url);
+			
+			$fp = @fopen($file_path, "wb");
 					
-		curl_exec($ch);
+			curl_setopt($ch, CURLOPT_FILE, $fp);
+			curl_setopt($ch, CURLOPT_HEADER, 0);
+			curl_setopt($ch, CURLOPT_AUTOREFERER, 1);
+			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+			curl_setopt($ch, CURLOPT_FILETIME, 1);
+						
+			curl_exec($ch);
 			
-		if(!curl_errno($ch)) {
-			$last_modified_time = curl_getinfo($ch, CURLINFO_FILETIME);
-			$set_modified_time = $this->updateLastModified($file_path, $last_modified_time);
-			$this->setFileInfo($url, $file_path, $set_modified_time, $current_user_id, $file_id);
+			if(!curl_errno($ch)) {
+				$last_modified_time = curl_getinfo($ch, CURLINFO_FILETIME);
+				$set_modified_time = $this->updateLastModified($file_path, $last_modified_time);
+				$this->setFileInfo($url, $file_path, $set_modified_time, $current_user_id, $file_id);
+			} else {
+				$this->writeCurlError($url, $current_user_id, $file_id);
+			}
+				
+			curl_close($ch);
+			fclose($fp);
+			
+			if($error_id == 1) { 
+				@unlink($file_path); 
+				return;
+			}
+		
+			return array('full_path' => $file_path, 'last_mod_time' => $last_modified_time); 
+		
 		} else {
-			$error_id = 1;
-			$current_insert = $this->setFileInfo($url, '', 0, $current_user_id, $file_id, 1);
-			$this->writeError($error_id, $current_insert, $current_user_id);
+			$this->writeCurlError($url, $current_user_id, $file_id);
 		}
-			
-		curl_close($ch);
-		fclose($fp);
-		
-		if(isset($error_id)) { 
-			@unlink($file_path); 
-			return;
-		}
-	//	}
-		
-		return array('full_path' => $file_path, 'last_mod_time' => $last_modified_time); 
 	}
 	
 	/**
@@ -288,4 +316,3 @@ class DownloadCommand extends CConsoleCommand {
 		}
     }
 }
-// UPDATE `files_for_download` SET processed = 0 WHERE processed = 1
