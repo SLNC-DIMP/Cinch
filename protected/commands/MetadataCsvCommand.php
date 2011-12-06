@@ -53,8 +53,14 @@ class MetadataCsvCommand extends MakeCsv {
 			case 3:
 				$table = 'word_metadata';
 				break;
+			case 5:
+				$table = 'jpg_metadata';
 			case 7:
 				$table = 'text_metadata';
+				break;
+			case 8:
+			case 9:
+				$table = 'excel_metadata';
 				break;
 			default:
 				$table = 'pdf_metadata';
