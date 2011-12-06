@@ -68,20 +68,6 @@ class ZipCreationCommand extends CConsoleCommand {
 	}
 	
 	/**
-	* Updates csv_meta_paths table that a CSV file has been added to a Zip archive.
-	* @param $file_id
-	* @access public
-	* @return object Yii DAO object
-	*/
-	public function updateCsv($file_id) {
-		$sql = "UPDATE csv_meta_paths SET added_to_archives = 1 WHERE id = ?";
-		$csv_updated = Yii::app()->db->createCommand($sql);
-		$csv_updated->execute(array($file_id));
-		
-		return $csv_updated;
-	}
-	
-	/**
 	* Get user's base download path for Zip file creation
 	* @param $user_id
 	* @param $type
@@ -215,7 +201,6 @@ class ZipCreationCommand extends CConsoleCommand {
 			
 			foreach($user_csv_files as $user_csv_file) {
 				$this->zipWrite($zip_file, $user_csv_file['path']);
-				$this->updateCsv($user_csv_file['id']);
 			}
 			
 			$file_count = 0;
@@ -236,7 +221,7 @@ class ZipCreationCommand extends CConsoleCommand {
 			$this->zipClose($zip_file, $user_path);
 			
 			$this->writePath($user_id, $user_path); 
-		//	$this->mail_user->UserMail($user_id);
+			$this->mail_user->UserMail($user_id);
 		} 
 	}
 }
