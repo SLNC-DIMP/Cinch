@@ -143,6 +143,35 @@ CREATE TABLE IF NOT EXISTS `csv_meta_paths` (
 --
 
 --
+-- Table structure for table `excel_metadata`
+--
+
+CREATE TABLE IF NOT EXISTS `excel_metadata` (
+  `id` int(7) NOT NULL auto_increment,
+  `app_name` varchar(50) collate utf8_unicode_ci default NULL,
+  `app_version` varchar(50) collate utf8_unicode_ci default NULL,
+  `author` varchar(255) collate utf8_unicode_ci default NULL,
+  `company` varchar(255) collate utf8_unicode_ci NOT NULL,
+  `content_type` varchar(100) collate utf8_unicode_ci default NULL,
+  `creationdate` varchar(50) collate utf8_unicode_ci default NULL,
+  `last_author` varchar(255) collate utf8_unicode_ci default NULL,
+  `last_modified` varchar(255) collate utf8_unicode_ci default NULL,
+  `creator` varchar(255) collate utf8_unicode_ci default NULL,
+  `date_create` varchar(255) collate utf8_unicode_ci default NULL,
+  `protected` varchar(25) collate utf8_unicode_ci default NULL,
+  `publisher` varchar(255) collate utf8_unicode_ci default NULL,
+  `resourcename` varchar(255) collate utf8_unicode_ci default NULL,
+  `title` varchar(255) collate utf8_unicode_ci default NULL,
+  `file_id` int(12) NOT NULL,
+  `user_id` int(7) NOT NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `excel_metadata`
+--
+
+--
 -- Table structure for table `file_type`
 --
 
