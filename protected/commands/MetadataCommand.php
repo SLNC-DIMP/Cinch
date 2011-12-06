@@ -90,12 +90,10 @@ class MetadataCommand extends CConsoleCommand {
 	* @access private
 	* @return boolean
 	*/
-	private function tikaError($problem, $file_id) {
-		$sql = "UPDATE file_info SET problem_file = :problem WHERE id = :id";
+	private function tikaError($error, $file_id, $user_id) {
+		$sql = "INSERT INTO problem_files(error_id, file_id, user_id) VALUES(?, ?, ?)";
 		$tika_error = Yii::app()->db->createCommand($sql);
-		$tika_error->bindParam(":problem", $problem, PDO::PARAM_INT);
-		$tika_error->bindParam(":id", $file_id, PDO::PARAM_INT);
-		$tika_error->execute();	
+		$tika_error->execute(array($error, $file_id, $use_id));	
 		
 		return false;
 	}
@@ -182,7 +180,7 @@ class MetadataCommand extends CConsoleCommand {
 				$this->writeMetadata($file_type, $metadata, $file['id'], $file['user_id']);
 				$this->updateFileInfo($file['id']);
 			} else {
-				$this->tikaError($file_type, $file['id']);
+				$this->tikaError($file_type, $file['id'], $file['user_id']);
 			} 
 		}
 	}
