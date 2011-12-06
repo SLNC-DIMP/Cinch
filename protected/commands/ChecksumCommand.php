@@ -33,7 +33,7 @@ class ChecksumCommand extends CConsoleCommand {
 			foreach($file_list as $file) {
 				$current_checksum = $this->checksum->createChecksum($file['temp_file_path']);
 				if($current_checksum != $file['checksum']) {
-					$this->checksum->writeError($file['id']);
+					$this->checksum->writeError($file['id'], $file['user_id']);
 					echo 'checksum not ok for: ' . $file['temp_file_path'] . "\r\n";
 				} else {
 					echo 'checksum ok for: ' . $file['temp_file_path'] . "\r\n";
@@ -60,7 +60,7 @@ class ChecksumCommand extends CConsoleCommand {
 					$this->checksum->writeSuccess($checksum, $file_list['id']);
 					echo "checksum for:" . $file_list['temp_file_path'] . " is " . $checksum . "\r\n";
 				} else {
-					$this->checksum->writeError($file_list['id'], 2);
+					$this->checksum->writeError($file_list['id'], $file_list['user_id'], 2);
 					echo "Checksum not created. for: " . $file_list['temp_file_path'] . "\r\n";
 				}
 			}

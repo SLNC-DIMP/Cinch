@@ -50,7 +50,7 @@ class Checksum {
 		}
 		
 		$get_file_checksums = Yii::app()->db->createCommand()
-			->select('id, temp_file_path, checksum')
+			->select('id, temp_file_path, checksum, user_id')
 			->from($this->table)
 			->limit($limit, $offset)
 			->queryAll();
@@ -82,10 +82,10 @@ class Checksum {
 	* @access public 
 	* @return object Yii DAO
 	*/
-	public function writeError($id, $error = 5) {
-		$sql = "UPDATE " . $this->table . " SET problem_file = ? WHERE id = ?";
+	public function writeError($file_id, $user_id, $error = 5) {
+		$sql = "INSERT INTO problem_files(error_id, file_id, user_id) VALUES(?, ?, ?)";
 		$write_error = Yii::app()->db->createCommand()
-			->execute(array($error, $id));
+			->execute(array($error, $file_id, $use_id));
 	}
 	
 	/**
