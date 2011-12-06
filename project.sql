@@ -212,6 +212,39 @@ CREATE TABLE IF NOT EXISTS `files_for_download` (
 --
 
 
+--
+-- Table structure for table `jpg_metadata`
+--
+
+CREATE TABLE IF NOT EXISTS `jpg_metadata` (
+  `id` int(12) NOT NULL auto_increment,
+  `color_space` varchar(25) collate utf8_unicode_ci default NULL,
+  `component_one` varchar(150) collate utf8_unicode_ci default NULL,
+  `component_two` varchar(150) collate utf8_unicode_ci default NULL,
+  `component_three` varchar(150) collate utf8_unicode_ci default NULL,
+  `compression` varchar(25) collate utf8_unicode_ci default NULL,
+  `content_type` varchar(50) collate utf8_unicode_ci default NULL,
+  `data_precision` varchar(15) collate utf8_unicode_ci default NULL,
+  `date_time` varchar(50) collate utf8_unicode_ci default NULL,
+  `exif_image_height` varchar(25) collate utf8_unicode_ci default NULL,
+  `exif_image_width` varchar(25) collate utf8_unicode_ci default NULL,
+  `last_modified` varchar(50) collate utf8_unicode_ci default NULL,
+  `number_of_components` varchar(5) collate utf8_unicode_ci default NULL,
+  `orientation` varchar(75) collate utf8_unicode_ci default NULL,
+  `software` varchar(75) collate utf8_unicode_ci default NULL,
+  `x_resolution` varchar(50) collate utf8_unicode_ci default NULL,
+  `y_resolution` varchar(50) collate utf8_unicode_ci default NULL,
+  `resourcename` varchar(255) collate utf8_unicode_ci default NULL,
+  `file_id` int(12) NOT NULL,
+  `user_id` int(7) NOT NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `jpg_metadata`
+--
+
+
 -- --------------------------------------------------------
 
 --
