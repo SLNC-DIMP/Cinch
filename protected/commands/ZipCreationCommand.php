@@ -43,7 +43,7 @@ class ZipCreationCommand extends CConsoleCommand {
 			->select('id, temp_file_path, user_id')
 			->from($this->file_info)
 			->where(array('and', ':user_id = user_id', 
-					array('or', 'metadata = 1', 'problem_file = 2', 'problem_file = 4')))
+					array('or', 'metadata = 1', 'temp_file_path' != '')))
 			->bindParam(":user_id", $user_id, PDO::PARAM_INT)
 			->queryAll();
 	
