@@ -10,6 +10,7 @@ class Jpg_Metadata extends FileTypeActiveRecord {
 	*/
 	public function writeMetadata(array $metadata, $file_id, $user_id) {
 		$possible_fields = array(
+			'Author' => 'author',
 			'Color Space' => 'color_space',
 			'Component 1' => 'component_one',
 			'Component 2' => 'component_two', 
