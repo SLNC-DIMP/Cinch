@@ -13,8 +13,8 @@ class ChecksumCommand extends CConsoleCommand {
 	* @access public
 	* @return string
 	*/
-	public function createChecksum($file, $type = 'md5') {
-		$checksum = ($type == 'md5') ? md5_file($file) : sha1_file($file);
+	public function createChecksum($file, $type = 'sha1') {
+		$checksum = ($type == 'sha1') ? sha1_file($file) : md5_file($file);
 		
 		return $checksum;
 	}
