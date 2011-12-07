@@ -30,7 +30,7 @@ class PDF_Metadata extends FileTypeActiveRecord {
 		$full_metadata = $this->addIdInfo($metadata, array('file_id' => $file_id, 'user_id' => $user_id));
 		$bind_params = $this->bindValuesBuilder($query_fields, $full_metadata);
 		
-		$sql = 'INSERT INTO pdf_metadata(' . $this->queryBuilder($query_fields) . ') 
+		$sql = 'INSERT INTO PDF_Metadata(' . $this->queryBuilder($query_fields) . ') 
 			VALUES(' . $this->queryBuilder($query_fields, true) . ')';
 		
 		$write_files = Yii::app()->db->createCommand($sql);
