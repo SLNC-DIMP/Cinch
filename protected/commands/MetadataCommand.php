@@ -23,7 +23,7 @@ class MetadataCommand extends CConsoleCommand {
 			->select('id, temp_file_path, user_id, upload_file_id')
 			->from('file_info')
 			->where(array('and', 'metadata = 0', 
-					array('or', 'temp_file_path != ""', 'temp_file_path IS NULL')))
+					array('or', 'temp_file_path != ""', 'temp_file_path IS NULL', 'problem_file = 1')))
 			->queryAll();
 			
 		return $get_file_list;
@@ -42,7 +42,6 @@ class MetadataCommand extends CConsoleCommand {
 		switch($file_type) {
 			case self::PDF:
 				$write = new PDF_Metadata;
-				if(is_object($write)) { echo "selected\r\n"; }
 				break;
 			case self::WORD:
 			case self::WORD2007:
@@ -85,6 +84,12 @@ class MetadataCommand extends CConsoleCommand {
 		$metadata_processed->execute(array($file_id));	
 	}
 	
+	private function updateFileInfoError($file_id) {
+		$sql = "UPDATE file_info SET problem_file = 1 WHERE id = ?";
+		$metadata_processed = Yii::app()->db->createCommand($sql);
+		$metadata_processed->execute(array($file_id));	
+	}
+	
 	/**
 	* Writes error to database if metadata could not be extracted from a file
 	* Metadata extraction error code is 4
@@ -95,7 +100,9 @@ class MetadataCommand extends CConsoleCommand {
 	private function tikaError($error, $file_id, $user_id) {
 		$sql = "INSERT INTO problem_files(error_id, file_id, user_id) VALUES(?, ?, ?)";
 		$tika_error = Yii::app()->db->createCommand($sql);
-		$tika_error->execute(array($error, $file_id, $use_id));	
+		$tika_error->execute(array($error, $file_id, $user_id));	
+		
+		$this->updateFileInfoError($file_id);
 		
 		return false;
 	}
@@ -114,7 +121,7 @@ class MetadataCommand extends CConsoleCommand {
 		if(file_exists($tika)) { $tika_path = $tika; } else { $tika_path = $local; }
 		
 		$output = array();
-		$command = 'java -jar ' .$tika_path . ' --metadata ' . $file;
+		$command = 'java -jar ' . $tika_path . ' --metadata ' . $file;
 		
 		exec(escapeshellcmd($command), $output);
 		
@@ -130,11 +137,11 @@ class MetadataCommand extends CConsoleCommand {
 	* @access public
 	* @return string
 	*/
-	public function getTikaFileType(array $metadata) {
+	public function getTikaFileType($metadata) {
 		$constants = new ReflectionClass('MetadataCommand');
 		$file_types = $constants->getConstants();
 		
-		if(!empty($metadata)) {
+		if(!empty($metadata) || !is_null($metadata)) {
 			$clean_file_type = $metadata['Content-Type'];
 			
 			if(!in_array($clean_file_type, $file_types)) {
@@ -185,13 +192,13 @@ class MetadataCommand extends CConsoleCommand {
 			$metadata = $this->getMetadata($file['temp_file_path']);
 			$file_type = $this->getTikaFileType($metadata);
 			
-			if($file_type != 4 || $file_type != 12) {
+			if($file_type == 4 || $file_type == 12) {
+				$this->tikaError($file_type, $file['id'], $file['user_id']);
+				$success = " Failed\r\n";
+			} else {
 				$this->writeMetadata($file_type, $metadata, $file['id'], $file['user_id']);
 				$this->updateFileInfo($file['id']);
 				$success = " Added\r\n";
-			} else {
-				$this->tikaError($file_type, $file['id'], $file['user_id']);
-				$success = " Failed\r\n";
 			}
 			echo $file['temp_file_path'] . $success;
 		}

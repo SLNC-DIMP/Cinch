@@ -27,10 +27,8 @@ class MetadataCsvCommand extends MakeCsv {
 	public function getFiles() {
 		$sql = "SELECT id, checksum, file_type_id, user_id 
 		FROM file_info 
-		WHERE file_type_id != 0
-		AND	checksum IS NOT NULL
-		AND metadata != 0
-		AND (problem_file != 1 OR problem_file != 11)";
+		WHERE (temp_file_path IS NOT NULL OR temp_file_path != '')
+		AND (metadata != 0 OR problem_file = 1)";
 		
 		$user_files = Yii::app()->db->createCommand($sql)
 			->queryAll();
