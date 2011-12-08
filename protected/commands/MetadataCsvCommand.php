@@ -16,10 +16,7 @@ class MetadataCsvCommand extends MakeCsv {
 	/**
 	* Gets all downloaded files that have been fully processed.
 	* @todo get this working "AND virus_check != 0"
-	* Error 1 File not downloaded
-	* Error 2 checksum couldn't be created
-	* Error 4 metadata couldn't be extracted
-	* Error 11 Virus detected
+	* Ignores all error files
 	* Want to add these files
 	* @access public
 	* @return object Yii DAO object
@@ -28,7 +25,8 @@ class MetadataCsvCommand extends MakeCsv {
 		$sql = "SELECT id, checksum, file_type_id, user_id 
 		FROM file_info 
 		WHERE (temp_file_path IS NOT NULL OR temp_file_path != '')
-		AND (metadata != 0 OR problem_file = 1)";
+		AND metadata != 0
+		AND zipped != 1";
 		
 		$user_files = Yii::app()->db->createCommand($sql)
 			->queryAll();
