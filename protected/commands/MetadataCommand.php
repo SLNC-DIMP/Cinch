@@ -42,6 +42,7 @@ class MetadataCommand extends CConsoleCommand {
 		switch($file_type) {
 			case self::PDF:
 				$write = new PDF_Metadata;
+				if(is_object($write)) { echo "selected\r\n"; }
 				break;
 			case self::WORD:
 			case self::WORD2007:
@@ -68,6 +69,7 @@ class MetadataCommand extends CConsoleCommand {
 				$write = new Text_Metadata;
 				break;
 		}
+		
 		$write->writeMetadata($metadata, $file_id, $user_id);
 	}
 	
@@ -131,14 +133,14 @@ class MetadataCommand extends CConsoleCommand {
 	public function getTikaFileType(array $metadata) {
 		$constants = new ReflectionClass('MetadataCommand');
 		$file_types = $constants->getConstants();
+		$clean_file_type = $metadata['Content-Type'];
 		
 		if(!empty($metadata)) {
-			$clean_file_type = trim(substr_replace($metadata['Content-Type'], '', 0, 1));
 			if(!in_array($clean_file_type, $file_types)) {
 				$clean_file_type = 12;
 			}
 		} else {
-			$clean_file_type = 4; 
+			$clean_file_type = 4;
 		}
 		
 		return $clean_file_type;
@@ -148,6 +150,8 @@ class MetadataCommand extends CConsoleCommand {
 	* Takes metadata file and creates associative array of it.
 	* Metadata values come in like so, Content-Type: whatever/whatever, File-Type:text/plain so need to split this out on the :
 	* and make the first part the key and the second part the array value.
+	* Time/date values get truncated if using strrchr, while others, notably page count format incorrectly on stristr.
+	* Hence the branching. 
 	* @param $metadata (array)
 	* @access public
 	* @return array
@@ -156,10 +160,14 @@ class MetadataCommand extends CConsoleCommand {
 		$metadata = $this->scrapeMetadata($file);
 		
 		foreach($metadata as $metadata_value) {
-			$field_name = trim(stristr($metadata_value, ':', true)); // returns portion of string before the colon		
-			$formatted_metadata[$field_name] = trim(strrchr($metadata_value, ':')); 
+			$field_name = trim(stristr($metadata_value, ':', true)); // returns portion of string before the colon
+			if(preg_match('/(date|modified|created)/i', $metadata_value)) {
+				$formatted_value = stristr($metadata_value, ':'); 
+			} else {
+				$formatted_value = strrchr($metadata_value, ':');
+			}		
+			$formatted_metadata[$field_name] = trim(substr_replace($formatted_value, '', 0, 1));
 		}
-	
 		return $formatted_metadata;
 	}
 	
@@ -179,9 +187,12 @@ class MetadataCommand extends CConsoleCommand {
 			if($file_type != 4 || $file_type != 12) {
 				$this->writeMetadata($file_type, $metadata, $file['id'], $file['user_id']);
 				$this->updateFileInfo($file['id']);
+				$success = " Added\r\n";
 			} else {
 				$this->tikaError($file_type, $file['id'], $file['user_id']);
-			} 
+				$success = " Failed\r\n";
+			}
+			echo $file['temp_file_path'] . $success;
 		}
 	}
 }
