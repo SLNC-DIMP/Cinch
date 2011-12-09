@@ -142,6 +142,36 @@ CREATE TABLE IF NOT EXISTS `csv_meta_paths` (
 -- Dumping data for table `csv_meta_paths`
 --
 
+
+--
+-- Table structure for table `error_type`
+--
+
+CREATE TABLE IF NOT EXISTS `error_type` (
+  `id` int(3) NOT NULL auto_increment,
+  `error_message` varchar(75) collate utf8_bin NOT NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=13 ;
+
+--
+-- Dumping data for table `error_type`
+--
+
+INSERT INTO `error_type` (`id`, `error_message`) VALUES
+(1, 'Unable to download file'),
+(2, 'Could not create checksum'),
+(3, 'Duplicate Checksum. File deleted or not downloaded'),
+(4, 'Unable to extract file metadata'),
+(5, 'Corrupt File. Checksum mismatch'),
+(6, 'Filtered URL. File not downloaded'),
+(7, 'Unable to add file to Zip download'),
+(8, 'Invalid url string.  File could not be downloaded'),
+(9, 'Unknown error'),
+(10, 'No Error'),
+(11, 'Virus detected'),
+(12, 'Unsupported file type');
+
+
 --
 -- Table structure for table `excel_metadata`
 --
