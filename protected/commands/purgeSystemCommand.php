@@ -48,8 +48,17 @@ class purgeSystemCommand extends CConsoleCommand {
 	*/
 	protected function clearLists($table) {
 		$sql = "DELETE FROM $table WHERE processed = ?";
-		$write_zip = Yii::app()->db->createCommand($sql)
+		$clear = Yii::app()->db->createCommand($sql)
 			->execute(array(1));
+	}
+	
+	/**
+	* Get current date/time in ISO 8601 date format
+	* @access protected
+	* @return string
+	*/
+	protected function getDateTime() {
+		return date('c');
 	}
 	
 	/**
@@ -63,7 +72,7 @@ class purgeSystemCommand extends CConsoleCommand {
 			$delete_file = @unlink($file_path);
 			
 			if($delete_file == false) {
-				$this->logError("File Id: $file_id, with path: $file_path could not be deleted.");
+				$this->logError($this->getDateTime() . " - $file_id, with path: $file_path could not be deleted.");
 			} 
 		}
 		$this->clearDb($file_id);
@@ -85,7 +94,7 @@ class purgeSystemCommand extends CConsoleCommand {
 				$delete_dir = @rmdir($dir);
 				
 				if($delete_dir == false) {
-					$this->logError("Directory: $dir_path could not be deleted.");
+					$this->logError($this->getDateTime() . " - Directory: $dir_path could not be deleted.");
 				}
 			}
 		}

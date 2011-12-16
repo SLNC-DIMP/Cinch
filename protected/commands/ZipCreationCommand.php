@@ -1,16 +1,9 @@
 <?php
-/**
-* @todo create metadata txt files (add to each folder)
-* @todo create error listing txt files (add to zip directory)
-* @todo create manifest of all files included (add to zip directory)
-* @todo only dump the specified users files into a zip file (Done)
-*/
 class ZipCreationCommand extends CConsoleCommand {
 	public $mail_user;
 	public $file_info = 'file_info';
 	
 	public function __construct() {
-	//	$this->manifest = new Manifest();
 		$this->mail_user = new MailUser();
 	} 
 	
