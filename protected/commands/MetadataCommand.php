@@ -45,7 +45,7 @@ class MetadataCommand extends CConsoleCommand {
 				break;
 			case self::WORD:
 			case self::WORD2007:
-				$write = new WORD_Metadata;
+				$write = new Word_Metadata;
 				break;
 			case self::PPT:
 			case self::PPT2007:
@@ -53,16 +53,16 @@ class MetadataCommand extends CConsoleCommand {
 				break;
 			case self::EXCEL:
 			case self::EXCEL2007:
-				$write = new EXCEL_Metadata;
+				$write = new Excel_Metadata;
 				break;
 			case self::GIF:
-				$write = new GIF_Metadata;
+				$write = new Gif_Metadata;
 				break;
 			case self::JPEG:
-				$write = new JPEG_Metadata;
+				$write = new Jpg_Metadata;
 				break;
 			case self::PNG:
-				$write = new PNG_Metadata;
+				$write = new Png_Metadata;
 				break;
 			case self::TEXT:
 				$write = new Text_Metadata;

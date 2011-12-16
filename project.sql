@@ -335,6 +335,37 @@ CREATE TABLE IF NOT EXISTS `Pdf_Metadata` (
 
 -- --------------------------------------------------------
 
+
+--
+-- Table structure for table `PPT_metadata`
+--
+
+CREATE TABLE IF NOT EXISTS `PPT_metadata` (
+  `id` int(7) NOT NULL auto_increment,
+  `app_name` varchar(50) collate utf8_unicode_ci default NULL,
+  `app_version` varchar(50) collate utf8_unicode_ci default NULL,
+  `author` varchar(255) collate utf8_unicode_ci default NULL,
+  `comments` text collate utf8_unicode_ci,
+  `content_type` varchar(100) collate utf8_unicode_ci default NULL,
+  `creationdate` varchar(255) collate utf8_unicode_ci default NULL,
+  `last_author` varchar(255) collate utf8_unicode_ci default NULL,
+  `last_modified` varchar(255) collate utf8_unicode_ci default NULL,
+  `last_save_date` varchar(255) collate utf8_unicode_ci default NULL,
+  `keywords` varchar(255) collate utf8_unicode_ci default NULL,
+  `slide_count` int(4) default NULL,
+  `template` varchar(50) collate utf8_unicode_ci default NULL,
+  `publisher` varchar(255) collate utf8_unicode_ci default NULL,
+  `resourcename` varchar(255) collate utf8_unicode_ci default NULL,
+  `subject` varchar(255) collate utf8_unicode_ci default NULL,
+  `title` varchar(255) collate utf8_unicode_ci default NULL,
+  `pages` int(5) default NULL,
+  `file_id` int(12) NOT NULL,
+  `user_id` int(7) NOT NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+
+
 --
 -- Table structure for table `problem_files`
 --
