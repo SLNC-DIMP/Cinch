@@ -1,5 +1,10 @@
 <?php
-
+/* Redirect root to Cinch folder
+ob_start();
+header("HTTP/1.1 301 Moved Permanently");
+header("Location: http://cinch.nclive.org/Cinch/");
+exit;
+*/
 // change the following paths if necessary
 $yii=dirname(__FILE__).'/framework/yii.php';
 $config=dirname(__FILE__).'/protected/config/main.php';
