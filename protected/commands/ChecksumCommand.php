@@ -75,10 +75,14 @@ class ChecksumCommand extends CConsoleCommand {
 		if(count($file_lists) > 0) {
 			foreach($file_lists as $file_list) { 
 				$checksum = $this->createChecksum($file_list['temp_file_path']);
+				$is_duplicate = $this->checksum->getDupChecksum($checksum, $file_list['user_id']);
 				
-				if($checksum) {
+				if($checksum && !$is_duplicate) {
 					$this->checksum->writeSuccess($checksum, $file_list['id']);
 					echo "checksum for:" . $file_list['temp_file_path'] . " is " . $checksum . "\r\n";
+				} elseif($checksum && $is_duplicate) {
+					$this->checksum->writeError($file_list['id'], $file_list['user_id'], 3);
+					echo "Duplicate checksum found for: " . $file_list['temp_file_path'] . "\r\n";
 				} else {
 					$this->checksum->writeError($file_list['id'], $file_list['user_id'], 2);
 					echo "Checksum not created. for: " . $file_list['temp_file_path'] . "\r\n";

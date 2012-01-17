@@ -75,6 +75,22 @@ class Checksum {
 	}
 	
 	/**
+	* Determines if a file has been previously downloaded by a user
+	* @param $file_id
+	* @access public 
+	* @return integer
+	*/
+	public function getDupChecksum($checksum, $user_id) {
+		$dup_checksum_count = Yii::app()->db->createCommand()
+			->select("COUNT(*)")
+			->from($this->table)
+			->where("checksum = :checksum and :user_id = user_id", array(":checksum" => $checksum, ":user_id" => $user_id))
+			->queryColumn();
+		
+		return $dup_checksum_count[0];
+	}
+	
+	/**
 	* Write checksum mismatch error. 
 	* 5 is id of checksum mismatch in error_type table
 	* @param $id
