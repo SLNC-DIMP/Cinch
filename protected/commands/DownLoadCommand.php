@@ -157,7 +157,7 @@ class DownloadCommand extends CConsoleCommand {
 	
 	/**
 	* Finds first directory files should be added to under a given user's main directory
-	* $dirs always has at least two directories (. and ..).
+	* Removes non-directory files from the list
 	* @param $file_list_owner
 	* @access public
 	* @return string directory name
@@ -174,13 +174,26 @@ class DownloadCommand extends CConsoleCommand {
 			mkdir($first_download_dir); 
 		} 
 		
-		$dirs = scandir($user_base_dir);
-		if(count($dirs) > 2) {
+		$dir_listing = scandir($user_base_dir);
+		foreach($dir_listing as $dir) {
+			if(is_dir($dir)) {
+				$dirs[] = $dir;
+			}
+		}
+		
+		$root_dir = new DirectoryIterator($user_base_dir);
+		$dirs = array();
+		foreach ($root_dir as $dir) {
+			if ( $dir->isDir() && !$dir->isDot()) {
+				$dirs[] = $dir->getFilename();
+			}
+		}
+		if(!empty($dirs)) {
 			$working_dir = $user_base_dir . '/' . end($dirs);
 		} else {
 			$working_dir = $first_download_dir;
 		}
-	
+		
 		return $working_dir;
 	}
 	
@@ -252,7 +265,6 @@ class DownloadCommand extends CConsoleCommand {
 	* As well as File name and last modified time
 	*/
 	public function CurlProcessing($url, $current_user_id, $file_id, $file_list_id) {
-	//	$error_id = $this->fileExists($url);
 		$remote_checksum = $this->remote_checksum->createRemoteChecksum($url);
 		
 		if($remote_checksum != false) {
