@@ -7,16 +7,36 @@ class ChecksumCommand extends CConsoleCommand {
 	}
 	
 	/**
-	* Create an MD5 or SHA1 checksum.  Default is MD5
+	* Create an MD5 or SHA1 checksum.  Default is SHA1
 	* @param $file
 	* @param $type
-	* @access public
+	* @access protected
 	* @return string
 	*/
-	public function createChecksum($file, $type = 'sha1') {
+	protected function createChecksum($file, $type = 'sha1') {
 		$checksum = ($type == 'sha1') ? sha1_file($file) : md5_file($file);
 		
 		return $checksum;
+	}
+	
+	/**
+	* Create remote checksum to compare with downloaded version.  
+	* Also acts as check to see if file exists.  
+	* Supress file open warning on failure.
+	* @param $file
+	* @access public
+	* @return string
+	*/
+	public function createRemoteChecksum($file) {
+		$fh = @fopen($file, 'r');
+		if($fh != false) {
+			$remote_checkum = $this->createChecksum($file);
+			fclose($fh);
+		} else {
+			return false;
+		}
+		
+		return $remote_checkum;
 	}
 	
 	/**

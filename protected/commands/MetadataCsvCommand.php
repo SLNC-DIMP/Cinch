@@ -153,7 +153,7 @@ class MetadataCsvCommand extends MakeCsv {
 	
 	public function actionIndex() {
 		$files = $this->getFiles();
-		
+	
 		if(!empty($files)) {  
 			foreach($files as $file) {
 				$csv_path = $this->getUserPath($file['user_id']);

@@ -1,11 +1,18 @@
 <?php
+/**
+* Blows up command if not explcitly called.
+*/
+Yii::import('application.commands.ChecksumCommand');
+
 class DownloadCommand extends CConsoleCommand {
 	public $download_file_list = 'files_for_download';
 	public $file_info_table = 'file_info';
 	public $problem_downloads = 'problem_downloads';
+	public $remote_checksum;
 	public $full_path;
 	
 	public function __construct() {
+		$this->remote_checksum = new ChecksumCommand;
 		$this->full_path = Yii::getPathOfAlias('application.curl_downloads');
 	}
 	
@@ -19,6 +26,7 @@ class DownloadCommand extends CConsoleCommand {
 			->select('*')
 			->from($this->download_file_list)
 			->where('processed = :processed', array(':processed' => 0))
+			->limit(20)
 			->queryAll();
 			
 		return $get_file_list;
@@ -50,14 +58,22 @@ class DownloadCommand extends CConsoleCommand {
 	* @access public 
 	* @return object Yii DAO
 	*/
-	public function setFileInfo($url, $curr_path, $last_mod, $user_id, $upload_file_id, $problem_file = 0) {
+	public function setFileInfo($url, $curr_path, $remote_checksum, $last_mod, $user_id, $upload_file_id, $problem_file = 0) {
 		$dynamic_file = ($this->initFileType($url) == 1) ? 0 : 1;
-		$sql = "INSERT INTO file_info(org_file_path, temp_file_path, dynamic_file, last_modified, problem_file, user_id, upload_file_id) 
-			VALUES(:url, :curr_path, :dynamic_file, :last_mod, :problem_file, :user_id, :upload_file_id)";
+		$sql = "INSERT INTO file_info(org_file_path, 
+				temp_file_path, 
+				remote_checksum,
+				dynamic_file, 
+				last_modified, 
+				problem_file, 
+				user_id, 
+				upload_file_id) 
+			VALUES(:url, :curr_path, :remote_checksum, :dynamic_file, :last_mod, :problem_file, :user_id, :upload_file_id)";
 			
 			$write_files = Yii::app()->db->createCommand($sql);
 			$write_files->bindParam(":url", $url, PDO::PARAM_STR);
 			$write_files->bindParam(":curr_path", $curr_path, PDO::PARAM_STR);
+			$write_files->bindParam(":remote_checksum", $remote_checksum, PDO::PARAM_STR);
 			$write_files->bindParam(":dynamic_file", $dynamic_file, PDO::PARAM_INT);
 			$write_files->bindParam(":last_mod", $last_mod, PDO::PARAM_INT);
 			$write_files->bindParam(":problem_file", $problem_file, PDO::PARAM_INT);
@@ -217,7 +233,7 @@ class DownloadCommand extends CConsoleCommand {
 	*/
 	private function writeCurlError($url, $current_user_id, $file_id) {
 		$error_id = 1;
-		$current_insert = $this->setFileInfo($url, '', 0, $current_user_id, $file_id, 1);
+		$current_insert = $this->setFileInfo($url, '', NULL, 0, $current_user_id, $file_id, 1);
 		$this->writeError($error_id, $current_insert, $current_user_id);
 		
 		return $error_id;
@@ -236,9 +252,10 @@ class DownloadCommand extends CConsoleCommand {
 	* As well as File name and last modified time
 	*/
 	public function CurlProcessing($url, $current_user_id, $file_id, $file_list_id) {
-		$error_id = $this->fileExists($url);
+	//	$error_id = $this->fileExists($url);
+		$remote_checksum = $this->remote_checksum->createRemoteChecksum($url);
 		
-		if($error_id == 0) {
+		if($remote_checksum != false) {
 			$current_username = $this->getUrlOwner($current_user_id);
 			$start_dir = $this->getStartDir($current_username);
 			$current_dir = $this->currentDir($start_dir);
@@ -260,7 +277,7 @@ class DownloadCommand extends CConsoleCommand {
 			if(!curl_errno($ch)) {
 				$last_modified_time = curl_getinfo($ch, CURLINFO_FILETIME);
 				$set_modified_time = $this->updateLastModified($file_path, $last_modified_time);
-				$this->setFileInfo($url, $file_path, $set_modified_time, $current_user_id, $file_list_id);
+				$this->setFileInfo($url, $file_path, $remote_checksum, $set_modified_time, $current_user_id, $file_list_id);
 			} else {
 				$curl_error = curl_errno($ch);
 				$this->writeCurlError($url, $current_user_id, $file_id);
