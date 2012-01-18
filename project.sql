@@ -238,6 +238,7 @@ CREATE TABLE IF NOT EXISTS `file_info` (
   `org_file_path` varchar(2084) collate utf8_bin default NULL,
   `temp_file_path` varchar(1000) collate utf8_bin default NULL COMMENT 'orginial file path.  2083 character URL appears to be IE limit',
   `file_type_id` int(1) NOT NULL default '0' COMMENT 'current file path on the server',
+  `remote_checksum` varchar(40) character set utf8 collate utf8_unicode_ci default NULL COMMENT 'remote checksum of a file',
   `checksum` varchar(40) collate utf8_bin default NULL COMMENT 'file check sum sha1 or md5. sha1 is the default',
   `virus_check` int(1) NOT NULL default '0' COMMENT 'has file had virus check',
   `metadata` int(1) NOT NULL default '0' COMMENT 'Whether metadata extraction has been run',
