@@ -40,6 +40,32 @@ class ChecksumCommand extends CConsoleCommand {
 	}
 	
 	/**
+	* Move duplicate files from their current directory to their own directory under a users directory
+	* @param $file_path
+	* @access public
+	*/
+	public function moveDupes($file_path) {
+		$split_path = preg_split('/(\/|\\\)/i', $file_path);
+		$root_pieces_count = count($split_path) - 2;
+		
+		$dup_path = '';
+		for($i=0; $i<$root_pieces_count; $i++) {
+			$dup_path .= $split_path[$i] . '/';
+		}
+		
+		if(!file_exists($dup_path . 'duplicates')) {
+			mkdir($dup_path . 'duplicates');
+		}
+		
+		$split_path[$root_pieces_count] = 'protected/duplicates';
+		$new_path = implode('/', $split_path);
+	
+		$move_file = rename($file_path, $new_path);
+		
+		return $move_file;
+	}
+	
+	/**
 	* Calculates a checksum for each file and compares it to the file's initial checksum
 	* Write error to DB if mismatch detected.
 	* @access public 
