@@ -26,7 +26,7 @@ class DownloadCommand extends CConsoleCommand {
 			->select('*')
 			->from($this->download_file_list)
 			->where('processed = :processed', array(':processed' => 0))
-			->limit(20)
+			->limit(3)
 			->queryAll();
 			
 		return $get_file_list;
@@ -158,6 +158,8 @@ class DownloadCommand extends CConsoleCommand {
 	/**
 	* Finds first directory files should be added to under a given user's main directory
 	* Removes non-directory files from the list
+	* Regex checks that download directory ends with an underscore and number
+	* As it's possible to have other directories under user's root directory
 	* @param $file_list_owner
 	* @access public
 	* @return string directory name
@@ -184,7 +186,7 @@ class DownloadCommand extends CConsoleCommand {
 		$root_dir = new DirectoryIterator($user_base_dir);
 		$dirs = array();
 		foreach ($root_dir as $dir) {
-			if ( $dir->isDir() && !$dir->isDot()) {
+			if ($dir->isDir() && !$dir->isDot() && preg_match('/_[0-9]{1,}$/i', $dir->getFilename())) {
 				$dirs[] = $dir->getFilename();
 			}
 		}

@@ -57,10 +57,14 @@ class ChecksumCommand extends CConsoleCommand {
 			mkdir($dup_path . 'duplicates');
 		}
 		
-		$split_path[$root_pieces_count] = 'protected/duplicates';
+		$split_path[$root_pieces_count] = 'duplicates';
 		$new_path = implode('/', $split_path);
 	
 		$move_file = rename($file_path, $new_path);
+		
+		if($move_file == false) {
+			
+		}
 		
 		return $move_file;
 	}
@@ -107,6 +111,7 @@ class ChecksumCommand extends CConsoleCommand {
 					$this->checksum->writeSuccess($checksum, $file_list['id']);
 					echo "checksum for:" . $file_list['temp_file_path'] . " is " . $checksum . "\r\n";
 				} elseif($checksum && $is_duplicate) {
+					$this->moveDupes($file_list['temp_file_path']);
 					$this->checksum->writeError($file_list['id'], $file_list['user_id'], 3);
 					echo "Duplicate checksum found for: " . $file_list['temp_file_path'] . "\r\n";
 				} else {
