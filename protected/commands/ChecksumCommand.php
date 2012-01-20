@@ -41,6 +41,9 @@ class ChecksumCommand extends CConsoleCommand {
 	
 	/**
 	* Move duplicate files from their current directory to their own directory under a users directory
+	* Uses cp -p for Linux
+	* Uses ROBOCOPY /COPYALL for Windows (won't copy files if permissions are different)
+	* Creates directory if there isn't one and makes it writable.
 	* @param $file_path
 	* @access public
 	*/
@@ -48,25 +51,45 @@ class ChecksumCommand extends CConsoleCommand {
 		$split_path = preg_split('/(\/|\\\)/i', $file_path);
 		$root_pieces_count = count($split_path) - 2;
 		
-		$dup_path = '';
+		$base_path = '';
 		for($i=0; $i<$root_pieces_count; $i++) {
-			$dup_path .= $split_path[$i] . '/';
+			$base_path .= $split_path[$i] . '/';
 		}
+		$dup_dir = $base_path . 'duplicates';
 		
-		if(!file_exists($dup_path . 'duplicates')) {
-			mkdir($dup_path . 'duplicates');
+		if(!file_exists($dup_dir)) {
+			mkdir($dup_dir);
+		//	chmod($dup_dir, 0777);
 		}
 		
 		$split_path[$root_pieces_count] = 'duplicates';
 		$new_path = implode('/', $split_path);
 	
-		$move_file = rename($file_path, $new_path);
-		
-		if($move_file == false) {
-			
+		if(strtoupper(substr(php_uname('s'), 0, 3)) !== 'WIN') {
+			$command = "cp -p $file_path $new_path"; 
+		} else {
+			$root_path = '';
+			for($i=0; $i<count($split_path) - 1; $i++) {
+				$root_path .= $split_path[$i] . '/';
+			}
+			$base_path = substr_replace($root_path, '', -1); // strip trailing slash
+			$file_name = end($split_path);
+			$command = "ROBOCOPY $base_path $dup_dir $file_name /COPYALL"; 
 		}
 		
-		return $move_file;
+		$move_file = system(escapeshellcmd ($command));
+		
+		if($move_file == false) {
+			return false;
+		}
+		
+		if($checksum) {
+			unlink($file_path);
+		} else {
+			unlink($new_path);
+		}
+		
+		return $new_path;
 	}
 	
 	/**
@@ -97,7 +120,8 @@ class ChecksumCommand extends CConsoleCommand {
 	* Default is to create new checksum for downloaded files
 	* Writes checksum error on failure. 
 	* 2 is value for "Could not create checksum"
-	* 3 is value for "Duplicate Checksum. File deleted or not downloaded"
+	* 3 is value for "Duplicate Checksum"
+	* 13 is value for "Unable to move file"
 	*/
 	public function actionCreate($args) {
 		$file_lists = $this->checksum->getFileList();
@@ -111,7 +135,14 @@ class ChecksumCommand extends CConsoleCommand {
 					$this->checksum->writeSuccess($checksum, $file_list['id']);
 					echo "checksum for:" . $file_list['temp_file_path'] . " is " . $checksum . "\r\n";
 				} elseif($checksum && $is_duplicate) {
-					$this->moveDupes($file_list['temp_file_path']);
+					$dup_move_path = $this->moveDupes($file_list['temp_file_path']);
+					
+					if($dup_move_path != false) {
+						$this->checksum->writeDupMove($dup_move_path, $file_list['id']);
+					} else {
+						$this->checksum->writeError($file_list['id'], $file_list['user_id'], 13);
+					}
+					
 					$this->checksum->writeError($file_list['id'], $file_list['user_id'], 3);
 					echo "Duplicate checksum found for: " . $file_list['temp_file_path'] . "\r\n";
 				} else {

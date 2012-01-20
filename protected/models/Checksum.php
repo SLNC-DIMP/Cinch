@@ -90,6 +90,12 @@ class Checksum {
 		return $dup_checksum_count[0];
 	}
 	
+	public function writeDupMove($temp_file_path, $id) {
+		$sql = "UPDATE " . $this->table . " SET temp_file_path = ? WHERE id = ?";
+		$write = Yii::app()->db->createCommand($sql)
+			->execute(array($temp_file_path, $id));
+	}
+	
 	/**
 	* Write checksum mismatch error. 
 	* 5 is id of checksum mismatch in error_type table
@@ -116,4 +122,5 @@ class Checksum {
 		$write = Yii::app()->db->createCommand($sql)
 			->execute(array($checksum, $id));
 	}
+	
 }
