@@ -47,7 +47,7 @@ class ChecksumCommand extends CConsoleCommand {
 	* @param $file_path
 	* @access public
 	*/
-	public function moveDupes($file_path) {
+	public function moveDupes($file_path, $file_id) {
 		$split_path = preg_split('/(\/|\\\)/i', $file_path);
 		$root_pieces_count = count($split_path) - 2;
 		
@@ -77,13 +77,13 @@ class ChecksumCommand extends CConsoleCommand {
 			$command = "ROBOCOPY $base_path $dup_dir $file_name /COPYALL"; 
 		}
 		
-		$move_file = system(escapeshellcmd ($command));
+		$move_file = system(escapeshellcmd($command));
 		
 		if($move_file == false) {
 			return false;
 		}
 		
-		if($checksum) {
+		if($this->createChecksum($new_path) == $this->checksum->getOneFileChecksum($file_id)) {
 			unlink($file_path);
 		} else {
 			unlink($new_path);
@@ -135,7 +135,7 @@ class ChecksumCommand extends CConsoleCommand {
 					$this->checksum->writeSuccess($checksum, $file_list['id']);
 					echo "checksum for:" . $file_list['temp_file_path'] . " is " . $checksum . "\r\n";
 				} elseif($checksum && $is_duplicate) {
-					$dup_move_path = $this->moveDupes($file_list['temp_file_path']);
+					$dup_move_path = $this->moveDupes($file_list['temp_file_path'], $file_list['id']);
 					
 					if($dup_move_path != false) {
 						$this->checksum->writeDupMove($dup_move_path, $file_list['id']);
