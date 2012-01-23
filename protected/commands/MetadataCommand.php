@@ -78,12 +78,24 @@ class MetadataCommand extends CConsoleCommand {
 	* @access public
 	* @return object Yii DAO
 	*/
-	public function updateFileInfo($file_id) {
-		$sql = "UPDATE file_info SET metadata = 1, file_type_id = 1 WHERE id = ?";
+	public function updateFileInfo($file_id, $field = 'metadata', $file_type_id = NULL) {
+		if($field == 'metadata') {
+			$sql = "UPDATE file_info SET metadata = 1, file_type_id = ? WHERE id = ?";
+			$values = array($file_type_id, $file_id);
+		} else {
+			$sql = "UPDATE file_info SET fulltext = 1 WHERE id = ?";
+			$values = array($file_id);
+		}
+		
 		$metadata_processed = Yii::app()->db->createCommand($sql);
-		$metadata_processed->execute(array($file_id));	
+		$metadata_processed->execute($values);	
 	}
 	
+	/**
+	* @param $file_id
+	* Updates db.  Set problem file flag to true
+	* @access private
+	*/
 	private function updateFileInfoError($file_id) {
 		$sql = "UPDATE file_info SET problem_file = 1 WHERE id = ?";
 		$metadata_processed = Yii::app()->db->createCommand($sql);
@@ -111,17 +123,18 @@ class MetadataCommand extends CConsoleCommand {
 	/**
 	* Extracts file level metadata using Apache Tika
 	* @param $file
+	* @param $extract - Options metadata is default text, html, xml other possible  values
 	* @access private
 	* @return array
 	*/
-	private function scrapeMetadata($file) {
+	private function scrapeMetadata($file, $extract = 'metadata') {
 		$tika_path = '';
 		$tika = '/srv/local/tika-0.10/tika-app/target/tika-app-0.10.jar';
     	$local = 'C:/"Program Files"/apache-tika-0.8/tika-app/target/tika-app-0.8.jar';
 		if(file_exists($tika)) { $tika_path = $tika; } else { $tika_path = $local; }
 		
 		$output = array();
-		$command = 'java -jar ' . $tika_path . ' --metadata ' . $file;
+		$command = 'java -jar ' . $tika_path . ' --' . $extract . ' ' . $file;
 		
 		exec(escapeshellcmd($command), $output);
 		
@@ -181,6 +194,7 @@ class MetadataCommand extends CConsoleCommand {
 	
 	/**
 	* Extracts and writes file level metadata
+	* Determine full text availability if not an audio, video or image file
 	* If nothing needs to be done command exits
 	* 4 and 12 error codes for can't grab metadata or unsupported file type
 	*/
@@ -192,6 +206,13 @@ class MetadataCommand extends CConsoleCommand {
 		foreach($files as $file) {
 			$metadata = $this->getMetadata($file['temp_file_path']);
 			$file_type = $this->getTikaFileType($metadata);
+			
+			if(!preg_match('/(image|audio|video)/', $file_type)) {
+				$fulltext = $this->scrapeMetadata($file['temp_file_path'], 'text');
+				if(!empty($fulltext)) {
+					$this->updateFileInfo($file_id, 'fulltext');	
+				}
+			}
 			
 			if($file_type == 4 || $file_type == 12) {
 				$this->tikaError($file_type, $file['id'], $file['user_id']);
