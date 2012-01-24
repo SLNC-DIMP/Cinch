@@ -26,7 +26,7 @@ class DownloadCommand extends CConsoleCommand {
 			->select('*')
 			->from($this->download_file_list)
 			->where('processed = :processed', array(':processed' => 0))
-			->limit(3)
+			//->limit(3)
 			->queryAll();
 			
 		return $get_file_list;
@@ -191,6 +191,7 @@ class DownloadCommand extends CConsoleCommand {
 			}
 		}
 		if(!empty($dirs)) {
+			natsort($dirs); // otherwise list gets sorted 1, 10, 2 instead of 1,2, 10
 			$working_dir = $user_base_dir . '/' . end($dirs);
 		} else {
 			$working_dir = $first_download_dir;
@@ -208,8 +209,8 @@ class DownloadCommand extends CConsoleCommand {
 	*/
 	public function currentDir($current_dir) {
 		$file_count = count(scandir($current_dir)) - 2;
-		
-		if($file_count < 500) {
+		echo $file_count;
+		if($file_count < 5) {
 			$working_dir = $current_dir;
 		} else {
 			$dir_suffix = strrchr($current_dir, '_');
@@ -218,7 +219,7 @@ class DownloadCommand extends CConsoleCommand {
 			$next_dir_num = str_replace('_', '', $dir_suffix) + 1;
 			$working_dir = $dir_body . '_' . $next_dir_num;
 			
-			if(!is_dir($working_dir)) { mkdir($working_dir); }
+			if(!file_exists($working_dir)) { mkdir($working_dir); }
 		}
 		
 		return $working_dir;
@@ -273,6 +274,7 @@ class DownloadCommand extends CConsoleCommand {
 			$current_username = $this->getUrlOwner($current_user_id);
 			$start_dir = $this->getStartDir($current_username);
 			$current_dir = $this->currentDir($start_dir);
+			echo $current_dir . "\r\n";
 			$file_name = $this->cleanName($url);
 			$file_path = $current_dir . '/' . $file_name;
 			
@@ -340,9 +342,9 @@ class DownloadCommand extends CConsoleCommand {
 			$download = $this->CurlProcessing($url['url'],  $url['user_id'], $url['id'], $url['user_uploads_id']);
 			
 			if(is_array($download)) {
-				echo $url['url'] . " downloaded\r\n";			
+		//		echo $url['url'] . " downloaded\r\n";			
 			} else {
-				echo "Problem downloading: " . $url['url'] . "\r\n"; // text just a visual cue.  Can remove else statement
+		//		echo "Problem downloading: " . $url['url'] . "\r\n"; // text just a visual cue.  Can remove else statement
 			}
 			$this->updateFileList($url['id']); 
 		}

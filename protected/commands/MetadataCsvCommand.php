@@ -43,23 +43,23 @@ class MetadataCsvCommand extends MakeCsv {
 	public function findMetaTable($meta_type) {
 		switch($meta_type) {
 			case 1:
-				$table = 'pdf_metadata';
+				$table = 'Pdf_Metadata';
 				break;
 			case 2:
 			case 3:
-				$table = 'word_metadata';
+				$table = 'Word_Metadata';
 				break;
 			case 5:
-				$table = 'jpg_metadata';
+				$table = 'Jpg_Metadata';
 			case 7:
-				$table = 'text_metadata';
+				$table = 'Text_Metadata';
 				break;
 			case 8:
 			case 9:
-				$table = 'excel_metadata';
+				$table = 'Excel_Metadata';
 				break;
 			default:
-				$table = 'pdf_metadata';
+				$table = 'Pdf_Metadata';
 				break;
 		}
 		

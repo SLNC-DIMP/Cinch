@@ -84,9 +84,9 @@ class ChecksumCommand extends CConsoleCommand {
 		}
 		
 		if($this->createChecksum($new_path) == $this->checksum->getOneFileChecksum($file_id)) {
-			unlink($file_path);
+			@unlink($file_path);
 		} else {
-			unlink($new_path);
+			@unlink($new_path);
 		}
 		
 		return $new_path;
@@ -131,10 +131,10 @@ class ChecksumCommand extends CConsoleCommand {
 				$checksum = $this->createChecksum($file_list['temp_file_path']);
 				$is_duplicate = $this->checksum->getDupChecksum($checksum, $file_list['user_id']);
 				
-				if($checksum && !$is_duplicate) {
+				if($checksum && $is_duplicate == 0) {
 					$this->checksum->writeSuccess($checksum, $file_list['id']);
 					echo "checksum for:" . $file_list['temp_file_path'] . " is " . $checksum . "\r\n";
-				} elseif($checksum && $is_duplicate) {
+				} elseif($checksum && $is_duplicate != 0) {
 					$dup_move_path = $this->moveDupes($file_list['temp_file_path'], $file_list['id']);
 					
 					if($dup_move_path != false) {
