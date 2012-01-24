@@ -209,7 +209,7 @@ class DownloadCommand extends CConsoleCommand {
 	*/
 	public function currentDir($current_dir) {
 		$file_count = count(scandir($current_dir)) - 2;
-		echo $file_count;
+		
 		if($file_count < 5) {
 			$working_dir = $current_dir;
 		} else {
@@ -274,7 +274,7 @@ class DownloadCommand extends CConsoleCommand {
 			$current_username = $this->getUrlOwner($current_user_id);
 			$start_dir = $this->getStartDir($current_username);
 			$current_dir = $this->currentDir($start_dir);
-			echo $current_dir . "\r\n";
+			
 			$file_name = $this->cleanName($url);
 			$file_path = $current_dir . '/' . $file_name;
 			
@@ -342,9 +342,9 @@ class DownloadCommand extends CConsoleCommand {
 			$download = $this->CurlProcessing($url['url'],  $url['user_id'], $url['id'], $url['user_uploads_id']);
 			
 			if(is_array($download)) {
-		//		echo $url['url'] . " downloaded\r\n";			
+				echo $url['url'] . " downloaded\r\n";			
 			} else {
-		//		echo "Problem downloading: " . $url['url'] . "\r\n"; // text just a visual cue.  Can remove else statement
+				echo "Problem downloading: " . $url['url'] . "\r\n"; // text just a visual cue.  Can remove else statement
 			}
 			$this->updateFileList($url['id']); 
 		}
