@@ -339,10 +339,10 @@ CREATE TABLE IF NOT EXISTS `Pdf_Metadata` (
 
 
 --
--- Table structure for table `PPT_metadata`
+-- Table structure for table `PPT_Metadata`
 --
 
-CREATE TABLE IF NOT EXISTS `PPT_metadata` (
+CREATE TABLE IF NOT EXISTS `PPT_Metadata` (
   `id` int(7) NOT NULL auto_increment,
   `app_name` varchar(50) collate utf8_unicode_ci default NULL,
   `app_version` varchar(50) collate utf8_unicode_ci default NULL,
