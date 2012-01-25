@@ -86,7 +86,7 @@ class ChecksumCommand extends CConsoleCommand {
 		if($move_file == false) {
 			return false;
 		}
-		
+	
 		if($this->createChecksum($new_path) == $this->checksum->getOneFileChecksum($file_id)) {
 			unlink($file_path);
 		} else {
@@ -113,7 +113,6 @@ class ChecksumCommand extends CConsoleCommand {
 				$current_checksum = $this->checksum->createChecksum($file['temp_file_path']);
 				if($current_checksum != $file['checksum']) {
 					ErrorFiles::writeError(5, $file['id'], $file['user_id']);
-				//	$this->checksum->writeError($file['id'], $file['user_id']);
 					echo 'checksum not ok for: ' . $file['temp_file_path'] . "\r\n";
 				} else {
 					echo 'checksum ok for: ' . $file['temp_file_path'] . "\r\n";
@@ -138,17 +137,19 @@ class ChecksumCommand extends CConsoleCommand {
 				$checksum = $this->createChecksum($file_list['temp_file_path']);
 				$is_duplicate = $this->checksum->getDupChecksum($checksum, $file_list['user_id']);
 				
-				if($checksum && $is_duplicate == 0) {
+				if($checksum) {
 					$this->checksum->writeSuccess($checksum, $file_list['id']);
 					echo "checksum for:" . $file_list['temp_file_path'] . " is " . $checksum . "\r\n";
-				} elseif($checksum && $is_duplicate != 0) {
-					$dup_move_path = $this->moveDupes($file_list['temp_file_path'], $file_list['id']);
 					
-					if($dup_move_path != false) {
-						$this->checksum->writeDupMove($dup_move_path, $file_list['id']);
-					} else {
-						echo "Duplicate file: " . $file_list['temp_file_path'] . " couldn't be moved\r\n";
-						ErrorFiles::writeError(13, $file_list['id'], $file_list['user_id']);
+					if($is_duplicate != 0) {
+						$dup_move_path = $this->moveDupes($file_list['temp_file_path'], $file_list['id']);
+					
+						if($dup_move_path != false) {
+							$this->checksum->writeDupMove($dup_move_path, $file_list['id']);
+						} else {
+							echo "Duplicate file: " . $file_list['temp_file_path'] . " couldn't be moved\r\n";
+							ErrorFiles::writeError(13, $file_list['id'], $file_list['user_id']);
+						}
 					}
 					
 					ErrorFiles::writeError(3, $file_list['id'], $file_list['user_id']);
