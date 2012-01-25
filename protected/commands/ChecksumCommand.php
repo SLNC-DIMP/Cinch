@@ -1,4 +1,6 @@
 <?php
+Yii::import('application.models.ErrorFiles');
+
 class ChecksumCommand extends CConsoleCommand {
 	public $checksum;
 	
@@ -49,6 +51,7 @@ class ChecksumCommand extends CConsoleCommand {
 	*/
 	public function moveDupes($file_path, $file_id) {
 		$split_path = preg_split('/(\/|\\\)/i', $file_path);
+		$windows_root = $split_path; // needed by Windows OS only
 		$root_pieces_count = count($split_path) - 2;
 		
 		$base_path = '';
@@ -59,8 +62,8 @@ class ChecksumCommand extends CConsoleCommand {
 		
 		if(!file_exists($dup_dir)) {
 			mkdir($dup_dir);
-		//	chmod($dup_dir, 0777);
 		}
+		
 		
 		$split_path[$root_pieces_count] = 'duplicates';
 		$new_path = implode('/', $split_path);
@@ -69,11 +72,12 @@ class ChecksumCommand extends CConsoleCommand {
 			$command = "cp -p $file_path $new_path"; 
 		} else {
 			$root_path = '';
-			for($i=0; $i<count($split_path) - 1; $i++) {
-				$root_path .= $split_path[$i] . '/';
+			for($i=0; $i<count($windows_root) - 1; $i++) {
+				$root_path .= $windows_root[$i] . '/';
 			}
 			$base_path = substr_replace($root_path, '', -1); // strip trailing slash
-			$file_name = end($split_path);
+			$file_name = end($windows_root);
+		
 			$command = "ROBOCOPY $base_path $dup_dir $file_name /COPYALL"; 
 		}
 		
@@ -84,9 +88,9 @@ class ChecksumCommand extends CConsoleCommand {
 		}
 		
 		if($this->createChecksum($new_path) == $this->checksum->getOneFileChecksum($file_id)) {
-			@unlink($file_path);
+			unlink($file_path);
 		} else {
-			@unlink($new_path);
+			unlink($new_path);
 		}
 		
 		return $new_path;
@@ -95,6 +99,7 @@ class ChecksumCommand extends CConsoleCommand {
 	/**
 	* Calculates a checksum for each file and compares it to the file's initial checksum
 	* Write error to DB if mismatch detected.
+	* 5 is error for file checksum mismatch
 	* @access public 
 	*/
 	public function actionCheck() {
@@ -106,7 +111,8 @@ class ChecksumCommand extends CConsoleCommand {
 			foreach($file_list as $file) {
 				$current_checksum = $this->checksum->createChecksum($file['temp_file_path']);
 				if($current_checksum != $file['checksum']) {
-					$this->checksum->writeError($file['id'], $file['user_id']);
+					ErrorFiles::writeError(5, $file['id'], $file['user_id']);
+				//	$this->checksum->writeError($file['id'], $file['user_id']);
 					echo 'checksum not ok for: ' . $file['temp_file_path'] . "\r\n";
 				} else {
 					echo 'checksum ok for: ' . $file['temp_file_path'] . "\r\n";
@@ -140,13 +146,14 @@ class ChecksumCommand extends CConsoleCommand {
 					if($dup_move_path != false) {
 						$this->checksum->writeDupMove($dup_move_path, $file_list['id']);
 					} else {
-						$this->checksum->writeError($file_list['id'], $file_list['user_id'], 13);
+						echo "dup " . $file_list['temp_file_path'] . " couldn't be moved\r\n";
+						ErrorFiles::writeError(13, $file_list['id'], $file_list['user_id']);
 					}
 					
-					$this->checksum->writeError($file_list['id'], $file_list['user_id'], 3);
+					ErrorFiles::writeError(3, $file_list['id'], $file_list['user_id']);
 					echo "Duplicate checksum found for: " . $file_list['temp_file_path'] . "\r\n";
 				} else {
-					$this->checksum->writeError($file_list['id'], $file_list['user_id'], 2);
+					ErrorFiles::writeError(2, $file_list['id'], $file_list['user_id']);
 					echo "Checksum not created. for: " . $file_list['temp_file_path'] . "\r\n";
 				}
 			}

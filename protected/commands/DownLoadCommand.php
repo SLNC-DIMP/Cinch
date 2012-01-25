@@ -3,6 +3,7 @@
 * Blows up command if not explcitly called.
 */
 Yii::import('application.commands.ChecksumCommand');
+Yii::import('application.models.ErrorFiles');
 
 class DownloadCommand extends CConsoleCommand {
 	public $download_file_list = 'files_for_download';
@@ -95,25 +96,6 @@ class DownloadCommand extends CConsoleCommand {
 		$write_files = Yii::app()->db->createCommand($sql);
 		$write_files->bindParam(":id", $id, PDO::PARAM_INT);
 		$write_files->execute();		
-	}
-	
-	/**
-	* On error write file info to problem_downloads table
-	* @param $url
-	* @param $error
-	* @param $list_id
-	* @param $current_user_id
-	* @access public 
-	* @return object Yii DAO
-	*/
-	public function writeError($error_id, $file_id, $current_user_id) {
-		$sql = "INSERT INTO problem_files(error_id, file_id, user_id) 
-			VALUES(:error_id, :file_id, :user_id)";
-		$error = Yii::app()->db->createCommand($sql)
-			->bindParam(":error_id", $error_id, PDO::PARAM_INT)
-			->bindParam(":file_id", $file_id, PDO::PARAM_INT)
-			->bindParam(":user_id", $current_user_id, PDO::PARAM_INT)
-			->execute();
 	}
 	
 /***************** End of Queries - Maybe move into a model ****************************************************/	
@@ -250,8 +232,8 @@ class DownloadCommand extends CConsoleCommand {
 	private function writeCurlError($url, $current_user_id, $file_id) {
 		$error_id = 1;
 		$current_insert = $this->setFileInfo($url, '', NULL, 0, $current_user_id, $file_id, 1);
-		$this->writeError($error_id, $current_insert, $current_user_id);
-		
+	//	$this->writeError($error_id, $current_insert, $current_user_id);
+		ErrorFiles::writeError($error_id, $current_insert, $current_user_id);
 		return $error_id;
 	}
 	
@@ -286,7 +268,7 @@ class DownloadCommand extends CConsoleCommand {
 			curl_setopt($ch, CURLOPT_HEADER, 0);
 			curl_setopt($ch, CURLOPT_AUTOREFERER, 1);
 			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-			curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 45);
+			curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
 			curl_setopt($ch, CURLOPT_TIMEOUT, 360);
 			curl_setopt($ch, CURLOPT_FILETIME, 1);
 						

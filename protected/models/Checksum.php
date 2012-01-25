@@ -11,7 +11,7 @@ class Checksum {
 		$get_files = Yii::app()->db->createCommand()
 			->select("id, temp_file_path, user_id")
 			->from($this->table)
-			->where(array('and', "checksum IS NULL", 'problem_file != 1'))
+			->where(array('and', "checksum IS NULL", 'problem_file != 1', 'id > 234'))
 			->queryAll();
 			
 		return $get_files;
@@ -90,24 +90,16 @@ class Checksum {
 		return $dup_checksum_count[0];
 	}
 	
+	/**
+	* Determines if a file has been previously downloaded by a user
+	* @param $temp_file_path
+	* @param $file_id
+	* @access public 
+	*/
 	public function writeDupMove($temp_file_path, $id) {
 		$sql = "UPDATE " . $this->table . " SET temp_file_path = ? WHERE id = ?";
 		$write = Yii::app()->db->createCommand($sql)
 			->execute(array($temp_file_path, $id));
-	}
-	
-	/**
-	* Write checksum mismatch error. 
-	* 5 is id of checksum mismatch in error_type table
-	* @param $id
-	* @param $error
-	* @access public 
-	* @return object Yii DAO
-	*/
-	public function writeError($file_id, $user_id, $error = 5) {
-		$sql = "INSERT INTO problem_files(error_id, file_id, user_id) VALUES(?, ?, ?)";
-		$write_error = Yii::app()->db->createCommand()
-			->execute(array($error, $file_id, $use_id));
 	}
 	
 	/**
