@@ -91,6 +91,7 @@ class ChecksumCommand extends CConsoleCommand {
 			unlink($file_path);
 		} else {
 			unlink($new_path);
+			return false;
 		}
 		
 		return $new_path;
@@ -146,7 +147,7 @@ class ChecksumCommand extends CConsoleCommand {
 					if($dup_move_path != false) {
 						$this->checksum->writeDupMove($dup_move_path, $file_list['id']);
 					} else {
-						echo "dup " . $file_list['temp_file_path'] . " couldn't be moved\r\n";
+						echo "Duplicate file: " . $file_list['temp_file_path'] . " couldn't be moved\r\n";
 						ErrorFiles::writeError(13, $file_list['id'], $file_list['user_id']);
 					}
 					
