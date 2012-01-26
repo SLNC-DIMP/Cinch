@@ -149,9 +149,9 @@ CREATE TABLE IF NOT EXISTS `csv_meta_paths` (
 
 CREATE TABLE IF NOT EXISTS `error_type` (
   `id` int(3) NOT NULL auto_increment,
-  `error_message` varchar(75) collate utf8_bin NOT NULL,
+  `error_message` varchar(75) collate utf8_unicode_ci NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=13 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=15 ;
 
 --
 -- Dumping data for table `error_type`
@@ -160,7 +160,7 @@ CREATE TABLE IF NOT EXISTS `error_type` (
 INSERT INTO `error_type` (`id`, `error_message`) VALUES
 (1, 'Unable to download file'),
 (2, 'Could not create checksum'),
-(3, 'Duplicate Checksum. File deleted or not downloaded'),
+(3, 'Duplicate Checksum. File moved for manual inspection.'),
 (4, 'Unable to extract file metadata'),
 (5, 'Corrupt File. Checksum mismatch'),
 (6, 'Filtered URL. File not downloaded'),
@@ -169,7 +169,36 @@ INSERT INTO `error_type` (`id`, `error_message`) VALUES
 (9, 'Unknown error'),
 (10, 'No Error'),
 (11, 'Virus detected'),
-(12, 'Unsupported file type');
+(12, 'Unsupported file type'),
+(13, 'Unable to move file'),
+(14, 'Unable to delete file');
+
+
+--
+-- Table structure for table `event_list`
+--
+
+CREATE TABLE IF NOT EXISTS `event_list` (
+  `id` int(3) NOT NULL auto_increment,
+  `event_name` varchar(250) collate utf8_unicode_ci NOT NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=11 ;
+
+--
+-- Dumping data for table `event_list`
+--
+
+INSERT INTO `event_list` (`id`, `event_name`) VALUES
+(1, 'Downloaded'),
+(2, 'Renamed'),
+(3, 'Download Last Modified time corrected'),
+(4, 'Virus check'),
+(5, 'Checksum created'),
+(6, 'Moved'),
+(7, 'Deleted - virus'),
+(8, 'Metadata Extracted'),
+(9, 'Zipped for download'),
+(10, 'Deleted - expired');
 
 
 --
@@ -208,10 +237,10 @@ CREATE TABLE IF NOT EXISTS `Excel_Metadata` (
 
 CREATE TABLE IF NOT EXISTS `file_type` (
   `id` int(4) NOT NULL auto_increment,
-  `file_type` varchar(125) collate utf8_bin NOT NULL,
-  `file_type_name` varchar(50) collate utf8_bin NOT NULL,
+  `file_type` varchar(125) collate utf8_unicode_ci NOT NULL,
+  `file_type_name` varchar(50) collate utf8_unicode_ci NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=11 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=11 ;
 
 --
 -- Dumping data for table `file_type`
@@ -235,29 +264,39 @@ INSERT INTO `file_type` (`id`, `file_type`, `file_type_name`) VALUES
 
 CREATE TABLE IF NOT EXISTS `file_info` (
   `id` int(10) NOT NULL auto_increment,
-  `org_file_path` varchar(2084) collate utf8_bin default NULL,
-  `temp_file_path` varchar(1000) collate utf8_bin default NULL COMMENT 'orginial file path.  2083 character URL appears to be IE limit',
+  `org_file_path` varchar(2084) collate utf8_unicode_ci default NULL,
+  `temp_file_path` varchar(1000) collate utf8_unicode_ci default NULL COMMENT 'orginial file path.  2083 character URL appears to be IE limit',
   `file_type_id` int(1) NOT NULL default '0' COMMENT 'current file path on the server',
   `remote_checksum` varchar(40) character set utf8 collate utf8_unicode_ci default NULL COMMENT 'remote checksum of a file',
-  `checksum` varchar(40) collate utf8_bin default NULL COMMENT 'file check sum sha1 or md5. sha1 is the default',
+  `checksum` varchar(40) collate utf8_unicode_ci default NULL COMMENT 'file check sum sha1 or md5. sha1 is the default',
   `virus_check` int(1) NOT NULL default '0' COMMENT 'has file had virus check',
   `fulltext` int(1) NOT NULL default '0' COMMENT 'Whether text can be extracted.',
   `metadata` int(1) NOT NULL default '0' COMMENT 'Whether metadata extraction has been run',
   `dynamic_file` int(1) NOT NULL default '0' COMMENT 'is the file dynamically generated from orginal URL',
-  `last_modified` varchar(15) collate utf8_bin default NULL COMMENT 'file last modified timestamp',
+  `last_modified` varchar(15) collate utf8_unicode_ci default NULL COMMENT 'file last modified timestamp',
   `zipped` int(1) NOT NULL default '0' COMMENT 'Yes/No added to a Zip Archive',
   `problem_file` int(1) NOT NULL default '0',
   `user_id` int(6) NOT NULL default '0' COMMENT "CONSTRAINT FOREIGN KEY (user_id) REFERENCES user(id)",
   `upload_file_id` int(6) NOT NULL default '0' COMMENT "CONSTRAINT FOREIGN KEY (upload_file_id) REFERENCES user_uploads(id)",
   `download_time` timestamp NOT NULL default CURRENT_TIMESTAMP COMMENT 'time file was downloaded for processing',
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='downloaded file information' AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='downloaded file information' AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `file_info`
 --
 
 -- --------------------------------------------------------
+
+
+CREATE TABLE IF NOT EXISTS `file_event_history` (
+  `id` int(15) NOT NULL auto_increment,
+  `file_id` int(12) NOT NULL,
+  `event` int(2) NOT NULL,
+  `event_time` timestamp NOT NULL default CURRENT_TIMESTAMP,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
 
 --
 -- Table structure for table `files_for_download`
@@ -315,21 +354,21 @@ CREATE TABLE IF NOT EXISTS `Jpg_Metadata` (
 
 CREATE TABLE IF NOT EXISTS `Pdf_Metadata` (
   `id` int(10) NOT NULL auto_increment,
-  `author` varchar(250) collate utf8_bin default NULL,
-  `creation_date` varchar(30) collate utf8_bin default NULL COMMENT 'file creation date',
-  `last_modified` varchar(30) collate utf8_bin default NULL COMMENT 'file last modified date',
-  `creator` varchar(250) collate utf8_bin default NULL,
-  `producer` varchar(250) collate utf8_bin default NULL COMMENT 'software used to create the PDF',
-  `resource_name` varchar(250) collate utf8_bin default NULL COMMENT 'similar too but not the same as title',
-  `title` text collate utf8_bin,
+  `author` varchar(250) collate utf8_unicode_ci default NULL,
+  `creation_date` varchar(30) collate utf8_unicode_ci default NULL COMMENT 'file creation date',
+  `last_modified` varchar(30) collate utf8_unicode_ci default NULL COMMENT 'file last modified date',
+  `creator` varchar(250) collate utf8_unicode_ci default NULL,
+  `producer` varchar(250) collate utf8_unicode_ci default NULL COMMENT 'software used to create the PDF',
+  `resource_name` varchar(250) collate utf8_unicode_ci default NULL COMMENT 'similar too but not the same as title',
+  `title` text collate utf8_unicode_ci,
   `pages` int(5) default 0 COMMENT 'Number of pages',
-  `subject` varchar(250) collate utf8_bin default NULL,
-  `keywords` text collate utf8_bin,
-  `licensed_to` varchar(250) collate utf8_bin default NULL COMMENT 'who the pdf software is registered too',
+  `subject` varchar(250) collate utf8_unicode_ci default NULL,
+  `keywords` text collate utf8_unicode_ci,
+  `licensed_to` varchar(250) collate utf8_unicode_ci default NULL COMMENT 'who the pdf software is registered too',
   `file_id` int(10) default NULL COMMENT 'id of associated file',
   `user_id` int(6) default NULL COMMENT 'id of user associated with the file',
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `pdf_metadata`
