@@ -50,6 +50,25 @@ class DownloadCommand extends CConsoleCommand {
 	}
 	
 	/**
+	* See if a user has already downloaded a file with the same url before
+	* They may or may not have the same checksum
+	* @param $file_name
+	* @param $user_id
+	* @access public 
+	* @return boolean
+	*/
+	public function sameName($file_name, $user_id) {
+		$check_for_dup = Yii::app()->db->createCommand()
+			->select("COUNT(*)")
+			->from($this->file_info_table)
+			->where("org_file_path = :file_name and user_id = :user_id", 
+				array(":file_name" => $file_name, ":user_id" => $user_id))
+			->queryColumn();
+		
+		return $check_for_dup[0];
+	}
+	
+	/**
 	* Inserts basic file information for downloaded file
 	* @param $url
 	* @param $curr_path
@@ -105,13 +124,22 @@ class DownloadCommand extends CConsoleCommand {
 	* @access public
 	* @return string
 	*/
-	public function cleanName($file) {
+	public function cleanName($file, $duplicate = 0) {
 		$patterns = array('/^(http|https):\/\//i', '/(\/|\s|\?|&|=|\\\)/');
-		$replacments = array('', '_');
-		$file_name = preg_replace($patterns, $replacments, $file);
+		$replacements = array('', '_');
+		$file_name = preg_replace($patterns, $replacements, $file);
 		$file_extension = $this->initFileType($file);
 		
-		if($file_extension != 1) { $file_name = $file_name . $file_extension; }
+		if($file_extension == 1 && $duplicate != 0) {
+			$file_type = strrchr($file_name, '.');
+			$char_count = strlen($file_type);
+			$path_base = substr_replace($file_name, '', -$char_count);
+			$file_name = $path_base . '_dupname_' . mt_rand(1, 99999999) . $file_type;
+		} elseif($file_extension != 1 && $duplicate = 0) {
+			$file_name = $file_name . $file_extension;
+		} elseif($file_extension != 1 && $duplicate != 0) {
+			$file_name = $file_name . '_dupname_' . mt_rand(1, 99999999) . $file_extension;
+		}
 
 		return $file_name; 
 	}
@@ -241,6 +269,8 @@ class DownloadCommand extends CConsoleCommand {
 	* opens a CURL connection and writes CURL contents to a file
 	* Tries to get last modified of remote file
 	* Rewrites file name from original url
+	* If file has a duplicate name of another file the user had previously downloaded a random number
+	* is added to end of the file name so it won't overwrite previous file.
 	* Error 1 - unable to download
 	* @param $user
 	* @param $current_user_id
@@ -257,7 +287,8 @@ class DownloadCommand extends CConsoleCommand {
 			$start_dir = $this->getStartDir($current_username);
 			$current_dir = $this->currentDir($start_dir);
 			
-			$file_name = $this->cleanName($url);
+			$dup_file = $this->sameName($url, $user_id);
+			$file_name = $this->cleanName($url, $dup_file);
 			$file_path = $current_dir . '/' . $file_name;
 			
 			$ch = curl_init($url);

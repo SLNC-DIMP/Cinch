@@ -88,9 +88,9 @@ class ChecksumCommand extends CConsoleCommand {
 		}
 	
 		if($this->createChecksum($new_path) == $this->checksum->getOneFileChecksum($file_id)) {
-			unlink($file_path);
+			@unlink($file_path);
 		} else {
-			unlink($new_path);
+			@unlink($new_path);
 			return false;
 		}
 		
