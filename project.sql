@@ -278,7 +278,6 @@ CREATE TABLE IF NOT EXISTS `file_info` (
   `problem_file` int(1) NOT NULL default '0',
   `user_id` int(6) NOT NULL default '0' COMMENT "CONSTRAINT FOREIGN KEY (user_id) REFERENCES user(id)",
   `upload_file_id` int(6) NOT NULL default '0' COMMENT "CONSTRAINT FOREIGN KEY (upload_file_id) REFERENCES user_uploads(id)",
-  `download_time` timestamp NOT NULL default CURRENT_TIMESTAMP COMMENT 'time file was downloaded for processing',
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='downloaded file information' AUTO_INCREMENT=1 ;
 
@@ -292,7 +291,7 @@ CREATE TABLE IF NOT EXISTS `file_info` (
 CREATE TABLE IF NOT EXISTS `file_event_history` (
   `id` int(15) NOT NULL auto_increment,
   `file_id` int(12) NOT NULL,
-  `event` int(2) NOT NULL,
+  `event_id` int(2) NOT NULL,
   `event_time` timestamp NOT NULL default CURRENT_TIMESTAMP,
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
