@@ -132,8 +132,7 @@ class DownloadCommand extends CConsoleCommand {
 		
 		if($file_extension == 1 && $duplicate != 0) {
 			$file_type = strrchr($file_name, '.');
-			$char_count = strlen($file_type);
-			$path_base = substr_replace($file_name, '', -$char_count);
+			$path_base = substr_replace($file_name, '', -strlen($file_type));
 			$file_name = $path_base . '_dupname_' . mt_rand(1, 99999999) . $file_type;
 		} elseif($file_extension != 1 && $duplicate = 0) {
 			$file_name = $file_name . $file_extension;
@@ -260,8 +259,8 @@ class DownloadCommand extends CConsoleCommand {
 	private function writeCurlError($url, $current_user_id, $file_id) {
 		$error_id = 1;
 		$current_insert = $this->setFileInfo($url, '', NULL, 0, $current_user_id, $file_id, 1);
-	//	$this->writeError($error_id, $current_insert, $current_user_id);
 		ErrorFiles::writeError($error_id, $current_insert, $current_user_id);
+		
 		return $error_id;
 	}
 	

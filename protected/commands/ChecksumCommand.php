@@ -43,13 +43,14 @@ class ChecksumCommand extends CConsoleCommand {
 	
 	/**
 	* Move duplicate files from their current directory to their own directory under a users directory
+	* If a file has a duplicate checksum and duplicate filename it goes into duplicate checksum folder
 	* Uses cp -p for Linux
 	* Uses ROBOCOPY /COPYALL for Windows (won't copy files if permissions are different)
 	* Creates directory if there isn't one and makes it writable.
 	* @param $file_path
 	* @access public
 	*/
-	public function moveDupes($file_path, $file_id) {
+	public function moveDupes($file_path, $file_id, $checksum_dup = 0) {
 		$split_path = preg_split('/(\/|\\\)/i', $file_path);
 		$windows_root = $split_path; // needed by Windows OS only
 		$root_pieces_count = count($split_path) - 2;
@@ -58,14 +59,14 @@ class ChecksumCommand extends CConsoleCommand {
 		for($i=0; $i<$root_pieces_count; $i++) {
 			$base_path .= $split_path[$i] . '/';
 		}
-		$dup_dir = $base_path . 'duplicates';
+		$dup_dir_name = ($checksum_dup > 0) ? 'dup_checksum' : 'dup_name';
+		$dup_dir_path = $base_path . $dup_dir_name;
 		
-		if(!file_exists($dup_dir)) {
-			mkdir($dup_dir);
+		if(!file_exists($dup_dir_path)) {
+			mkdir($dup_dir_path);
 		}
 		
-		
-		$split_path[$root_pieces_count] = 'duplicates';
+		$split_path[$root_pieces_count] = $dup_dir_name;
 		$new_path = implode('/', $split_path);
 	
 		if(strtoupper(substr(php_uname('s'), 0, 3)) !== 'WIN') {
@@ -135,14 +136,15 @@ class ChecksumCommand extends CConsoleCommand {
 		if(count($file_lists) > 0) {
 			foreach($file_lists as $file_list) { 
 				$checksum = $this->createChecksum($file_list['temp_file_path']);
-				$is_duplicate = $this->checksum->getDupChecksum($checksum, $file_list['user_id']);
+				$is_dup_checksum = $this->checksum->getDupChecksum($checksum, $file_list['user_id']);
+				$is_dup_filename = preg_match('/_dupname_[0-9]{1,10}/', $file_list['temp_file_path']);
 				
 				if($checksum) {
 					$this->checksum->writeSuccess($checksum, $file_list['id']);
 					echo "checksum for:" . $file_list['temp_file_path'] . " is " . $checksum . "\r\n";
 					
-					if($is_duplicate != 0) {
-						$dup_move_path = $this->moveDupes($file_list['temp_file_path'], $file_list['id']);
+					if($is_dup_checksum != 0 || $is_dup_filename != 0) {
+						$dup_move_path = $this->moveDupes($file_list['temp_file_path'], $file_list['id'], $is_dup_checksum);
 					
 						if($dup_move_path != false) {
 							$this->checksum->writeDupMove($dup_move_path, $file_list['id']);
