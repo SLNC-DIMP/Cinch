@@ -47,6 +47,8 @@ class ChecksumCommand extends CConsoleCommand {
 	* Uses cp -p for Linux
 	* Uses ROBOCOPY /COPYALL for Windows (won't copy files if permissions are different)
 	* Creates directory if there isn't one and makes it writable.
+	* Error code 3 - Duplicate checksum found
+	* Error code 13 - Duplicate filename found
 	* Event code 6 - file moved
 	* @param $file_path
 	* @access public
@@ -60,7 +62,15 @@ class ChecksumCommand extends CConsoleCommand {
 		for($i=0; $i<$root_pieces_count; $i++) {
 			$base_path .= $split_path[$i] . '/';
 		}
-		$dup_dir_name = ($checksum_dup > 0) ? 'dup_checksum' : 'dup_name';
+		
+		if($checksum_dup > 0) {
+			$dup_dir_name = 'dup_checksum';
+			$error_id = 3;
+		} else {
+			$dup_dir_name = 'dup_name';
+			$error_id = 15;
+		}
+		
 		$dup_dir_path = $base_path . $dup_dir_name;
 		
 		if(!file_exists($dup_dir_path)) {
@@ -80,7 +90,7 @@ class ChecksumCommand extends CConsoleCommand {
 			$base_path = substr_replace($root_path, '', -1); // strip trailing slash
 			$file_name = end($windows_root);
 		
-			$command = "ROBOCOPY $base_path $dup_dir $file_name /COPYALL"; 
+			$command = "ROBOCOPY $base_path $dup_dir_path $file_name /COPYALL"; 
 		}
 		
 		$move_file = system(escapeshellcmd($command));
@@ -93,7 +103,7 @@ class ChecksumCommand extends CConsoleCommand {
 	
 		if($this->createChecksum($new_path) == $this->checksum->getOneFileChecksum($file_id)) {
 			Utils::writeEvent($file_id, 6);
-			Utils::writeError($file_id, 3);
+			Utils::writeError($file_id, $error_id);
 			@unlink($file_path);
 		} else {
 			Utils::writeError($file_id, 13);
@@ -102,13 +112,17 @@ class ChecksumCommand extends CConsoleCommand {
 			return false;
 		}
 		
+		Utils::writeError($file_list['id'], 3);
+					echo "Duplicate checksum found for: " . $file_list['temp_file_path'] . "\r\n";
+		
 		return $new_path;
 	}
 	
 	/**
 	* Calculates a checksum for each file and compares it to the file's initial checksum
 	* Write error to DB if mismatch detected.
-	* 5 is error for file checksum mismatch
+	* 5 is error code for file checksum mismatch
+	* 11 is event code for checksum file integrity check
 	* @access public 
 	*/
 	public function actionCheck() {
@@ -125,6 +139,7 @@ class ChecksumCommand extends CConsoleCommand {
 				} else {
 					echo 'checksum ok for: ' . $file['temp_file_path'] . "\r\n";
 				}
+				Utils::writeEvent($file['id'], 11);
 			}
 		}
 	}
@@ -133,9 +148,10 @@ class ChecksumCommand extends CConsoleCommand {
 	* Run checksum command 
 	* Default is to create new checksum for downloaded files
 	* Writes checksum error on failure. 
-	* 2 is value for "Could not create checksum"
-	* 3 is value for "Duplicate Checksum"
-	* 13 is value for "Unable to move file"
+	* 2 is error code for "Could not create checksum"
+	* 3 is error code for "Duplicate Checksum"
+	* 13 is error code for "Unable to move file"
+	* Event type 5 is checksum created.
 	*/
 	public function actionCreate($args) {
 		$file_lists = $this->checksum->getFileList();
@@ -143,10 +159,13 @@ class ChecksumCommand extends CConsoleCommand {
 		if(count($file_lists) > 0) {
 			foreach($file_lists as $file_list) { 
 				$checksum = $this->createChecksum($file_list['temp_file_path']);
-				$is_dup_checksum = $this->checksum->getDupChecksum($checksum, $file_list['user_id']);
-				$is_dup_filename = preg_match('/_dupname_[0-9]{1,10}/', $file_list['temp_file_path']);
 				
 				if($checksum) {
+					Utils::writeEvent($file_list['id'], 5);
+					
+					$is_dup_checksum = $this->checksum->getDupChecksum($checksum, $file_list['user_id']);
+					$is_dup_filename = preg_match('/_dupname_[0-9]{1,10}/', $file_list['temp_file_path']);
+					
 					$this->checksum->writeSuccess($checksum, $file_list['id']);
 					echo "checksum for:" . $file_list['temp_file_path'] . " is " . $checksum . "\r\n";
 					
@@ -160,9 +179,6 @@ class ChecksumCommand extends CConsoleCommand {
 							Utils::writeError($file_list['id'], 13);
 						}
 					}
-					
-					Utils::writeError($file_list['id'], 3);
-					echo "Duplicate checksum found for: " . $file_list['temp_file_path'] . "\r\n";
 				} else {
 					Utils::writeError($file_list['id'], 2);
 					echo "Checksum not created. for: " . $file_list['temp_file_path'] . "\r\n";
@@ -170,4 +186,4 @@ class ChecksumCommand extends CConsoleCommand {
 			}
 		}
 	}
-}
+} // update `files_for_download` set `processed`=0 WHERE `processed`=1
