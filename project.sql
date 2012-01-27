@@ -414,12 +414,10 @@ CREATE TABLE IF NOT EXISTS `problem_files` (
   `id` int(7) NOT NULL auto_increment,
   `error_id` int(3) NOT NULL,
   `file_id` int(10) NOT NULL,
-  `user_id` int(7) NOT NULL,
   `problem_time` timestamp NOT NULL default CURRENT_TIMESTAMP,
   PRIMARY KEY  (`id`),
   KEY `error_id` (`error_id`),
-  KEY `file_id` (`file_id`),
-  KEY `user_id` (`user_id`)
+  KEY `file_id` (`file_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 --
@@ -576,6 +574,4 @@ ALTER TABLE `Rights`
 --
 ALTER TABLE `problem_files`
   ADD CONSTRAINT `problem_files_ibfk_1` FOREIGN KEY (`error_id`) REFERENCES `error_type` (`id`),
-  ADD CONSTRAINT `problem_files_ibfk_2` FOREIGN KEY (`file_id`) REFERENCES `file_info` (`id`),
-  ADD CONSTRAINT `problem_files_ibfk_3` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
- 
+  ADD CONSTRAINT `problem_files_ibfk_2` FOREIGN KEY (`file_id`) REFERENCES `file_info` (`id`);
