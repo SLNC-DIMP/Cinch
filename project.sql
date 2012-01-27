@@ -415,6 +415,7 @@ CREATE TABLE IF NOT EXISTS `problem_files` (
   `error_id` int(3) NOT NULL,
   `file_id` int(10) NOT NULL,
   `user_id` int(7) NOT NULL,
+  `problem_time` timestamp NOT NULL default CURRENT_TIMESTAMP,
   PRIMARY KEY  (`id`),
   KEY `error_id` (`error_id`),
   KEY `file_id` (`file_id`),
@@ -449,7 +450,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `email` varchar(256) collate utf8_unicode_ci NOT NULL,
   `password` varchar(64) collate utf8_unicode_ci NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `user`
@@ -484,6 +485,7 @@ CREATE TABLE IF NOT EXISTS `upload` (
   `user_id` int(6) NOT NULL COMMENT "CONSTRAINT FOREIGN KEY (user_id) REFERENCES user(id)",
   `upload_path` varchar(250) collate utf8_unicode_ci NOT NULL,
   `processed` int(1) NOT NULL default '0',
+  `process_time` timestamp NULL default NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
