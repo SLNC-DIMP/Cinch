@@ -158,7 +158,7 @@ class DownloadCommand extends CConsoleCommand {
 			$file_type = strrchr($file_name, '.');
 			$path_base = substr_replace($file_name, '', -strlen($file_type));
 			$file_name = $path_base . '_dupname_' . mt_rand(1, 99999999) . $file_type;
-		} elseif($file_extension != 1 && $duplicate = 0) {
+		} elseif($file_extension != 1 && $duplicate == 0) {
 			$file_name = $file_name . $file_extension;
 		} elseif($file_extension != 1 && $duplicate != 0) {
 			$file_name = $file_name . '_dupname_' . mt_rand(1, 99999999) . $file_extension;
