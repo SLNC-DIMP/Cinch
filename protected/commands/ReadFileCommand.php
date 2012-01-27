@@ -37,13 +37,16 @@ class ReadFileCommand extends CConsoleCommand {
 	
 	/**
 	* Update file list as processed
+	* Doesn't use MySQL specific time function
 	* @param $id
 	* @access public
 	* @return object Yii DAO
 	*/
 	public function updateFileList($id) {
-		$sql = "UPDATE upload SET processed = 1 WHERE id = :id";
+	//	$process_time = date('Y-m-d H:i:s', time());
+		$sql = "UPDATE upload SET processed = 1, process_time = NOW() WHERE id = :id";
 		$write_files = Yii::app()->db->createCommand($sql);
+	//	$write_files->bindParam(":process_time", $process_time, PDO::PARAM_INT);
 		$write_files->bindParam(":id", $id, PDO::PARAM_INT);
 		$write_files->execute();		
 	}

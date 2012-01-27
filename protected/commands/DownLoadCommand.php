@@ -27,7 +27,7 @@ class DownloadCommand extends CConsoleCommand {
 			->select('*')
 			->from($this->download_file_list)
 			->where('processed = :processed', array(':processed' => 0))
-			//->limit(3)
+			->limit(11)
 			->queryAll();
 			
 		return $get_file_list;
@@ -137,11 +137,15 @@ class DownloadCommand extends CConsoleCommand {
 		$values[] = $file_id;
 		
 		$sql = "UPDATE file_info ";
-		foreach($fields as $field) {
-			$sql .= "SET $field = ?, ";
+		foreach($fields as $key => $field) {
+			if($key == 0) {
+				$sql .= "SET $field = ?,";
+			} else {
+				$sql .= "$field = ?,";
+			}
 		}
 		$sql = substr_replace($sql, ' ', -1); // remove trailing slash
-		$sql .= " WHERE id = ?";
+		$sql .= "WHERE id = ?";
 		
 		$update_files = Yii::app()->db->createCommand($sql)
 			->execute($values);
@@ -298,17 +302,18 @@ class DownloadCommand extends CConsoleCommand {
 	
 	/**
 	* Writes Curl/download errors to the db.
+	* Error code 1 is unable to download
 	* @param $url
 	* @param $current_user_id
 	* @param $file_id
 	* @access private
 	* @return string
 	*/
-	private function writeCurlError($url, $current_user_id, $file_id) {
+	private function writeCurlError($current_user_id, $file_id) {
 		$error_id = 1;
 	//	$current_insert = $this->setFileInfo($url, '', NULL, 0, $current_user_id, $file_id, 1);
-		Utils::writeError($error_id, $current_insert, $current_user_id);
-		$this->updateFileInfo(array('problem_file' => 1), $file_id);
+		Utils::writeError($error_id, $file_id, $current_user_id);
+		$this->updateFileInfo(array('problem_file' => $error_id), $file_id);
 		
 		return $error_id;
 	}
@@ -329,15 +334,15 @@ class DownloadCommand extends CConsoleCommand {
 	*/
 	public function CurlProcessing($url, $current_user_id, $file_id, $file_list_id) {
 		$remote_checksum = $this->remote_checksum->createRemoteChecksum($url);
+		$db_file_id = $this->setFileInfo($url, $remote_checksum, $current_user_id, $file_list_id);
 		
-		if($remote_checksum != false) {
+		if($remote_checksum != NULL) {
 			$current_username = $this->getUrlOwner($current_user_id);
 			$start_dir = $this->getStartDir($current_username);
 			$current_dir = $this->currentDir($start_dir);
 			
 			$dup_file = $this->sameName($url, $user_id);
-			$file_name = $this->cleanName($url, $dup_file);
-			$db_file_id = $this->setFileInfo($url, $remote_checksum, $current_user_id, $file_list_id);
+			$file_name = $this->cleanName($url, $db_file_id, $dup_file);
 			$file_path = $current_dir . '/' . $file_name;
 			
 			$ch = curl_init($url);
@@ -356,22 +361,21 @@ class DownloadCommand extends CConsoleCommand {
 			
 			if(!curl_errno($ch)) {
 				$last_modified_time = curl_getinfo($ch, CURLINFO_FILETIME);
-				$set_modified_time = $this->updateLastModified($file_path, $last_modified_time);
-				//$this->setFileInfo($url, $file_path, $remote_checksum, $set_modified_time, $current_user_id, $file_list_id);
+				$set_modified_time = $this->updateLastModified($file_path, $db_file_id, $last_modified_time);
 			
 				$this->updateFileInfo(
-					array('temp_file_path' => $file_path, 'last_modified' => $set_modified_time), 
-					$db_file_id
+					array('temp_file_path' => $file_path, 
+						  'last_modified' => $set_modified_time), 
+					      $db_file_id 
 				);
 			} else {
-				$curl_error = curl_errno($ch);
-				$this->writeCurlError($url, $current_user_id, $file_id);
+				$this->writeCurlError($current_user_id, $db_file_id);
 			}
 				
 			curl_close($ch);
 			fclose($fp);
 			
-			Utils::writeEvent($file_id, 1);
+			Utils::writeEvent($db_file_id, 1);
 			
 			if(isset($curl_error)) { 
 				@unlink($file_path); 
@@ -381,7 +385,7 @@ class DownloadCommand extends CConsoleCommand {
 			return array('full_path' => $file_path, 'last_mod_time' => $last_modified_time); 
 		
 		} else {
-			$this->writeCurlError($url, $current_user_id, $file_id);
+			$this->writeCurlError($current_user_id, $file_id);
 		}
 	}
 	
@@ -393,7 +397,7 @@ class DownloadCommand extends CConsoleCommand {
 	* @access public
 	* @return string
 	*/
-	public function updateLastModified($file, $last_modified_time) {
+	public function updateLastModified($file, $file_id, $last_modified_time) {
 		if($last_modified_time != -1) {
 			$file_mtime = $last_modified_time;
 		} else {

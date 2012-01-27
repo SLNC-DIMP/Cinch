@@ -1,5 +1,5 @@
 <?php
-Yii::import('application.models.ErrorFiles');
+Yii::import('application.models.Utils');
 
 class ChecksumCommand extends CConsoleCommand {
 	public $checksum;
@@ -35,7 +35,7 @@ class ChecksumCommand extends CConsoleCommand {
 			$remote_checkum = $this->createChecksum($file);
 			fclose($fh);
 		} else {
-			return false;
+			$remote_checkum = NULL;
 		}
 		
 		return $remote_checkum;
@@ -113,7 +113,7 @@ class ChecksumCommand extends CConsoleCommand {
 			foreach($file_list as $file) {
 				$current_checksum = $this->checksum->createChecksum($file['temp_file_path']);
 				if($current_checksum != $file['checksum']) {
-					ErrorFiles::writeError(5, $file['id'], $file['user_id']);
+					Utils::writeError(5, $file['id'], $file['user_id']);
 					echo 'checksum not ok for: ' . $file['temp_file_path'] . "\r\n";
 				} else {
 					echo 'checksum ok for: ' . $file['temp_file_path'] . "\r\n";
@@ -150,14 +150,14 @@ class ChecksumCommand extends CConsoleCommand {
 							$this->checksum->writeDupMove($dup_move_path, $file_list['id']);
 						} else {
 							echo "Duplicate file: " . $file_list['temp_file_path'] . " couldn't be moved\r\n";
-							ErrorFiles::writeError(13, $file_list['id'], $file_list['user_id']);
+							Utils::writeError(13, $file_list['id'], $file_list['user_id']);
 						}
 					}
 					
-					ErrorFiles::writeError(3, $file_list['id'], $file_list['user_id']);
+					Utils::writeError(3, $file_list['id'], $file_list['user_id']);
 					echo "Duplicate checksum found for: " . $file_list['temp_file_path'] . "\r\n";
 				} else {
-					ErrorFiles::writeError(2, $file_list['id'], $file_list['user_id']);
+					Utils::writeError(2, $file_list['id'], $file_list['user_id']);
 					echo "Checksum not created. for: " . $file_list['temp_file_path'] . "\r\n";
 				}
 			}
