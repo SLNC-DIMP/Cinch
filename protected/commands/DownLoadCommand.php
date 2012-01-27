@@ -3,7 +3,7 @@
 * Blows up command if not explcitly called.
 */
 Yii::import('application.commands.ChecksumCommand');
-Yii::import('application.models.ErrorFiles');
+Yii::import('application.models.Utils');
 
 class DownloadCommand extends CConsoleCommand {
 	public $download_file_list = 'files_for_download';
@@ -76,8 +76,28 @@ class DownloadCommand extends CConsoleCommand {
 	* @param $user_id
 	* @param $upload_file_id
 	* @access public 
-	* @return object Yii DAO
+	* @return string last insert id
 	*/
+	public function setFileInfo($url, $remote_checksum, $user_id, $upload_file_id) {
+		$dynamic_file = ($this->initFileType($url) == 1) ? 0 : 1;
+		$sql = "INSERT INTO file_info(org_file_path, 
+				remote_checksum,
+				dynamic_file, 
+				user_id, 
+				upload_file_id) 
+			VALUES(:url, :remote_checksum, :dynamic_file, :user_id, :upload_file_id)";
+			
+			$write_files = Yii::app()->db->createCommand($sql);
+			$write_files->bindParam(":url", $url, PDO::PARAM_STR);
+			$write_files->bindParam(":remote_checksum", $remote_checksum, PDO::PARAM_STR);
+			$write_files->bindParam(":dynamic_file", $dynamic_file, PDO::PARAM_INT);
+			$write_files->bindParam(":user_id", $user_id, PDO::PARAM_INT);
+			$write_files->bindParam(":upload_file_id", $upload_file_id, PDO::PARAM_INT);
+			$write_files->execute();
+			
+			return Yii::app()->db->lastInsertID;
+	} 
+	/*
 	public function setFileInfo($url, $curr_path, $remote_checksum, $last_mod, $user_id, $upload_file_id, $problem_file = 0) {
 		$dynamic_file = ($this->initFileType($url) == 1) ? 0 : 1;
 		$sql = "INSERT INTO file_info(org_file_path, 
@@ -102,6 +122,31 @@ class DownloadCommand extends CConsoleCommand {
 			$write_files->execute();
 			
 			return Yii::app()->db->lastInsertID;
+	} */
+	
+	/**
+	* Updates arbitrary number of basic file information fields for downloaded file
+	* Pass in an associative array of field names and values
+	* @param $args array of fields/values to update
+	* @access public 
+	* @return string last insert id
+	*/
+	public function updateFileInfo(array $args, $file_id) {
+		$fields = array_keys($args);
+		$values = array_values($args);
+		$values[] = $file_id;
+		
+		$sql = "UPDATE file_info ";
+		foreach($fields as $field) {
+			$sql .= "SET $field = ?, ";
+		}
+		$sql = substr_replace($sql, ' ', -1); // remove trailing slash
+		$sql .= " WHERE id = ?";
+		
+		$update_files = Yii::app()->db->createCommand($sql)
+			->execute($values);
+		
+		return Yii::app()->db->lastInsertID;
 	}
 	
 	/**
@@ -120,11 +165,12 @@ class DownloadCommand extends CConsoleCommand {
 /***************** End of Queries - Maybe move into a model ****************************************************/	
 	/**
 	* Removes illegal filename characters
+	* Event 2 is renamed file
 	* @param $file
 	* @access public
 	* @return string
 	*/
-	public function cleanName($file, $duplicate = 0) {
+	public function cleanName($file, $file_id, $duplicate = 0) {
 		$patterns = array('/^(http|https):\/\//i', '/(\/|\s|\?|&|=|\\\)/');
 		$replacements = array('', '_');
 		$file_name = preg_replace($patterns, $replacements, $file);
@@ -139,6 +185,8 @@ class DownloadCommand extends CConsoleCommand {
 		} elseif($file_extension != 1 && $duplicate != 0) {
 			$file_name = $file_name . '_dupname_' . mt_rand(1, 99999999) . $file_extension;
 		}
+		
+		Utils::writeEvent($file_id, 2);
 
 		return $file_name; 
 	}
@@ -200,7 +248,7 @@ class DownloadCommand extends CConsoleCommand {
 			}
 		}
 		if(!empty($dirs)) {
-			natsort($dirs); // otherwise list gets sorted 1, 10, 2 instead of 1,2, 10
+			natsort($dirs); // otherwise list gets sorted 1, 10, 2 instead of 1, 2, 10
 			$working_dir = $user_base_dir . '/' . end($dirs);
 		} else {
 			$working_dir = $first_download_dir;
@@ -258,8 +306,9 @@ class DownloadCommand extends CConsoleCommand {
 	*/
 	private function writeCurlError($url, $current_user_id, $file_id) {
 		$error_id = 1;
-		$current_insert = $this->setFileInfo($url, '', NULL, 0, $current_user_id, $file_id, 1);
-		ErrorFiles::writeError($error_id, $current_insert, $current_user_id);
+	//	$current_insert = $this->setFileInfo($url, '', NULL, 0, $current_user_id, $file_id, 1);
+		Utils::writeError($error_id, $current_insert, $current_user_id);
+		$this->updateFileInfo(array('problem_file' => 1), $file_id);
 		
 		return $error_id;
 	}
@@ -270,7 +319,7 @@ class DownloadCommand extends CConsoleCommand {
 	* Rewrites file name from original url
 	* If file has a duplicate name of another file the user had previously downloaded a random number
 	* is added to end of the file name so it won't overwrite previous file.
-	* Error 1 - unable to download
+	* Event code 1 is file downloaded
 	* @param $user
 	* @param $current_user_id
 	* @param $file_id
@@ -288,6 +337,7 @@ class DownloadCommand extends CConsoleCommand {
 			
 			$dup_file = $this->sameName($url, $user_id);
 			$file_name = $this->cleanName($url, $dup_file);
+			$db_file_id = $this->setFileInfo($url, $remote_checksum, $current_user_id, $file_list_id);
 			$file_path = $current_dir . '/' . $file_name;
 			
 			$ch = curl_init($url);
@@ -307,7 +357,12 @@ class DownloadCommand extends CConsoleCommand {
 			if(!curl_errno($ch)) {
 				$last_modified_time = curl_getinfo($ch, CURLINFO_FILETIME);
 				$set_modified_time = $this->updateLastModified($file_path, $last_modified_time);
-				$this->setFileInfo($url, $file_path, $remote_checksum, $set_modified_time, $current_user_id, $file_list_id);
+				//$this->setFileInfo($url, $file_path, $remote_checksum, $set_modified_time, $current_user_id, $file_list_id);
+			
+				$this->updateFileInfo(
+					array('temp_file_path' => $file_path, 'last_modified' => $set_modified_time), 
+					$db_file_id
+				);
 			} else {
 				$curl_error = curl_errno($ch);
 				$this->writeCurlError($url, $current_user_id, $file_id);
@@ -315,6 +370,8 @@ class DownloadCommand extends CConsoleCommand {
 				
 			curl_close($ch);
 			fclose($fp);
+			
+			Utils::writeEvent($file_id, 1);
 			
 			if(isset($curl_error)) { 
 				@unlink($file_path); 
@@ -330,6 +387,7 @@ class DownloadCommand extends CConsoleCommand {
 	
 	/**
 	* Finds true last modified date and set file back to that if changed during download/move process
+	* Event code 3 is reset last modified time to correct value if possible
 	* @param $file path to file
 	* @param $last_modified_time Comes from CURL curl_getinfo($ch, CURLINFO_FILETIME). -1 is false.
 	* @access public
@@ -344,6 +402,7 @@ class DownloadCommand extends CConsoleCommand {
 		
 		$file_atime = fileatime($file);
 		touch($file, $file_mtime, $file_atime);
+		Utils::writeEvent($file_id, 3);
 		
 		return $file_mtime;
 	}
