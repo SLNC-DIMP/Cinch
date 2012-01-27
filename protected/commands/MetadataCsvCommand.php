@@ -4,6 +4,7 @@
 * Don't want it named that as would show up as a command instead of merely being clase for others to descend from.
 */
 Yii::import('application.commands.MakeCsv');
+Yii::import('application.models.Utils');
 
 class MetadataCsvCommand extends MakeCsv {
 	public $compare = '/(id|id$)/i';

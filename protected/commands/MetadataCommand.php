@@ -1,4 +1,6 @@
 <?php
+Yii::import('application.models.Utils');
+
 class MetadataCommand extends CConsoleCommand {
 	const PDF = 'application/pdf';
 	const WORD = 'application/msword';

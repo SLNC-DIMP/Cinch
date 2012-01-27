@@ -33,7 +33,7 @@ class ChecksumCommand extends CConsoleCommand {
 		$fh = @fopen($file, 'r');
 		if($fh != false) {
 			$remote_checkum = $this->createChecksum($file);
-			fclose($fh);
+			@fclose($fh);
 		} else {
 			$remote_checkum = NULL;
 		}
@@ -47,6 +47,7 @@ class ChecksumCommand extends CConsoleCommand {
 	* Uses cp -p for Linux
 	* Uses ROBOCOPY /COPYALL for Windows (won't copy files if permissions are different)
 	* Creates directory if there isn't one and makes it writable.
+	* Event code 6 - file moved
 	* @param $file_path
 	* @access public
 	*/
@@ -85,13 +86,19 @@ class ChecksumCommand extends CConsoleCommand {
 		$move_file = system(escapeshellcmd($command));
 		
 		if($move_file == false) {
+			Utils::writeError($file_id, 13);
+			
 			return false;
 		}
 	
 		if($this->createChecksum($new_path) == $this->checksum->getOneFileChecksum($file_id)) {
+			Utils::writeEvent($file_id, 6);
+			Utils::writeError($file_id, 3);
 			@unlink($file_path);
 		} else {
+			Utils::writeError($file_id, 13);
 			@unlink($new_path);
+			
 			return false;
 		}
 		
@@ -113,7 +120,7 @@ class ChecksumCommand extends CConsoleCommand {
 			foreach($file_list as $file) {
 				$current_checksum = $this->checksum->createChecksum($file['temp_file_path']);
 				if($current_checksum != $file['checksum']) {
-					Utils::writeError(5, $file['id'], $file['user_id']);
+					Utils::writeError($file['id'], 5);
 					echo 'checksum not ok for: ' . $file['temp_file_path'] . "\r\n";
 				} else {
 					echo 'checksum ok for: ' . $file['temp_file_path'] . "\r\n";
@@ -150,14 +157,14 @@ class ChecksumCommand extends CConsoleCommand {
 							$this->checksum->writeDupMove($dup_move_path, $file_list['id']);
 						} else {
 							echo "Duplicate file: " . $file_list['temp_file_path'] . " couldn't be moved\r\n";
-							Utils::writeError(13, $file_list['id'], $file_list['user_id']);
+							Utils::writeError($file_list['id'], 13);
 						}
 					}
 					
-					Utils::writeError(3, $file_list['id'], $file_list['user_id']);
+					Utils::writeError($file_list['id'], 3);
 					echo "Duplicate checksum found for: " . $file_list['temp_file_path'] . "\r\n";
 				} else {
-					Utils::writeError(2, $file_list['id'], $file_list['user_id']);
+					Utils::writeError($file_list['id'], 2);
 					echo "Checksum not created. for: " . $file_list['temp_file_path'] . "\r\n";
 				}
 			}

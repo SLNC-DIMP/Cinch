@@ -97,32 +97,6 @@ class DownloadCommand extends CConsoleCommand {
 			
 			return Yii::app()->db->lastInsertID;
 	} 
-	/*
-	public function setFileInfo($url, $curr_path, $remote_checksum, $last_mod, $user_id, $upload_file_id, $problem_file = 0) {
-		$dynamic_file = ($this->initFileType($url) == 1) ? 0 : 1;
-		$sql = "INSERT INTO file_info(org_file_path, 
-				temp_file_path, 
-				remote_checksum,
-				dynamic_file, 
-				last_modified, 
-				problem_file, 
-				user_id, 
-				upload_file_id) 
-			VALUES(:url, :curr_path, :remote_checksum, :dynamic_file, :last_mod, :problem_file, :user_id, :upload_file_id)";
-			
-			$write_files = Yii::app()->db->createCommand($sql);
-			$write_files->bindParam(":url", $url, PDO::PARAM_STR);
-			$write_files->bindParam(":curr_path", $curr_path, PDO::PARAM_STR);
-			$write_files->bindParam(":remote_checksum", $remote_checksum, PDO::PARAM_STR);
-			$write_files->bindParam(":dynamic_file", $dynamic_file, PDO::PARAM_INT);
-			$write_files->bindParam(":last_mod", $last_mod, PDO::PARAM_INT);
-			$write_files->bindParam(":problem_file", $problem_file, PDO::PARAM_INT);
-			$write_files->bindParam(":user_id", $user_id, PDO::PARAM_INT);
-			$write_files->bindParam(":upload_file_id", $upload_file_id, PDO::PARAM_INT);
-			$write_files->execute();
-			
-			return Yii::app()->db->lastInsertID;
-	} */
 	
 	/**
 	* Updates arbitrary number of basic file information fields for downloaded file
@@ -309,10 +283,9 @@ class DownloadCommand extends CConsoleCommand {
 	* @access private
 	* @return string
 	*/
-	private function writeCurlError($current_user_id, $file_id) {
+	private function writeCurlError($file_id) {
 		$error_id = 1;
-	//	$current_insert = $this->setFileInfo($url, '', NULL, 0, $current_user_id, $file_id, 1);
-		Utils::writeError($error_id, $file_id, $current_user_id);
+		Utils::writeError($file_id, $error_id);
 		$this->updateFileInfo(array('problem_file' => $error_id), $file_id);
 		
 		return $error_id;
@@ -369,7 +342,7 @@ class DownloadCommand extends CConsoleCommand {
 					      $db_file_id 
 				);
 			} else {
-				$this->writeCurlError($current_user_id, $db_file_id);
+				$this->writeCurlError($db_file_id);
 			}
 				
 			curl_close($ch);
@@ -385,7 +358,7 @@ class DownloadCommand extends CConsoleCommand {
 			return array('full_path' => $file_path, 'last_mod_time' => $last_modified_time); 
 		
 		} else {
-			$this->writeCurlError($current_user_id, $file_id);
+			$this->writeCurlError($db_file_id);
 		}
 	}
 	
