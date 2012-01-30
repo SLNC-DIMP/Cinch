@@ -1,10 +1,22 @@
 <?php
 class Utils {
 	/**
+	* Set problem file flag to true in file_info table
+	* @param $file_id
+	* @static
+	* @access public 
+	* @return object Yii DAO
+	*/
+	public static function setProblemFile($file_id) {
+		$sql = "UPDATE file_info SET problem_file = 1 WHERE id = ?";
+		$metadata_processed = Yii::app()->db->createCommand($sql);
+		$metadata_processed->execute(array($file_id));	
+	}
+	
+	/**
 	* On error write file info to problem_downloads table
 	* @param $error_id
 	* @param $file_id
-	* @param $current_user_id
 	* @static
 	* @access public 
 	* @return object Yii DAO

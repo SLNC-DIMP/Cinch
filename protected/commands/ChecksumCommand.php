@@ -16,7 +16,11 @@ class ChecksumCommand extends CConsoleCommand {
 	* @return string
 	*/
 	protected function createChecksum($file, $type = 'sha1') {
-		$checksum = ($type == 'sha1') ? sha1_file($file) : md5_file($file);
+		if(file_exists($file)) {
+		$checksum = ($type == 'sha1') ? sha1_file($file) : md5_file($file);	
+		} else {
+			return false;	
+		}
 		
 		return $checksum;
 	}
@@ -121,6 +125,7 @@ class ChecksumCommand extends CConsoleCommand {
 	/**
 	* Calculates a checksum for each file and compares it to the file's initial checksum
 	* Write error to DB if mismatch detected.
+	* 2 is error code for "Could not create checksum"
 	* 5 is error code for file checksum mismatch
 	* 11 is event code for checksum file integrity check
 	* @access public 
@@ -133,7 +138,11 @@ class ChecksumCommand extends CConsoleCommand {
 			
 			foreach($file_list as $file) {
 				$current_checksum = $this->checksum->createChecksum($file['temp_file_path']);
-				if($current_checksum != $file['checksum']) {
+				
+				if($current_checksum == false) {
+					Utils::writeError($file['id'], 2);
+					echo 'comparison checksum could not created for: ' . $file['temp_file_path'] . "\r\n";
+				}elseif($current_checksum != $file['checksum']) {
 					Utils::writeError($file['id'], 5);
 					echo 'checksum not ok for: ' . $file['temp_file_path'] . "\r\n";
 				} else {

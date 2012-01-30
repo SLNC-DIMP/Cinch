@@ -94,29 +94,16 @@ class MetadataCommand extends CConsoleCommand {
 	}
 	
 	/**
-	* @param $file_id
-	* Updates db.  Set problem file flag to true
-	* @access private
-	*/
-	private function updateFileInfoError($file_id) {
-		$sql = "UPDATE file_info SET problem_file = 1 WHERE id = ?";
-		$metadata_processed = Yii::app()->db->createCommand($sql);
-		$metadata_processed->execute(array($file_id));	
-	}
-	
-	/**
 	* Writes error to database if metadata could not be extracted from a file
 	* Metadata extraction error code is 4
 	* @param $file_id
+	* @param $error_id
 	* @access private
 	* @return boolean
 	*/
-	private function tikaError($error, $file_id, $user_id) {
-		$sql = "INSERT INTO problem_files(error_id, file_id, user_id) VALUES(?, ?, ?)";
-		$tika_error = Yii::app()->db->createCommand($sql);
-		$tika_error->execute(array($error, $file_id, $user_id));	
-		
-		$this->updateFileInfoError($file_id);
+	private function tikaError($file_id, $error_id) {
+		Utils::writeError($file_id, $error_id);	
+		Utils::setProblemFile($file_id);
 		
 		return false;
 	}
@@ -198,7 +185,8 @@ class MetadataCommand extends CConsoleCommand {
 	* Extracts and writes file level metadata
 	* Determine full text availability if not an audio, video or image file
 	* If nothing needs to be done command exits
-	* 4 and 12 error codes for can't grab metadata or unsupported file type
+	* 4 code for can't grab metadata
+	* 12 error code for unsupported file type
 	*/
 	public function run() {
 		$files = $this->getFileList();
@@ -207,17 +195,19 @@ class MetadataCommand extends CConsoleCommand {
 		
 		foreach($files as $file) {
 			$metadata = $this->getMetadata($file['temp_file_path']);
+			Utils::writeEvent($file_id, 8);
 			$file_type = $this->getTikaFileType($metadata);
 			
 			if(!preg_match('/(image|audio|video)/', $file_type)) {
 				$fulltext = $this->scrapeMetadata($file['temp_file_path'], 'text');
 				if(!empty($fulltext)) {
+					Utils::writeEvent($file_id, 12);
 					$this->updateFileInfo($file_id, 'fulltext');	
 				}
 			}
 			
 			if($file_type == 4 || $file_type == 12) {
-				$this->tikaError($file_type, $file['id'], $file['user_id']);
+				$this->tikaError($file['id'], $file_type);
 				$success = " Failed\r\n";
 			} else {
 				$this->writeMetadata($file_type, $metadata, $file['id'], $file['user_id']);
