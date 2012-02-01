@@ -15,9 +15,9 @@ class ChecksumCommand extends CConsoleCommand {
 	* @access protected
 	* @return string
 	*/
-	protected function createChecksum($file, $type = 'sha1') {
-		if(file_exists($file)) {
-		$checksum = ($type == 'sha1') ? sha1_file($file) : md5_file($file);	
+	protected function createChecksum($file, $type = 'sha1', $remote = false) {
+		if($remote == true || file_exists($file)) {
+			$checksum = ($type == 'sha1') ? sha1_file($file) : md5_file($file);	
 		} else {
 			return false;	
 		}
@@ -36,12 +36,12 @@ class ChecksumCommand extends CConsoleCommand {
 	public function createRemoteChecksum($file) {
 		$fh = @fopen($file, 'r');
 		if($fh != false) {
-			$remote_checkum = $this->createChecksum($file);
+			$remote_checkum = $this->createChecksum($file, 'sha1', true);
 			@fclose($fh);
 		} else {
-			$remote_checkum = NULL;
+			$remote_checkum = false;
 		}
-		
+	
 		return $remote_checkum;
 	}
 	

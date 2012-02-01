@@ -27,7 +27,7 @@ class DownloadCommand extends CConsoleCommand {
 			->select('*')
 			->from($this->download_file_list)
 			->where('processed = :processed', array(':processed' => 0))
-			->limit(11)
+			->limit(1)
 			->queryAll();
 			
 		return $get_file_list;
@@ -309,7 +309,7 @@ class DownloadCommand extends CConsoleCommand {
 		$remote_checksum = $this->remote_checksum->createRemoteChecksum($url);
 		$db_file_id = $this->setFileInfo($url, $remote_checksum, $current_user_id, $file_list_id);
 		
-		if($remote_checksum != NULL) {
+		if($remote_checksum != false) {
 			$current_username = $this->getUrlOwner($current_user_id);
 			$start_dir = $this->getStartDir($current_username);
 			$current_dir = $this->currentDir($start_dir);
