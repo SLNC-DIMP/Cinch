@@ -6,3 +6,6 @@ protected/config/console.php
 protected/config/main.php
 assets/*
 uploads/*
+curl_uploads/*
+ftp_uploads/*
+runtime/*
