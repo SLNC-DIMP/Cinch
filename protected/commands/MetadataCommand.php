@@ -26,9 +26,8 @@ class MetadataCommand extends CConsoleCommand {
 			->from('file_info')
 			->where(array('and', 'metadata = 0', 
 					array('or', 'temp_file_path != ""', 'temp_file_path IS NOT NULL')))
-		//	->where('id>:id', array(':id' => 38))
 			->queryAll();
-			//print_r($get_file_list); exit;
+			
 		return $get_file_list;
 	}
 	
@@ -44,7 +43,7 @@ class MetadataCommand extends CConsoleCommand {
 	public function writeMetadata($file_type, $metadata, $file_id, $user_id) {
 		switch($file_type) {
 			case self::PDF:
-				$write = new Pdf_Metadata;
+				$write = new PDF_Metadata;
 				break;
 			case self::WORD:
 			case self::WORD2007:
@@ -52,7 +51,7 @@ class MetadataCommand extends CConsoleCommand {
 				break;
 			case self::PPT:
 			case self::PPT2007:
-				$write = new Ppt_Metadata;
+				$write = new PPT_Metadata;
 				break;
 			case self::EXCEL:
 			case self::EXCEL2007:
