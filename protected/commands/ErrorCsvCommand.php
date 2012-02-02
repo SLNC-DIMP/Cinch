@@ -31,6 +31,8 @@ class ErrorCsvCommand extends MakeCsv {
 	/**
 	* Writes user error file list to a csv file and add csv file path to db.
 	* Writes column headers only on first iteration
+	* @param $file
+	* @param $user_path
 	* @access public
 	*/
 	public function makeReport($file, $user_path) {

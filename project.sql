@@ -195,7 +195,7 @@ INSERT INTO `event_list` (`id`, `event_name`) VALUES
 (4, 'Virus check'),
 (5, 'Checksum created'),
 (6, 'File moved'),
-(7, 'Deleted - virus'),
+(7, 'Deleted - virus detected'),
 (8, 'Metadata Extracted'),
 (9, 'Zipped for download'),
 (10, 'Deleted - expired'),
