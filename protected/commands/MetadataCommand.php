@@ -25,9 +25,10 @@ class MetadataCommand extends CConsoleCommand {
 			->select('id, temp_file_path, user_id, upload_file_id')
 			->from('file_info')
 			->where(array('and', 'metadata = 0', 
-					array('or', 'temp_file_path != ""', 'temp_file_path IS NULL', 'problem_file != 1')))
+					array('or', 'temp_file_path != ""', 'temp_file_path IS NOT NULL')))
+		//	->where('id>:id', array(':id' => 38))
 			->queryAll();
-			
+			//print_r($get_file_list); exit;
 		return $get_file_list;
 	}
 	
@@ -43,7 +44,7 @@ class MetadataCommand extends CConsoleCommand {
 	public function writeMetadata($file_type, $metadata, $file_id, $user_id) {
 		switch($file_type) {
 			case self::PDF:
-				$write = new PDF_Metadata;
+				$write = new Pdf_Metadata;
 				break;
 			case self::WORD:
 			case self::WORD2007:
@@ -51,7 +52,7 @@ class MetadataCommand extends CConsoleCommand {
 				break;
 			case self::PPT:
 			case self::PPT2007:
-				$write = new PPT_Metadata;
+				$write = new Ppt_Metadata;
 				break;
 			case self::EXCEL:
 			case self::EXCEL2007:
@@ -119,7 +120,8 @@ class MetadataCommand extends CConsoleCommand {
 	private function scrapeMetadata($file, $extract = 'metadata') {
 		$tika_path = '';
 		$tika = '/srv/local/tika-0.10/tika-app/target/tika-app-0.10.jar';
-    	$local = 'C:/"Program Files"/apache-tika-0.8/tika-app/target/tika-app-0.8.jar';
+    //	$local = 'C:/"Program Files"/apache-tika-0.8/tika-app/target/tika-app-0.8.jar';
+		$local = '/Users/deanfarrell/tika-app-1.0.jar';
 		if(file_exists($tika)) { $tika_path = $tika; } else { $tika_path = $local; }
 		
 		$output = array();
@@ -194,17 +196,19 @@ class MetadataCommand extends CConsoleCommand {
 		if(empty($files)) { exit; }
 		
 		foreach($files as $file) {
+			//echo $file['temp_file_path'] . "\r\n";
+			
 			$metadata = $this->getMetadata($file['temp_file_path']);
-			Utils::writeEvent($file_id, 8);
+			Utils::writeEvent($file['id'], 8);
 			$file_type = $this->getTikaFileType($metadata);
 			
-			if(!preg_match('/(image|audio|video)/', $file_type)) {
+		    if(!$metadata && preg_match('/(image|audio|video)/', $file_type)) {
 				$fulltext = $this->scrapeMetadata($file['temp_file_path'], 'text');
 				if(!empty($fulltext)) {
-					Utils::writeEvent($file_id, 12);
-					$this->updateFileInfo($file_id, 'fulltext');	
+					Utils::writeEvent($file['id'], 12);
+					$this->updateFileInfo($file['id'], 'fulltext');	
 				}
-			}
+			} 
 			
 			if($file_type == 4 || $file_type == 12) {
 				$this->tikaError($file['id'], $file_type);
@@ -214,7 +218,7 @@ class MetadataCommand extends CConsoleCommand {
 				$this->updateFileInfo($file['id']);
 				$success = " Added\r\n";
 			}
-			echo $file['temp_file_path'] . $success;
-		}
+			echo $file['temp_file_path'] . $success; 
+		} 
 	}
 }

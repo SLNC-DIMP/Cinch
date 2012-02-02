@@ -102,7 +102,7 @@ class ChecksumCommand extends CConsoleCommand {
 		
 		$move_file = system(escapeshellcmd($command), $retval);
 	
-		if($retval != 0) {
+		if($retval != 0) { // This needs to be the following on Windows: $move_file == false
 			Utils::writeError($file_id, 13);
 			
 			return false;

@@ -353,7 +353,7 @@ CREATE TABLE IF NOT EXISTS `Jpg_Metadata` (
 -- Table structure for table `pdf_metadata`
 --
 
-CREATE TABLE IF NOT EXISTS `Pdf_Metadata` (
+CREATE TABLE IF NOT EXISTS `PDF_Metadata` (
   `id` int(10) NOT NULL auto_increment,
   `author` varchar(250) collate utf8_unicode_ci default NULL,
   `creation_date` varchar(30) collate utf8_unicode_ci default NULL COMMENT 'file creation date',
