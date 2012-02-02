@@ -27,7 +27,7 @@ class DownloadCommand extends CConsoleCommand {
 			->select('*')
 			->from($this->download_file_list)
 			->where('processed = :processed', array(':processed' => 0))
-			->limit(1)
+			->limit(44)
 			->queryAll();
 			
 		return $get_file_list;
@@ -145,6 +145,8 @@ class DownloadCommand extends CConsoleCommand {
 	* Removes illegal filename characters
 	* Event 2 is renamed file
 	* @param $file
+	* @param $file_id
+	* @param $duplicate
 	* @access public
 	* @return string
 	*/
@@ -162,7 +164,7 @@ class DownloadCommand extends CConsoleCommand {
 			$file_name = $file_name . $file_extension;
 		} elseif($file_extension != 1 && $duplicate != 0) {
 			$file_name = $file_name . '_dupname_' . mt_rand(1, 99999999) . $file_extension;
-		}
+		} 
 		
 		Utils::writeEvent($file_id, 2);
 
