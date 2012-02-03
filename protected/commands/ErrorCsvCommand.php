@@ -3,9 +3,15 @@
 * Blows up command if not explcitly called.  I believe because MakeCsv isn't named MakeCsvCommand
 * Don't want it named that as would show up as a command instead of merely being clase for others to descend from.
 */
-Yii::import('application.commands.MakeCsv');
+Yii::import('application.models.MakeCsv');
 
-class ErrorCsvCommand extends MakeCsv {
+class ErrorCsvCommand extends CConsoleCommand {
+	public $makecsv;
+	
+	public function __construct() {
+		$this->makecsv = new makeCsv;
+	}
+	
 	/**
 	* Gets user files that have errors
 	* @access public
@@ -48,7 +54,7 @@ class ErrorCsvCommand extends MakeCsv {
 			
 			if(is_array($headers)) {
 				fputcsv($fh, $headers);
-				$this->addPath($file['user_id'], $error_file);
+				$this->makecsv->addPath($file['user_id'], $error_file);
 			}
 				
 			if($file['temp_file_path'] != '') {
@@ -70,7 +76,7 @@ class ErrorCsvCommand extends MakeCsv {
 		
 		if(!empty($errors)) {
 			foreach($errors as $error) {
-				$csv_path = $this->getUserPath($error['user_id']);
+				$csv_path = $this->makecsv->getUserPath($error['user_id']);
 				$this->makeReport($error, $csv_path);
 			}
 		}

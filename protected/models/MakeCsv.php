@@ -1,5 +1,5 @@
 <?php
-class MakeCsv extends CConsoleCommand {
+class MakeCsv {
 	/**
 	* Get user's base download path for csv file creation
 	* @param $user_id
@@ -23,17 +23,11 @@ class MakeCsv extends CConsoleCommand {
 	* Write CSV file path to $db
 	* @param $file_path
 	* @param $user_id
-	* @access protected
+	* @access public
 	*/
-	protected function addPath($user_id, $file_path) {
+	public function addPath($user_id, $file_path) {
 		$sql = "INSERT INTO csv_meta_paths(user_id, path) VALUES(?, ?)";
 		$fields = Yii::app()->db->createCommand($sql)
 			->execute(array($user_id, $file_path));
 	}
-	
-	/**
-	* The command "run()" method defined in child classes.
-	* @abstract
-	*/
-	abstract public function actionIndex();
 }

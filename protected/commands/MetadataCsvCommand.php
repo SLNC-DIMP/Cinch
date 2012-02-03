@@ -3,15 +3,17 @@
 * Blows up command if not explcitly called.  I believe because MakeCsv isn't named MakeCsvCommand
 * Don't want it named that as would show up as a command instead of merely being clase for others to descend from.
 */
-Yii::import('application.commands.MakeCsv');
+Yii::import('application.models.MakeCsv');
 Yii::import('application.models.Utils');
 
-class MetadataCsvCommand extends MakeCsv {
+class MetadataCsvCommand extends CConsoleCommand {
 	public $compare = '/(id|id$)/i';
 	public $checksum;
+	public $makecsv;
 	
 	public function __construct() {
 		$this->checksum = new Checksum;
+		$this->makecsv = new makeCsv;
 	}
 	
 	/**
@@ -139,7 +141,7 @@ class MetadataCsvCommand extends MakeCsv {
 		
 		if(!empty($column_headers)) {
 			fputcsv($fh, $column_headers);
-			$this->addPath($user_id, $file_path);
+			$this->makecsv->addPath($user_id, $file_path);
 		}
 		
 		foreach($metadata as $row) {
@@ -162,7 +164,7 @@ class MetadataCsvCommand extends MakeCsv {
 	
 		if(!empty($files)) {  
 			foreach($files as $file) {
-				$csv_path = $this->getUserPath($file['user_id']);
+				$csv_path = $this->makecsv->getUserPath($file['user_id']);
 				$metadata_table = $this->findMetaTable($file['file_type_id']);
 				$metadata = $this->findMetadata(
 					$metadata_table, 

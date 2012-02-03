@@ -1,10 +1,18 @@
 <?php
+/**
+* Blows up if EventCsv command if not explcitly called.
+*/
+Yii::import('application.commands.EventCsvCommand');
+Yii::import('application.models.Utils');
+
 class ZipCreationCommand extends CConsoleCommand {
+	public $event_csv;
 	public $mail_user;
-	public $file_info = 'file_info';
+	private $file_info = 'file_info';
 	
 	public function __construct() {
-		$this->mail_user = new MailUser();
+		$this->event_csv = new EventCsvCommand;
+		$this->mail_user = new MailUser;
 	} 
 	
 	/**
@@ -174,10 +182,13 @@ class ZipCreationCommand extends CConsoleCommand {
 	}
 	
 	/**
-	* Write File level metadata
-	* Add CSV files first.  Metadata files and error file if it exists.
+	* Add files to zip archive, including writing event to file_event_history
+	* Create file_event_history csv here.  Otherwise it will be missing Zip event.
+	* Add generated CSV files last.  
+	* Adds file event list as well as metadata files and error file if it exists.
 	* Add files to zip archive 10 to zip archive at a time.
-	* This won't hold true for 1st 10 file loop.  Since CSV files won't be counted.  
+	* This won't hold true for 1st 10 file loop.  Since CSV files won't be counted. 
+	* Event code 9 is Zipped for download 
 	*/
 	public function run($args) {
 		$users = $this->getUserFileCount();
@@ -192,10 +203,6 @@ class ZipCreationCommand extends CConsoleCommand {
 			
 			$zip_file = $this->zipOpen($user_path);
 			
-			foreach($user_csv_files as $user_csv_file) {
-				$this->zipWrite($zip_file, $user_csv_file['path']);
-			}
-			
 			$file_count = 0;
 			foreach($user_files as $file) {
 				if($file_count < 10) { 
@@ -206,8 +213,16 @@ class ZipCreationCommand extends CConsoleCommand {
 					$file_count = 0;
 				}
 				$this->zipWrite($zip_file, $file['temp_file_path']);
+				Utils::writeEvent($file['id'], 9);
 				$this->updateFileInfo($file['id']); 
 			} 
+			
+			// create file event CSV now that file events should be over
+			$this->event_csv->actionIndex();
+			
+			foreach($user_csv_files as $user_csv_file) {
+				$this->zipWrite($zip_file, $user_csv_file['path']);
+			}
 			
 			$manifest = $this->createManifest($zip_file, $user_path);
 			$this->zipWrite($zip_file, $manifest);

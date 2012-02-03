@@ -3,9 +3,14 @@
 * Blows up command if not explcitly called.  I believe because MakeCsv isn't named MakeCsvCommand
 * Don't want it named that as would show up as a command instead of merely being clase for others to descend from.
 */
-Yii::import('application.commands.MakeCsv');
-
-class EventCsvCommand extends MakeCsv {
+Yii::import('application.models.MakeCsv');
+ 
+class EventCsvCommand extends CConsoleCommand {
+	public $makecsv;
+	
+	public function __construct() {
+		$this->makecsv = new makeCsv;
+	}
 	/**
 	* Gets event listings for a user's files 
 	* @access public
@@ -48,7 +53,7 @@ class EventCsvCommand extends MakeCsv {
 			
 			if(is_array($headers)) {
 				fputcsv($fh, $headers);
-				$this->addPath($file['user_id'], $event_list);
+				$this->makecsv->addPath($file['user_id'], $event_list);
 			}
 				
 			if($file['temp_file_path'] != '') {
@@ -70,7 +75,7 @@ class EventCsvCommand extends MakeCsv {
 		
 		if(!empty($events)) {
 			foreach($events as $event) {
-				$csv_path = $this->getUserPath($event['user_id']);
+				$csv_path = $this->makecsv->getUserPath($event['user_id']);
 				$this->makeReport($event, $csv_path);
 			}
 		}

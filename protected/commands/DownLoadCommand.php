@@ -1,6 +1,6 @@
 <?php
 /**
-* Blows up command if not explcitly called.
+* Blows up checksum command if not explcitly called.
 */
 Yii::import('application.commands.ChecksumCommand');
 Yii::import('application.models.Utils');
