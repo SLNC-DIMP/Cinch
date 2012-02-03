@@ -13,7 +13,7 @@ class MailUser {
 			->where(':id = id', array(':id' => $user_id))
 			->queryRow();
 		
-		return $user_info[0];
+		return $user_info;
 	}
 	
 	/**
@@ -25,16 +25,16 @@ class MailUser {
 	*/
 	public function UserMail($user_id) {
 		$user = $this->getUser($user_id);
-		
 		$to = $user['email'];
 		$subject = 'Your Cinch files are ready';
 		$message = 'You have files ready for download from Cinch.  Please login at http://cinch.nclive.org to retrieve your files.';
-		$headers = 'From: webmaster@example.com' . "\r\n";
+		$headers = 'From: cinch_admin@nclive.org' . "\r\n";
 		
 		$mail_sent = mail($to, $subject, $message, $headers);
 		
 		if($mail_sent == false) {
-			$error = date('c') . " Email could not be sent to: $to, regarding their downloads.\r\n";
+			$username = $user['username'];
+			$error = date('c') . " Email could not be sent to: $username, regarding their downloads.\r\n";
 			Yii::log($message, 'system.console.CConsoleCommand', 'warning');
 		}
 	}
