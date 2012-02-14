@@ -27,7 +27,7 @@ class DownloadCommand extends CConsoleCommand {
 			->select('*')
 			->from($this->download_file_list)
 			->where('processed = :processed', array(':processed' => 0))
-			->limit(44)
+			->limit(1)
 			->queryAll();
 			
 		return $get_file_list;
@@ -318,7 +318,7 @@ class DownloadCommand extends CConsoleCommand {
 			$start_dir = $this->getStartDir($current_username);
 			$current_dir = $this->currentDir($start_dir);
 			
-			$dup_file = $this->sameName($url, $user_id);
+			$dup_file = $this->sameName($url, $current_user_id);
 			$file_name = $this->cleanName($url, $db_file_id, $dup_file);
 			$file_path = $current_dir . '/' . $file_name;
 			
@@ -346,7 +346,6 @@ class DownloadCommand extends CConsoleCommand {
 					      $db_file_id 
 				);
 			} else {
-				Utils::writeEvent($db_file_id, 13);
 				$this->writeCurlError($db_file_id);
 			}
 				
@@ -363,6 +362,7 @@ class DownloadCommand extends CConsoleCommand {
 			return array('full_path' => $file_path, 'last_mod_time' => $last_modified_time); 
 		
 		} else {
+			Utils::writeEvent($db_file_id, 13);
 			$this->writeCurlError($db_file_id);
 		}
 	}
