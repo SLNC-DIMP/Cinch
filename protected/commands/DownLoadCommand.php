@@ -300,9 +300,11 @@ class DownloadCommand extends CConsoleCommand {
 	* If file has a duplicate name of another file the user had previously downloaded a random number
 	* is added to end of the file name so it won't overwrite previous file.
 	* Event code 1 is file downloaded
+	* Event code 13 Download failed
 	* @param $user
 	* @param $current_user_id
 	* @param $file_id
+	* @param $file_list_id
 	* @access public
 	* @return array file info including: file type id, and boolean on whether it's a dynamic file. 
 	* As well as File name and last modified time
@@ -344,6 +346,7 @@ class DownloadCommand extends CConsoleCommand {
 					      $db_file_id 
 				);
 			} else {
+				Utils::writeEvent($db_file_id, 13);
 				$this->writeCurlError($db_file_id);
 			}
 				
