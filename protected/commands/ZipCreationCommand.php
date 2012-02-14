@@ -114,7 +114,7 @@ class ZipCreationCommand extends CConsoleCommand {
 	
 	/**
 	* Creates a list of the files in a Zip archive
-	* See Yeslifer commnet at http://us3.php.net/manual/en/function.ziparchive-getnameindex.php
+	* See Yeslifer comment at http://us3.php.net/manual/en/function.ziparchive-getnameindex.php
 	* as numFiles appears to be an undocumented method
 	* Using preg_split as explode might not work with Windows in this case
 	* @param $zip

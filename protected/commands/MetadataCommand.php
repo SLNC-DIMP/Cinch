@@ -26,6 +26,7 @@ class MetadataCommand extends CConsoleCommand {
 			->from('file_info')
 			->where(array('and', 'metadata = 0', 
 					array('or', 'temp_file_path != ""', 'temp_file_path IS NOT NULL')))
+			->limit(1)
 			->queryAll();
 			
 		return $get_file_list;
@@ -82,10 +83,10 @@ class MetadataCommand extends CConsoleCommand {
 	*/
 	public function updateFileInfo($file_id, $field = 'metadata', $file_type_id = NULL) {
 		if($field == 'metadata') {
-			$sql = "UPDATE file_info SET metadata = 1, file_type_id = ? WHERE id = ?";
-			$values = array($file_type_id, $file_id);
+			$sql = "UPDATE file_info SET metadata = 1 WHERE id = ?";
+			$values = array($file_id);
 		} else {
-			$sql = "UPDATE file_info SET fulltext = 1 WHERE id = ?";
+			$sql = "UPDATE file_info SET fulltext_available = 1 WHERE id = ?";
 			$values = array($file_id);
 		}
 		
@@ -195,26 +196,26 @@ class MetadataCommand extends CConsoleCommand {
 		if(empty($files)) { exit; }
 		
 		foreach($files as $file) {
-			//echo $file['temp_file_path'] . "\r\n";
-			
 			$metadata = $this->getMetadata($file['temp_file_path']);
 			Utils::writeEvent($file['id'], 8);
 			$file_type = $this->getTikaFileType($metadata);
-			
-		    if(!$metadata && preg_match('/(image|audio|video)/', $file_type)) {
-				$fulltext = $this->scrapeMetadata($file['temp_file_path'], 'text');
-				if(!empty($fulltext)) {
-					Utils::writeEvent($file['id'], 12);
-					$this->updateFileInfo($file['id'], 'fulltext');	
-				}
-			} 
 			
 			if($file_type == 4 || $file_type == 12) {
 				$this->tikaError($file['id'], $file_type);
 				$success = " Failed\r\n";
 			} else {
 				$this->writeMetadata($file_type, $metadata, $file['id'], $file['user_id']);
-				$this->updateFileInfo($file['id']);
+				$this->updateFileInfo($file['id'], 'metadata');
+				
+				if(!preg_match('/(image|audio|video)/', $file_type)) {
+					$fulltext = $this->scrapeMetadata($file['temp_file_path'], 'text');
+					Utils::writeEvent($file['id'], 12);
+					
+					if(!empty($fulltext)) {
+						$this->updateFileInfo($file['id'], 'fulltext');	
+					}
+				} 
+			
 				$success = " Added\r\n";
 			}
 			echo $file['temp_file_path'] . $success; 

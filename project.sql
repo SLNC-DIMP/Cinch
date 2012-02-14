@@ -171,7 +171,8 @@ INSERT INTO `error_type` (`id`, `error_message`) VALUES
 (11, 'Virus detected'),
 (12, 'Unsupported file type'),
 (13, 'Unable to move file'),
-(14, 'Unable to delete file');
+(14, 'Unable to delete file'),
+(15, 'Unable to determine full text status');
 
 
 --
@@ -196,7 +197,7 @@ INSERT INTO `event_list` (`id`, `event_name`) VALUES
 (5, 'Checksum created'),
 (6, 'File moved'),
 (7, 'Deleted - virus detected'),
-(8, 'Metadata Extracted'),
+(8, 'Metadata Extraction'),
 (9, 'Zipped for download'),
 (10, 'Deleted - expired'),
 (11, 'File integrity check'),
@@ -272,7 +273,7 @@ CREATE TABLE IF NOT EXISTS `file_info` (
   `remote_checksum` varchar(40) character set utf8 collate utf8_unicode_ci default NULL COMMENT 'remote checksum of a file',
   `checksum` varchar(40) collate utf8_unicode_ci default NULL COMMENT 'file check sum sha1 or md5. sha1 is the default',
   `virus_check` int(1) NOT NULL default '0' COMMENT 'has file had virus check',
-  `fulltext` int(1) NOT NULL default '0' COMMENT 'Whether text can be extracted.',
+  `fulltext_available` int(1) NOT NULL default '0' COMMENT 'Whether text can be extracted.',
   `metadata` int(1) NOT NULL default '0' COMMENT 'Whether metadata extraction has been run',
   `dynamic_file` int(1) NOT NULL default '0' COMMENT 'is the file dynamically generated from orginal URL',
   `last_modified` varchar(15) collate utf8_unicode_ci default NULL COMMENT 'file last modified timestamp',
