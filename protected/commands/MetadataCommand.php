@@ -26,7 +26,6 @@ class MetadataCommand extends CConsoleCommand {
 			->from('file_info')
 			->where(array('and', 'metadata = 0', 
 					array('or', 'temp_file_path != ""', 'temp_file_path IS NOT NULL')))
-			->limit(1)
 			->queryAll();
 			
 		return $get_file_list;
@@ -157,6 +156,16 @@ class MetadataCommand extends CConsoleCommand {
 		
 		return $clean_file_type;
 	} 
+	
+	private function getFiletypeId($file_type) {
+		if(!is_numeric($file_type)) {
+			$file_type_id = '';
+		} else {
+			return false;
+		}
+		
+		return $file_type_id;
+	}
 	
 	/**
 	* Takes metadata file and creates associative array of it.

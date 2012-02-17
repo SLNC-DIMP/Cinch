@@ -37,6 +37,24 @@ class MetadataCsvCommand extends CConsoleCommand {
 		return $user_files;
 	}
 	
+	
+	/**
+	* Gets fulltext status for file.
+	* @access public
+	* @return string
+	*/
+	public function getFulltext($file_id) {
+		$full_text = Yii::app()->db->createCommand()
+			->select('fulltext_available')
+			->from('file_info')
+			->where('id = :id', array(':id' => $file_id))
+			->queryColumn();
+		
+		$text_extractable = ( $full_text[0] == 1) ? 'Yes' : 'No';
+		
+		return $text_extractable;
+	}
+	
 	/**
 	* Returns correct table for the metadate being retrieved.
 	* @param $meta_type
@@ -120,6 +138,7 @@ class MetadataCsvCommand extends CConsoleCommand {
 			}
 		}
 		$columns[] = 'Checksum';
+		$columns[] = 'Fulltext';
 		
 		return $columns;
 	}
@@ -146,6 +165,7 @@ class MetadataCsvCommand extends CConsoleCommand {
 		
 		foreach($metadata as $row) {
 			$row['checksum'] = $this->checksum->getOneFileChecksum($row['file_id']);
+			$row['fulltext'] = $this->getFulltext($row['file_id']);
 			
 			foreach($row as $key => $value) {
 				if(preg_match($this->compare, $key)) {

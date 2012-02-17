@@ -27,6 +27,7 @@ class DownloadCommand extends CConsoleCommand {
 			->select('*')
 			->from($this->download_file_list)
 			->where('processed = :processed', array(':processed' => 0))
+			->limit(11)
 			->queryAll();
 			
 		return $get_file_list;
@@ -141,6 +142,8 @@ class DownloadCommand extends CConsoleCommand {
 	
 /***************** End of Queries - Maybe move into a model ****************************************************/	
 	/**
+	* Current file should always return count of 1 if there are no duplicates.  
+	* Current file should return count of 2+ if there are duplicates
 	* Removes illegal filename characters
 	* Event 2 is renamed file
 	* @param $file
@@ -149,19 +152,19 @@ class DownloadCommand extends CConsoleCommand {
 	* @access public
 	* @return string
 	*/
-	public function cleanName($file, $file_id, $duplicate = 0) {
+	public function cleanName($file, $file_id, $duplicate =  1) {
 		$patterns = array('/^(http|https):\/\//i', '/(\/|\s|\?|&|=|\\\)/');
 		$replacements = array('', '_');
 		$file_name = preg_replace($patterns, $replacements, $file);
 		$file_extension = $this->initFileType($file);
 		
-		if($file_extension == 1 && $duplicate != 0) {
+		if($file_extension == 1 && $duplicate > 1) {
 			$file_type = strrchr($file_name, '.');
 			$path_base = substr_replace($file_name, '', -strlen($file_type));
 			$file_name = $path_base . '_dupname_' . mt_rand(1, 99999999) . $file_type;
-		} elseif($file_extension != 1 && $duplicate == 0) {
+		} elseif($file_extension != 1 && $duplicate == 1) {
 			$file_name = $file_name . $file_extension;
-		} elseif($file_extension != 1 && $duplicate != 0) {
+		} elseif($file_extension != 1 && $duplicate > 0) {
 			$file_name = $file_name . '_dupname_' . mt_rand(1, 99999999) . $file_extension;
 		} 
 		
@@ -206,7 +209,6 @@ class DownloadCommand extends CConsoleCommand {
 			mkdir($user_base_dir); 
 		}
 		
-
 		$first_download_dir = $user_base_dir . '/' . $file_list_owner . '_0';
 		if(!file_exists($first_download_dir)) { 
 			mkdir($first_download_dir); 
