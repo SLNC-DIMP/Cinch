@@ -110,7 +110,7 @@ class Checksum {
 	* @return object Yii DAO
 	*/
 	public function writeSuccess($checksum, $id) {
-		$sql = "UPDATE " . $this->table . " SET checksum = ? WHERE id = ?";
+		$sql = "UPDATE " . $this->table . " SET checksum_run = 1, checksum = ? WHERE id = ?";
 		$write = Yii::app()->db->createCommand($sql)
 			->execute(array($checksum, $id));
 	}
