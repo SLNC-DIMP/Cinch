@@ -171,15 +171,11 @@ class ChecksumCommand extends CConsoleCommand {
 		if(count($file_lists) > 0) {
 			foreach($file_lists as $file_list) { 
 				$checksum = $this->createChecksum($file_list['temp_file_path']);
+				Utils::writeEvent($file_list['id'], 5);
 				
 				if($checksum != false) {
-					Utils::writeEvent($file_list['id'], 5);
-					
 					$is_dup_checksum = $this->checksum->getDupChecksum($checksum, $file_list['user_id']);
 					$is_dup_filename = preg_match('/_dupname_[0-9]{1,10}/', $file_list['temp_file_path']);
-					
-					$this->checksum->writeSuccess($checksum, $file_list['id']);
-					echo "checksum for:" . $file_list['temp_file_path'] . " is " . $checksum . "\r\n";
 					
 					if($is_dup_checksum != 0 || $is_dup_filename != 0) {
 						$dup_move_path = $this->moveDupes($file_list['temp_file_path'], $file_list['id'], $is_dup_checksum);
@@ -192,9 +188,12 @@ class ChecksumCommand extends CConsoleCommand {
 						}
 					}
 				} else {
+					$checksum = NULL;
 					Utils::writeError($file_list['id'], 2);
 					echo "Checksum not created. for: " . $file_list['temp_file_path'] . "\r\n";
 				}
+				
+				$this->checksum->writeSuccess($checksum, $file_list['id']);
 			}
 		}
 	}

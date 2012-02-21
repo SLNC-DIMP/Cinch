@@ -195,6 +195,7 @@ class MetadataCommand extends CConsoleCommand {
 	/**
 	* Extracts and writes file level metadata
 	* Determine full text availability if not an audio, video or image file
+	* Update metadata to 1 in file info for every record the metadata command iterates over.
 	* If nothing needs to be done command exits
 	* 4 code for can't grab metadata
 	* 12 error code for unsupported file type
@@ -214,7 +215,6 @@ class MetadataCommand extends CConsoleCommand {
 				$success = " Failed\r\n";
 			} else {
 				$this->writeMetadata($file_type, $metadata, $file['id'], $file['user_id']);
-				$this->updateFileInfo($file['id'], 'metadata');
 				
 				if(!preg_match('/(image|audio|video)/', $file_type)) {
 					$fulltext = $this->scrapeMetadata($file['temp_file_path'], 'text');
@@ -227,6 +227,7 @@ class MetadataCommand extends CConsoleCommand {
 			
 				$success = " Added\r\n";
 			}
+			$this->updateFileInfo($file['id'], 'metadata');
 			echo $file['temp_file_path'] . $success; 
 		} 
 	}

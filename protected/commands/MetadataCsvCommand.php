@@ -37,7 +37,6 @@ class MetadataCsvCommand extends CConsoleCommand {
 		return $user_files;
 	}
 	
-	
 	/**
 	* Gets fulltext status for file.
 	* @access public

@@ -151,7 +151,7 @@ CREATE TABLE IF NOT EXISTS `error_type` (
   `id` int(3) NOT NULL auto_increment,
   `error_message` varchar(75) collate utf8_unicode_ci NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=15 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=16 ;
 
 --
 -- Dumping data for table `error_type`
@@ -194,7 +194,7 @@ INSERT INTO `event_list` (`id`, `event_name`) VALUES
 (2, 'Renamed'),
 (3, 'Download Last Modified time corrected'),
 (4, 'Virus check'),
-(5, 'Checksum created'),
+(5, 'Checksum creation run'),
 (6, 'File moved'),
 (7, 'Deleted - virus detected'),
 (8, 'Metadata Extraction'),
@@ -270,6 +270,7 @@ CREATE TABLE IF NOT EXISTS `file_info` (
   `org_file_path` varchar(2084) collate utf8_unicode_ci default NULL,
   `temp_file_path` varchar(1000) collate utf8_unicode_ci default NULL COMMENT 'orginial file path.  2083 character URL appears to be IE limit',
   `file_type_id` int(1) NOT NULL default '0' COMMENT 'current file path on the server',
+  `checksum_run` int(1) NOT NULL DEFAULT '0',
   `remote_checksum` varchar(40) character set utf8 collate utf8_unicode_ci default NULL COMMENT 'remote checksum of a file',
   `checksum` varchar(40) collate utf8_unicode_ci default NULL COMMENT 'file check sum sha1 or md5. sha1 is the default',
   `virus_check` int(1) NOT NULL default '0' COMMENT 'has file had virus check',
