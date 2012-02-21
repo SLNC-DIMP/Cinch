@@ -43,7 +43,7 @@ class ErrorCsvCommand extends CConsoleCommand {
 	*/
 	public function makeReport($file, $user_path) {
 		if(!empty($file)) {
-			$error_file = $user_path . '/error_files.csv';
+			$error_file = $user_path . '/error_files_' . date('Y_m_d') . '.csv';
 			
 			if(!file_exists($error_file)) {
 				$headers = array('Url', 'Filename', 'Error Message');

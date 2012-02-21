@@ -42,7 +42,7 @@ class EventCsvCommand extends CConsoleCommand {
 	*/
 	public function makeReport($file, $user_path) {
 		if(!empty($file)) {
-			$event_list = $user_path . '/event_list.csv';
+			$event_list = $user_path . '/event_list_' . date('Y_m_d') . '.csv';
 			
 			if(!file_exists($event_list)) {
 				$headers = array('Url', 'Filename', 'Event Name', 'Event Time');

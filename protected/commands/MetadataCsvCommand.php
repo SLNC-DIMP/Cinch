@@ -148,7 +148,7 @@ class MetadataCsvCommand extends CConsoleCommand {
 	* @access public
 	*/
 	public function write($user_path, $table_name, $metadata, $user_id) {
-		$file_path = $user_path . '/' . $table_name . '.csv';
+		$file_path = $user_path . '/' . $table_name . '_' . date('Y_m_d') . '.csv';
 		$column_headers = array();
 		
 		if(!file_exists($file_path)) {

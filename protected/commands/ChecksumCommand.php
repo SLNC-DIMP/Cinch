@@ -86,7 +86,7 @@ class ChecksumCommand extends CConsoleCommand {
 		
 		$split_path[$root_pieces_count] = $dup_dir_name;
 		$new_path = implode('/', $split_path);
-	
+		
 		if(strtoupper(substr(php_uname('s'), 0, 3)) !== 'WIN') {
 			$command = "cp -p $file_path $new_path"; 
 		} else {
@@ -101,7 +101,7 @@ class ChecksumCommand extends CConsoleCommand {
 		}
 		
 		$move_file = system(escapeshellcmd($command), $retval);
-	
+		
 		if($retval != 0) { // This needs to be the following on Windows: $move_file == false
 			Utils::writeError($file_id, 13);
 			
@@ -177,6 +177,9 @@ class ChecksumCommand extends CConsoleCommand {
 					$is_dup_checksum = $this->checksum->getDupChecksum($checksum, $file_list['user_id']);
 					$is_dup_filename = preg_match('/_dupname_[0-9]{1,10}/', $file_list['temp_file_path']);
 					
+					$this->checksum->writeSuccess($checksum, $file_list['id']);
+					echo "checksum for:" . $file_list['temp_file_path'] . " is " . $checksum . "\r\n";
+					
 					if($is_dup_checksum != 0 || $is_dup_filename != 0) {
 						$dup_move_path = $this->moveDupes($file_list['temp_file_path'], $file_list['id'], $is_dup_checksum);
 					
@@ -188,12 +191,10 @@ class ChecksumCommand extends CConsoleCommand {
 						}
 					}
 				} else {
-					$checksum = NULL;
+					$this->checksum->writeSuccess(NULL, $file_list['id']);
 					Utils::writeError($file_list['id'], 2);
 					echo "Checksum not created. for: " . $file_list['temp_file_path'] . "\r\n";
-				}
-				
-				$this->checksum->writeSuccess($checksum, $file_list['id']);
+				}	
 			}
 		}
 	}

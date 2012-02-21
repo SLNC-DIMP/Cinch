@@ -43,8 +43,7 @@ class ZipCreationCommand extends CConsoleCommand {
 		$user_files = Yii::app()->db->createCommand()
 			->select('id, temp_file_path, user_id')
 			->from($this->file_info)
-			->where(array('and', ':user_id = user_id', 
-					array('or', 'metadata = 1', 'temp_file_path' != '')))
+			->where(array('and', ':user_id = user_id', 'checksum_run = 1', 'metadata = 1')) // add in virus_check = 1
 			->bindParam(":user_id", $user_id, PDO::PARAM_INT)
 			->queryAll();
 	
@@ -61,8 +60,8 @@ class ZipCreationCommand extends CConsoleCommand {
 		$csv_files = Yii::app()->db->createCommand()
 			->select('id, path')
 			->from('csv_meta_paths')
-			->where(':user_id = user_id and :added_to_archives = added_to_archives', 
-				array(':user_id' => $user_id, ':added_to_archives' => 0))
+			->where(':user_id = user_id and :zipped = zipped', 
+				array(':user_id' => $user_id, ':zipped' => 0))
 			->queryAll();
 		
 		return $csv_files;
@@ -83,8 +82,8 @@ class ZipCreationCommand extends CConsoleCommand {
 			->queryColumn();
 		
 		$type = ($type == 'curl') ? 'curl' : 'ftp';
-		
-		return Yii::getPathOfAlias('application.' . $type . '_downloads') . DIRECTORY_SEPARATOR . $user_name[0] . DIRECTORY_SEPARATOR . $type . '_files.zip';
+
+		return Yii::getPathOfAlias('application.' . $type . '_downloads') . DIRECTORY_SEPARATOR . $user_name[0];
 	}
 	
 	/**
@@ -103,11 +102,12 @@ class ZipCreationCommand extends CConsoleCommand {
 	/**
 	* Write the Zip archive path to the db
 	* @param $file_id
+	* @param $tablename
 	* @access public
 	* @return object Yii DAO object
 	*/
-	public function updateFileInfo($file_id) {
-		$sql = "UPDATE " . $this->file_info . " SET zipped = 1 WHERE id = ?";
+	public function updateFileInfo($file_id, $tablename = 'file_info') {
+		$sql = "UPDATE " . $tablename . " SET zipped = 1 WHERE id = ?";
 		$write_zip = Yii::app()->db->createCommand($sql)
 			->execute(array($file_id));
 	}
@@ -125,6 +125,7 @@ class ZipCreationCommand extends CConsoleCommand {
 		$manifest_pieces = preg_split('/(\/|\\\)/', $zip_path);
 		array_pop($manifest_pieces);
 		$manifest_path = implode('/', $manifest_pieces);
+		echo $manifest_path; exit;
 		$full_path = $manifest_path . '/' . 'file_manifest.csv';
 		$file_count = $zip->numFiles;
 		
@@ -147,7 +148,7 @@ class ZipCreationCommand extends CConsoleCommand {
 	*/
 	public function zipOpen($zip_path) {
 		$zip = new ZipArchive();
-		if ($zip->open($zip_path, ZIPARCHIVE::CREATE) !== true) {
+		if ($zip->open($zip_path . '/downloads_' . date('Y_m_d'). '.zip', ZIPARCHIVE::CREATE) !== true) {
 			echo "cannot open <$path>\r\n";
 			$zip = false;
 		}
@@ -222,6 +223,7 @@ class ZipCreationCommand extends CConsoleCommand {
 			
 			foreach($user_csv_files as $user_csv_file) {
 				$this->zipWrite($zip_file, $user_csv_file['path']);
+				$this->updateFileInfo($file['id'], 'csv_meta_paths');
 			}
 			
 			$manifest = $this->createManifest($zip_file, $user_path);

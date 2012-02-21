@@ -133,7 +133,7 @@ CREATE TABLE IF NOT EXISTS `csv_meta_paths` (
   `id` int(10) NOT NULL auto_increment,
   `user_id` int(7) NOT NULL,
   `path` varchar(255) collate utf8_unicode_ci NOT NULL,
-  `added_to_archives` int(1) NOT NULL default '0',
+  `zipped` int(1) NOT NULL DEFAULT '0',
   `creationdate` timestamp NOT NULL default CURRENT_TIMESTAMP,
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
