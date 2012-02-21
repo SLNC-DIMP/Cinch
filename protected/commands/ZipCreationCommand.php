@@ -223,7 +223,7 @@ class ZipCreationCommand extends CConsoleCommand {
 			
 			foreach($user_csv_files as $user_csv_file) {
 				$this->zipWrite($zip_file, $user_csv_file['path']);
-				$this->updateFileInfo($file['id'], 'csv_meta_paths');
+				$this->updateFileInfo($user_csv_file['id'], 'csv_meta_paths');
 			}
 			
 			$manifest = $this->createManifest($zip_file, $user_path);
