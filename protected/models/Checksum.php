@@ -113,6 +113,5 @@ class Checksum {
 		$sql = "UPDATE " . $this->table . " SET checksum_run = 1, checksum = ? WHERE id = ?";
 		$write = Yii::app()->db->createCommand($sql)
 			->execute(array($checksum, $id));
-	}
-	
+	}	
 }

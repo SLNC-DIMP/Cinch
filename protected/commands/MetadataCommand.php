@@ -111,6 +111,7 @@ class MetadataCommand extends CConsoleCommand {
 	
 	/**
 	* Extracts file level metadata using Apache Tika
+	* Or conversely extracts document text
 	* @param $file
 	* @param $extract - Options metadata is default text, html, xml other possible  values
 	* @access private
@@ -193,6 +194,87 @@ class MetadataCommand extends CConsoleCommand {
 	}
 	
 	/**
+	* Clean up extracted text and just return words longer than 3 characters and non-stop words.
+	* Expects a string 
+	* Stop words are a modified list of those found at: List from http://www.textfixer.com/resources/common-english-words.txt
+	* @param $text
+	* @access private
+	* @return array
+	*/
+	private function getCleanText(array $tika_text) {
+		$stop_words = array("able","about","across","after","almost","also","among","because","been","cannot","could","dear","does","either","else","ever","every","from","have","hers","however","into","just","least","like","likely","might","most","must","neither","often","only","other","rather","said","says","should","since","some","than","that","their","them","then","there","these","they","this","twas","wants","were","what","when","where","which","while","whom","will","with","would","your");
+		$text = implode(' ', $tika_text);
+		$words = preg_split('/\s{1,}/i', $text);
+		$clean_words = array();
+		
+		foreach($words as $word) {
+			preg_replace('/(\.|!|\?|\{|\}|\,|\"|\'|;|:\(|\).?)/i', '', $word);
+			
+			if(strlen($word) > 3 && !in_array($word, $stop_words) && preg_match('/^\w/i', $word)) {
+				$clean_words[] = $word;
+			}
+		}
+		
+		return $clean_words;
+	}
+	
+	/**
+	* Extract top 5 keywords ie 5 words with the highest frequency count 
+	* @param $clean_words
+	* @access public
+	* @return string
+	*/
+	public function keywords(array $clean_words) {
+		$count = array_count_values($clean_words);
+		arsort($count);
+		$key_words = array_keys(array_slice($count, 0, 5, true));
+		
+		return implode(', ', $key_words);
+	}
+	
+	/**
+	* Return list of possible authors. Max of 2 at this point 
+	* @param $clean_words
+	* @access public
+	* @return string
+	*/
+	public function getAuthors(array $clean_words) {
+		$author = '';
+		$author_list = preg_grep('/author.{0,}/i', $clean_words);
+		if(!empty($author_list)) {
+			foreach($author_list as $key => $value) {
+				$author_words = (preg_match('/authors:?/i',$value)) ? 4 : 2;
+				for($i=1; $i<=$author_words; $i++) {
+					$author .= $clean_words[$key + $i] . ' ';
+					if($i % 2 == 0 && $i != $author_words) { 
+						$author = substr_replace($author, ', ', -1); 
+					}
+				}
+			}
+		}
+		return $author;
+	}
+	
+	/**
+	* Extract possible document title
+	* @param $text
+	* @access public
+	* @return string
+	*/
+	public function getTitle(array $tika_text) {
+		$title = '';
+		foreach($tika_text as $phrase) {
+			if(!empty($phrase)) {
+				$title .= $phrase;
+			} else {
+				break;
+			}
+		}
+	
+		return $title;
+	}
+	
+	/**
 	* Extracts and writes file level metadata
 	* Determine full text availability if not an audio, video or image file
 	* Update metadata to 1 in file info for every record the metadata command iterates over.
@@ -214,20 +296,28 @@ class MetadataCommand extends CConsoleCommand {
 				$this->tikaError($file['id'], $file_type);
 				$success = " Failed\r\n";
 			} else {
-				$this->writeMetadata($file_type, $metadata, $file['id'], $file['user_id']);
+				
 				
 				if(!preg_match('/(image|audio|video)/', $file_type)) {
 					$fulltext = $this->scrapeMetadata($file['temp_file_path'], 'text');
 					Utils::writeEvent($file['id'], 12);
 					
 					if(!empty($fulltext)) {
+						$metadata['doc_title'] = $this->getTitle($fulltext);
+						
+						$clean_text = $this->getCleanText($fulltext);
+						$metadata['doc_author'] = $this->getAuthors($clean_text);
+						$metadata['doc_keywords'] = $this->keywords($clean_text);		
+						
 						$this->updateFileInfo($file['id'], 'fulltext');	
 					}
 				} 
 			
 				$success = " Added\r\n";
 			}
+			$this->writeMetadata($file_type, $metadata, $file['id'], $file['user_id']);
 			$this->updateFileInfo($file['id'], 'metadata');
+			
 			echo $file['temp_file_path'] . $success; 
 		} 
 	}
