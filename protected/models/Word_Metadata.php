@@ -31,7 +31,6 @@ class Word_Metadata extends FileTypeActiveRecord {
 			'subject' => 'subject',
 			'title' => 'title',
 			'doc_title' => 'possible_doc_title',
-			'doc_author' => 'possible_doc_author',
 			'doc_keywords' => 'possible_doc_keywords',
 			'file_id' => 'file_id',
 			'user_id' => 'user_id'

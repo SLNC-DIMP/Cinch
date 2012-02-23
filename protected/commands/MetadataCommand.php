@@ -224,37 +224,15 @@ class MetadataCommand extends CConsoleCommand {
 	* @access public
 	* @return string
 	*/
-	public function keywords(array $clean_words) {
+	public function keywords(array $tika_text) {
+		$clean_words = $this->getCleanText($tika_text);
 		$count = array_count_values($clean_words);
 		arsort($count);
 		$key_words = array_keys(array_slice($count, 0, 5, true));
 		
 		return implode(', ', $key_words);
 	}
-	
-	/**
-	* Return list of possible authors. Max of 2 at this point 
-	* @param $clean_words
-	* @access public
-	* @return string
-	*/
-	public function getAuthors(array $clean_words) {
-		$author = '';
-		$author_list = preg_grep('/author.{0,}/i', $clean_words);
-		if(!empty($author_list)) {
-			foreach($author_list as $key => $value) {
-				$author_words = (preg_match('/authors:?/i',$value)) ? 4 : 2;
-				for($i=1; $i<=$author_words; $i++) {
-					$author .= $clean_words[$key + $i] . ' ';
-					if($i % 2 == 0 && $i != $author_words) { 
-						$author = substr_replace($author, ', ', -1); 
-					}
-				}
-			}
-		}
-		return $author;
-	}
-	
+
 	/**
 	* Extract possible document title
 	* @param $text
@@ -304,10 +282,7 @@ class MetadataCommand extends CConsoleCommand {
 					
 					if(!empty($fulltext)) {
 						$metadata['doc_title'] = $this->getTitle($fulltext);
-						
-						$clean_text = $this->getCleanText($fulltext);
-						$metadata['doc_author'] = $this->getAuthors($clean_text);
-						$metadata['doc_keywords'] = $this->keywords($clean_text);		
+						$metadata['doc_keywords'] = $this->keywords($fulltext);		
 						
 						$this->updateFileInfo($file['id'], 'fulltext');	
 					}
