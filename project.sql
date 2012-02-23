@@ -224,6 +224,9 @@ CREATE TABLE IF NOT EXISTS `Excel_Metadata` (
   `publisher` varchar(255) collate utf8_unicode_ci default NULL,
   `resourcename` varchar(255) collate utf8_unicode_ci default NULL,
   `title` varchar(255) collate utf8_unicode_ci default NULL,
+  `possible_doc_title` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `possible_doc_author` varchar(150) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `possible_doc_keywords` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `file_id` int(12) NOT NULL,
   `user_id` int(7) NOT NULL,
   PRIMARY KEY  (`id`)
@@ -356,21 +359,24 @@ CREATE TABLE IF NOT EXISTS `Jpg_Metadata` (
 --
 
 CREATE TABLE IF NOT EXISTS `PDF_Metadata` (
-  `id` int(10) NOT NULL auto_increment,
-  `author` varchar(250) collate utf8_unicode_ci default NULL,
-  `creation_date` varchar(30) collate utf8_unicode_ci default NULL COMMENT 'file creation date',
-  `last_modified` varchar(30) collate utf8_unicode_ci default NULL COMMENT 'file last modified date',
-  `creator` varchar(250) collate utf8_unicode_ci default NULL,
-  `producer` varchar(250) collate utf8_unicode_ci default NULL COMMENT 'software used to create the PDF',
-  `resource_name` varchar(250) collate utf8_unicode_ci default NULL COMMENT 'similar too but not the same as title',
-  `title` text collate utf8_unicode_ci,
-  `pages` int(5) default 0 COMMENT 'Number of pages',
-  `subject` varchar(250) collate utf8_unicode_ci default NULL,
-  `keywords` text collate utf8_unicode_ci,
-  `licensed_to` varchar(250) collate utf8_unicode_ci default NULL COMMENT 'who the pdf software is registered too',
-  `file_id` int(10) default NULL COMMENT 'id of associated file',
-  `user_id` int(6) default NULL COMMENT 'id of user associated with the file',
-  PRIMARY KEY  (`id`)
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `author` varchar(250) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `creation_date` varchar(30) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'file creation date',
+  `last_modified` varchar(30) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'file last modified date',
+  `creator` varchar(250) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `producer` varchar(250) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'software used to create the PDF',
+  `resource_name` varchar(250) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'similar too but not the same as title',
+  `title` text COLLATE utf8_unicode_ci,
+  `pages` int(5) DEFAULT '0' COMMENT 'Number of pages',
+  `subject` varchar(250) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `keywords` text COLLATE utf8_unicode_ci,
+  `licensed_to` varchar(250) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'who the pdf software is registered too',
+  `possible_doc_title` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `possible_doc_author` varchar(150) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `possible_doc_keywords` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `file_id` int(10) DEFAULT NULL COMMENT 'id of associated file',
+  `user_id` int(6) DEFAULT NULL COMMENT 'id of user associated with the file',
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 --
@@ -403,6 +409,9 @@ CREATE TABLE IF NOT EXISTS `PPT_Metadata` (
   `subject` varchar(255) collate utf8_unicode_ci default NULL,
   `title` varchar(255) collate utf8_unicode_ci default NULL,
   `pages` int(5) default NULL,
+  `possible_doc_title` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `possible_doc_author` varchar(150) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `possible_doc_keywords` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `file_id` int(12) NOT NULL,
   `user_id` int(7) NOT NULL,
   PRIMARY KEY  (`id`)
@@ -521,6 +530,9 @@ CREATE TABLE IF NOT EXISTS `Word_Metadata` (
   `resourcename` varchar(255) collate utf8_unicode_ci default NULL,
   `subject` varchar(255) collate utf8_unicode_ci default NULL,
   `title` varchar(255) collate utf8_unicode_ci default NULL,
+  `possible_doc_title` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `possible_doc_author` varchar(150) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `possible_doc_keywords` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `file_id` int(12) NOT NULL,
   `user_id` int(7) NOT NULL,
   PRIMARY KEY  (`id`)
