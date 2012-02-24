@@ -12,8 +12,14 @@ Funding for the CINCH: Capture, Ingest, & Checksum tool is made possible through
 an IMLS Sparks! Ignition grant.
 
 -------------------------
+Requirements
 
-After download, you may need to run the setup.sh shell file before initial running.
+* Currently Cinch will only run on *nix systems
+* PHP 5.3+
+* MySQL or SQLite
+* PECL AMQP extension needs to be installed
+
+After download, you may need to run the setup.sh shell file before initially running application.
 
 -------------------------
 
@@ -24,4 +30,5 @@ Parts of Cinch include:
 - jQuery UI <jqueryui.com>
 - Apache Tika <tika.apache.org>
 - RabbitMQ <rabbitmq.com>
+- ClamAV <http://www.clamav.net>
 
