@@ -28,7 +28,9 @@ class MetadataCsvCommand extends CConsoleCommand {
 		$sql = "SELECT id, checksum, file_type_id, user_id 
 		FROM file_info 
 		WHERE (temp_file_path IS NOT NULL OR temp_file_path != '')
-		AND metadata != 0
+		AND virus_check = 1
+		AND checksum_run = 1
+		AND metadata = 1
 		AND zipped != 1";
 		
 		$user_files = Yii::app()->db->createCommand($sql)

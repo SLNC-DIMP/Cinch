@@ -51,7 +51,7 @@ class virusCheckCommand extends CConsoleCommand {
 	*/
 	public function virusScan($file_path) {
 		exec('clamscan ' . $file_path, $output);
-	//	print_r($output) . "\n"; 
+	 
 		return $output;	
 	}
 	
@@ -64,7 +64,6 @@ class virusCheckCommand extends CConsoleCommand {
 	*/
 	private function scanOutput(array $output) {
 		$file_path = preg_replace('/:\s{1,}ok$/i', '', $output[0]);
-	//	$num_scanned = substr_replace(strrchr($output[6], ':'), '', 0, 2);
 		$num_infected = substr_replace(strrchr($output[7], ':'), '', 0, 2);
 		
 		return array('path' => $file_path, 'infected' => $num_infected);

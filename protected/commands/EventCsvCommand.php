@@ -24,10 +24,11 @@ class EventCsvCommand extends CConsoleCommand {
 				) AS event_listings
 				WHERE file_info.id = file_event_history.file_id
 				AND event_listings.id = file_event_history.event_id
-				AND zipped != 1
+				AND virus_check = 1
 				AND checksum_run = 1
 				AND metadata = 1
-				ORDER BY file_info.id ASC, event_listings.event_time ASC"; // add AND virus_check = 1
+				AND zipped != 1
+				ORDER BY file_info.id ASC, event_listings.event_time ASC"; 
 		
 		$event_list = Yii::app()->db->createCommand($sql)
 			->queryAll();

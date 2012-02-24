@@ -25,10 +25,9 @@ After download, you may need to run the setup.sh shell file before initially run
 
 Parts of Cinch include:
 
-- Yii Framework <yiiframework.com>
-- jQuery <jquery.com>
-- jQuery UI <jqueryui.com>
-- Apache Tika <tika.apache.org>
-- RabbitMQ <rabbitmq.com>
+- Yii Framework <http://www.yiiframework.com>
+- jQuery <http://jquery.com>
+- jQuery UI <http://jqueryui.com>
+- Apache Tika <http://tika.apache.org>
+- RabbitMQ <http://www.rabbitmq.com>
 - ClamAV <http://www.clamav.net>
-
