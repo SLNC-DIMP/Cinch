@@ -19,7 +19,7 @@ class virusCheckCommand extends CConsoleCommand {
 	}
 	
 	/**
-	* Write file viruse checked and if error detected to the db
+	* Write file virus checked and if error detected to the db
 	* @param $file_id
 	* @param $problem
 	* @access protected
@@ -33,6 +33,14 @@ class virusCheckCommand extends CConsoleCommand {
 	}
 	
 	/**
+	* Update virus definitions for ClamAV
+	* @access private
+	*/
+	private function updateDefs() {
+		system(escapeshellcmd('freshclam'));
+	}
+	
+	/**
 	* Scan a file for viruses
 	* 11 is error code for Virus detected
 	* 14 error for unable to delete file
@@ -42,22 +50,51 @@ class virusCheckCommand extends CConsoleCommand {
 	* @return mixed
 	*/
 	public function virusScan($file_path) {
-		exec('' . $file_path, $output);
-		
+		exec('clamscan ' . $file_path, $output);
+	//	print_r($output) . "\n"; 
 		return $output;	
 	}
 	
-	public function writeScan($file_path, $file_id, $user_id) {
-		if($output == false) {
+	/**
+	* Pull needed fields from virus scan output
+	* $output returned as an array with fields in a predictable order
+	* @param $output
+	* @access private
+	* @return array
+	*/
+	private function scanOutput(array $output) {
+		$file_path = preg_replace('/:\s{1,}ok$/i', '', $output[0]);
+	//	$num_scanned = substr_replace(strrchr($output[6], ':'), '', 0, 2);
+		$num_infected = substr_replace(strrchr($output[7], ':'), '', 0, 2);
+		
+		return array('path' => $file_path, 'infected' => $num_infected);
+	}
+	
+	/**
+	* Write scan results
+	* 11 is error code for Virus detected
+	* 14 error for unable to delete file
+	* @param $scan_results
+	* @param $file_id
+	* @param $user_id
+	* @access private
+	*/
+	private function writeScan(array $scan_results, $file_id, $user_id) {
+		$scan = $this->scanOutput($scan_results);
+		if($scan['infected'] > 0) {
 			ErrorFiles::writeError(11, $file_list['id'], $file_list['user_id']);
 			$this->fileUpdate($file_id, 1);
 			
-			$delete = @unlink($file_path);
+			$delete = @unlink($scan['path']);
 			if(!$delete) {
 				ErrorFiles::writeError(14, $file_list['id'], $file_list['user_id']);
+				echo "Virus detected, but not deleted! \r\n";
+			} else {
+				echo "Virus detected! \r\n";
 			}
 		} else {
 			$this->fileUpdate($file_id);
+			echo "No virus detected \r\n";
 		}
 	}
 	
@@ -65,9 +102,14 @@ class virusCheckCommand extends CConsoleCommand {
 		$files = $this->getFiles();
 		if(empty($files)) { exit; }
 		
+		$this->updateDefs();
 		foreach($files as $file) {
-			$this->virusScan($file['temp_file_path']);
-			$this->writeScan($file['temp_file_path'], $file['id'], $file['user_id']);
+			$scan = $this->virusScan($file['temp_file_path']);
+			if(!empty($scan)) {
+				$this->writeScan($scan, $file['id'], $file['user_id']);
+			} else {
+				echo "scan failed\r\n";
+			}
 		}
 	}
 }

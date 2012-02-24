@@ -153,7 +153,7 @@ class DownloadCommand extends CConsoleCommand {
 	* @return string
 	*/
 	public function cleanName($file, $file_id, $duplicate =  1) {
-		$patterns = array('/^(http|https):\/\//i', '/(\/|\s|\?|&|=|\\\)/');
+		$patterns = array('/^(http|https):\/\//i', '/(\/|\s|\?|&|=|\\\|\(|\)|\{|\})/');
 		$replacements = array('', '_');
 		$file_name = preg_replace($patterns, $replacements, $file);
 		$file_extension = $this->initFileType($file);
