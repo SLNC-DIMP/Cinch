@@ -235,15 +235,21 @@ class MetadataCommand extends CConsoleCommand {
 
 	/**
 	* Extract possible document title
+	* If opening segments are empty they are skipped until text segment is it.
+	* Then breaks off at next empty segment.
 	* @param $text
 	* @access public
 	* @return string
 	*/
 	public function getTitle(array $tika_text) {
 		$title = '';
+		$segments = 0;
 		foreach($tika_text as $phrase) {
 			if(!empty($phrase)) {
 				$title .= $phrase;
+				$segments++;
+			} elseif($segments == 0) {
+				continue;
 			} else {
 				break;
 			}
