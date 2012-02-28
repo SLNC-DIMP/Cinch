@@ -73,7 +73,7 @@ class purgeSystemCommand extends CConsoleCommand {
 			if($delete_file == false) {
 				$this->logError($this->getDateTime() . " - $file_id, with path: $file_path could not be deleted.");
 			} else {
-			
+				$this->updateFileInfo($file_id);
 			}
 		}
 	}
@@ -131,14 +131,13 @@ class purgeSystemCommand extends CConsoleCommand {
 	}
 	
 	public function run() {
-		$this->clearLists('upload');
-		$this->clearLists('files_for_download');
-		
 		$files = $this->filesToDelete();
 		if(empty($files)) { exit; }
 		
+		$this->clearLists('upload');
+		$this->clearLists('files_for_download');
+		
 		foreach($files as $file) {
-			$this->clearLists('');
 			$this->removeFile($file['temp_file_path'], $file['id']);
 		}
 		
