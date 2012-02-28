@@ -28,18 +28,6 @@ class purgeSystemCommand extends CConsoleCommand {
 	}
 	
 	/**
-	* Delete a downloaded (via Curl or FTP) file's information from the database.
-	* These records are linked to a file on the server
-	* @access protected
-	* @return object Yii DAO object
-	*/
-	protected function clearDb($file_id) {
-		$sql = "DELETE FROM " . $this->file_info . " WHERE id = ?";
-		$write_zip = Yii::app()->db->createCommand($sql)
-			->execute(array($file_id));
-	}
-	
-	/**
 	* Delete processed download lists, url lists, and ftp lists from the database.
 	* These records aren't linked to a file on the server
 	* 1 = processed
@@ -62,6 +50,17 @@ class purgeSystemCommand extends CConsoleCommand {
 	}
 	
 	/**
+	* Update file_info table if an expired file is successfully deleted
+	* @access private
+	* @return object Yii DAO object
+	*/
+	private function updateFileInfo($file_id) {
+		$sql = "UPDATE file_info SET temp_file_path = '', expired_deleted = 1 WHERE id = ?";
+		$clear = Yii::app()->db->createCommand($sql)
+			->execute(array($file_id));
+	}
+	
+	/**
 	* Remove file from the file system
 	* @param $file_path
 	* @access public
@@ -73,9 +72,10 @@ class purgeSystemCommand extends CConsoleCommand {
 			
 			if($delete_file == false) {
 				$this->logError($this->getDateTime() . " - $file_id, with path: $file_path could not be deleted.");
-			} 
+			} else {
+			
+			}
 		}
-		$this->clearDb($file_id);
 	}
 	
 	/**
@@ -138,6 +138,7 @@ class purgeSystemCommand extends CConsoleCommand {
 		if(empty($files)) { exit; }
 		
 		foreach($files as $file) {
+			$this->clearLists('');
 			$this->removeFile($file['temp_file_path'], $file['id']);
 		}
 		

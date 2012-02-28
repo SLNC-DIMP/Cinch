@@ -201,7 +201,8 @@ INSERT INTO `event_list` (`id`, `event_name`) VALUES
 (9, 'Zipped for download'),
 (10, 'Deleted - expired'),
 (11, 'File integrity check'),
-(12, 'Full text check');
+(12, 'Full text check'),
+(13, 'Full text check');
 
 
 --
@@ -282,6 +283,7 @@ CREATE TABLE IF NOT EXISTS `file_info` (
   `last_modified` varchar(15) collate utf8_unicode_ci default NULL COMMENT 'file last modified timestamp',
   `zipped` int(1) NOT NULL default '0' COMMENT 'Yes/No added to a Zip Archive',
   `problem_file` int(1) NOT NULL default '0',
+  `expired_deleted` int(1) NOT NULL DEFAULT '0' COMMENT 'set to 1 for expired files that have been deleted.',
   `user_id` int(6) NOT NULL default '0' COMMENT "CONSTRAINT FOREIGN KEY (user_id) REFERENCES user(id)",
   `upload_file_id` int(6) NOT NULL default '0' COMMENT "CONSTRAINT FOREIGN KEY (upload_file_id) REFERENCES user_uploads(id)",
   PRIMARY KEY  (`id`)

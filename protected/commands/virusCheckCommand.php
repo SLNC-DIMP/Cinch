@@ -34,6 +34,7 @@ class virusCheckCommand extends CConsoleCommand {
 	
 	/**
 	* Update virus definitions for ClamAV
+	* @TODO may need sudo privileges
 	* @access private
 	*/
 	private function updateDefs() {

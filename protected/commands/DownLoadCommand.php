@@ -27,7 +27,6 @@ class DownloadCommand extends CConsoleCommand {
 			->select('*')
 			->from($this->download_file_list)
 			->where('processed = :processed', array(':processed' => 0))
-			->limit(55)
 			->queryAll();
 			
 		return $get_file_list;
@@ -248,7 +247,7 @@ class DownloadCommand extends CConsoleCommand {
 	public function currentDir($current_dir) {
 		$file_count = count(scandir($current_dir)) - 2;
 		
-		if($file_count < 5) {
+		if($file_count < 500) {
 			$working_dir = $current_dir;
 		} else {
 			$dir_suffix = strrchr($current_dir, '_');
