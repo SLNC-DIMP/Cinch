@@ -49,6 +49,7 @@ class ChecksumCommand extends CConsoleCommand {
 	* Move duplicate files from their current directory to their own directory under a users directory
 	* If a file has a duplicate checksum and duplicate filename it goes into duplicate checksum folder
 	* Duplicate filenames are taken care of at download time to prevent naming collisions
+	* Escape paths with double quoates or they may not copy or delete files if weird characters in path.
 	* Uses cp -p for Linux
 	* Uses ROBOCOPY /COPYALL for Windows (won't copy files if permissions are different)
 	* Creates directory if there isn't one and makes it writable.
@@ -88,7 +89,7 @@ class ChecksumCommand extends CConsoleCommand {
 		$new_path = implode('/', $split_path);
 		
 		if(strtoupper(substr(php_uname('s'), 0, 3)) !== 'WIN') {
-			$command = "cp -p $file_path $new_path"; 
+			$command = 'cp -p' . "$file_path" . "$new_path"; 
 		} else {
 			$root_path = '';
 			for($i=0; $i<count($windows_root) - 1; $i++) {
@@ -97,7 +98,7 @@ class ChecksumCommand extends CConsoleCommand {
 			$base_path = substr_replace($root_path, '', -1); // strip trailing slash
 			$file_name = end($windows_root);
 		
-			$command = "ROBOCOPY $base_path $dup_dir_path $file_name /COPYALL"; 
+			$command = 'ROBOCOPY' . "$base_path" . "$dup_dir_path" . "$file_name" . ' /COPYALL'; 
 		}
 		
 		$move_file = system(escapeshellcmd($command), $retval);
@@ -111,10 +112,10 @@ class ChecksumCommand extends CConsoleCommand {
 		if($this->createChecksum($new_path) == $this->checksum->getOneFileChecksum($file_id)) {
 			Utils::writeEvent($file_id, 6);
 			Utils::writeError($file_id, $error_id);
-			unlink($file_path);
+			@unlink("$file_path");
 		} else {
 			Utils::writeError($file_id, 13);
-			unlink($new_path);
+			@unlink("$new_path");
 			
 			return false;
 		}
@@ -198,4 +199,4 @@ class ChecksumCommand extends CConsoleCommand {
 			}
 		}
 	}
-} // update `files_for_download` set `processed`=0 WHERE `processed`=1
+} 

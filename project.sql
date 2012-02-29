@@ -151,7 +151,7 @@ CREATE TABLE IF NOT EXISTS `error_type` (
   `id` int(3) NOT NULL auto_increment,
   `error_message` varchar(75) collate utf8_unicode_ci NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=16 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=17 ;
 
 --
 -- Dumping data for table `error_type`
@@ -172,7 +172,8 @@ INSERT INTO `error_type` (`id`, `error_message`) VALUES
 (12, 'Unsupported file type'),
 (13, 'Unable to move file'),
 (14, 'Unable to delete file'),
-(15, 'Unable to determine full text status');
+(15, 'Unable to determine full text status'),
+(16, 'Virus check couldn''t scan file');
 
 
 --

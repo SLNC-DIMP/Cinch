@@ -9,7 +9,7 @@ class virusCheckCommand extends CConsoleCommand {
 	*/
 	public function getFiles() {
 		$files = Yii::app()->db->createCommand()
-			->select('id, temp_file_path, user_id')
+			->select('id, temp_file_path')
 			->from('file_info')
 			->where(':virus_check = virus_check AND :temp_file_path != temp_file_path', 
 			  array(':virus_check' => 0, ':temp_file_path' => ''))
@@ -42,11 +42,12 @@ class virusCheckCommand extends CConsoleCommand {
 	* @access private
 	*/
 	private function updateDefs() {
-		system(escapeshellcmd('sudo freshclam'));
+		system(escapeshellcmd('freshclam'));
 	}
 	
 	/**
 	* Scan a file for viruses
+	* Wrap path in double quotes or it will probably fail if weird characters in file name.
 	* 4 event code for virus scan run
 	* @param $file_path
 	* @param $file_id
@@ -54,8 +55,12 @@ class virusCheckCommand extends CConsoleCommand {
 	* @return mixed
 	*/
 	public function virusScan($file_path, $file_id) {
-		exec('clamdscan ' . $file_path, $output);
+		$output = array();
+		exec('clamdscan ' . "$file_path", $output);
 	 	Utils::writeEvent($file_id, 4);
+		
+		$output['path'] = $file_path;
+		$output['file_id'] = $file_id;
 		
 		return $output;	
 	}
@@ -68,11 +73,11 @@ class virusCheckCommand extends CConsoleCommand {
 	* @return array
 	*/
 	private function scanOutput(array $output) {
-		$file_path = preg_replace('/:\s{1,}ok$/i', '', $output[0]);
-		//$num_infected = substr_replace(strrchr($output[7], ':'), '', 0, 2);
-		$num_infected = substr_replace(strrchr($output[3], ':'), '', 0, 2);
+		if(isset($output[3])) {
+			$output['infected'] = substr_replace(strrchr($output[3], ':'), '', 0, 2);
+		} 
+		return $output;
 		
-		return array('path' => $file_path, 'infected' => $num_infected);
 	}
 	
 	/**
@@ -85,31 +90,33 @@ class virusCheckCommand extends CConsoleCommand {
 	* @param $user_id
 	* @access private
 	*/
-	private function writeScan(array $scan_results, $file_id, $user_id) {
+	private function writeScan(array $scan_results) {
 		$scan = $this->scanOutput($scan_results);
-		
-		if(empty($scan) || $scan['infected'] > 0) {
-			if(empty($scan)) {
+	
+		if(!isset($scan['infected']) || $scan['infected'] > 0) {
+			if(!isset($scan['infected'])) {
 				$error_id = 16;
 				$message_text = "Scan failed";
 			} else {
 				$error_id = 11;
 				$message_text = "Virus detected";
 			}
-			Utils::writeError($error_id, $file_list['id'], $file_list['user_id']);
 			
-			$delete = @unlink($scan['path']);
+			Utils::writeError($scan['file_id'], $error_id);
+			
+			$delete = @unlink("{$scan['path']}");
+			
 			if(!$delete) {
-				Utils::writeError(14, $file_list['id'], $file_list['user_id']);
-				$this->fileUpdate($file_id, 1);
-				echo $message_text . ", but file could not be deleted! - $file_id  \r\n";
+				Utils::writeError($scan['file_id'], 14);
+				echo $message_text . ", but file could not be deleted! -" .  $scan['file_id'] . "\r\n";
+				exit;
 			} else {
-				$this->fileUpdate($file_id, 1);
-				echo $message_text . "! File deleted - $file_id \r\n";
+				echo $message_text . "! File deleted -" . $scan['file_id'] . "\r\n";
 			}
+			$this->fileUpdate($scan['file_id'], 1);
 		} else {
-			$this->fileUpdate($file_id);
-			echo "No virus detected - $file_id \r\n";
+			$this->fileUpdate($scan['file_id']);
+			echo "No virus detected -" . $scan['file_id'] . "\r\n";
 		}
 	}
 	
@@ -120,7 +127,7 @@ class virusCheckCommand extends CConsoleCommand {
 	//	$this->updateDefs();
 		foreach($files as $file) {
 			$scan = $this->virusScan($file['temp_file_path'], $file['id']);
-			$this->writeScan($scan, $file['id'], $file['user_id']);
+			$this->writeScan($scan);
 		}
 	}
 }
