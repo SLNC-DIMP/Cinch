@@ -89,7 +89,7 @@ class ChecksumCommand extends CConsoleCommand {
 		$new_path = implode('/', $split_path);
 		
 		if(strtoupper(substr(php_uname('s'), 0, 3)) !== 'WIN') {
-			$command = 'cp -p' . "$file_path" . "$new_path"; 
+			$command = 'cp -p ' . "$file_path" . ' ' . "$new_path"; 
 		} else {
 			$root_path = '';
 			for($i=0; $i<count($windows_root) - 1; $i++) {
@@ -98,7 +98,7 @@ class ChecksumCommand extends CConsoleCommand {
 			$base_path = substr_replace($root_path, '', -1); // strip trailing slash
 			$file_name = end($windows_root);
 		
-			$command = 'ROBOCOPY' . "$base_path" . "$dup_dir_path" . "$file_name" . ' /COPYALL'; 
+			$command = 'ROBOCOPY ' . "$base_path" . ' ' . "$dup_dir_path" . ' ' . "$file_name" . ' /COPYALL'; 
 		}
 		
 		$move_file = system(escapeshellcmd($command), $retval);
