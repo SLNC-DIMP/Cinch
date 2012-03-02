@@ -76,8 +76,8 @@ class virusCheckCommand extends CConsoleCommand {
 		if(isset($output[3])) {
 			$output['infected'] = substr_replace(strrchr($output[3], ':'), '', 0, 2);
 		} 
-		return $output;
 		
+		return $output;
 	}
 	
 	/**
