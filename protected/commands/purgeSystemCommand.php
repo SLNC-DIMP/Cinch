@@ -8,9 +8,11 @@
 class purgeSystemCommand extends CConsoleCommand {
 	public $file_info = 'file_info';
 	public $error_list;
+	public $mail_user;
 	
 	public function __construct() {
 		$this->error_list = Yii::getPathOfAlias('application.messages') . '\/' . 'error_list_' . date('Y-m-d') . '.txt';
+		$this->mail_user = new mailUser;
 	}
 	
 	/**
@@ -29,7 +31,6 @@ class purgeSystemCommand extends CConsoleCommand {
 		return $files;
 	}
 	
-	
 	/**
 	* Get generated csv and zip files to delete
 	* Get user upload lists
@@ -38,18 +39,27 @@ class purgeSystemCommand extends CConsoleCommand {
 	* @access public
 	* @return object Yii DAO object
 	*/
-	public function generatedFiles($table, $email_reminder = false) {
-		
+	public function generatedFiles($table) {
 		$field = ($table == 'upload') ? 'process_time' : 'creationdate';
-		$date = ($email_reminder == false) ? 30 : 20;
 			
 		$generated_files = Yii::app()->db->createCommand()
 			->select('id, path, user_id')
 			->from($table)
-			->where(':' . $field . '<=' . $field, array(':'.$field => $this->timeOffset($date)))
+			->where(':' . $field . '<=' . $field, array(':'.$field => $this->timeOffset()))
 			->queryAll();
 		
 		return $files;
+	}
+	
+	public function getUserReminders() {
+		$sql = "SELECT user_id FROM zip_gz_downloads
+			WHERE creationdate <= " . $this->timeOffset(20) .
+		  " GROUP BY user_id";
+		
+		$user_list = Yii::app()->db->createCommand($sql)
+			->execute();
+		
+		return $user_list;
 	}
 	
 	/**
@@ -145,23 +155,6 @@ class purgeSystemCommand extends CConsoleCommand {
 	}
 	
 	/**
-	* Mails user a reminder that they have files what will be deleted in 10 days.
-	* @access protected
-	*/
-	protected function mailReminder($user_email) {
-		$subject = 'You have files on Cinch! marked for deletion';
-		$from = 'From: webmaster@example.com' . "\r\n";
-			
-		$message = "You have files marked for deletion from Cinch!\r\n";
-		$message .= "They will be deleted in 10 days from now.\r\n";
-		$message .= "If you haven't done so please retrieve your downloads soon.\r\n";
-		$message .= "\r\n";
-		$message .="Thanks, from your Cinch administrators";
-			
-		mail($user_email, $subject, $message, $headers);
-	}
-	
-	/**
 	* Mails file and directory deletion failures to sys. admin
 	* @access protected
 	*/
@@ -180,12 +173,24 @@ class purgeSystemCommand extends CConsoleCommand {
 		}
 	}
 	
+	/**
+	* Mails user a reminder that they have files what will be deleted in 10 days.
+	* @access public
+	*/
 	public function actionCheck() {
-		
+		$users = $this->getUserReminders();
 		if(empty($users)) { exit; }
 		
+		$subject = 'You have files on Cinch! marked for deletion';
+			
+		$message = "You have files marked for deletion from Cinch!\r\n";
+		$message .= "They will be deleted in 10 days from now.\r\n";
+		$message .= "If you haven't done so please retrieve your downloads soon.\r\n";
+		$message .= "\r\n";
+		$message .= "Thanks, from your Cinch administrators";
+		
 		foreach($users as $user) {
-			$this->mailReminder($user);
+			$this->mail_user->UserMail($user['user_id'], $subject, $message);
 		}
 	}
 	

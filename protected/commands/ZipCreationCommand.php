@@ -232,7 +232,11 @@ class ZipCreationCommand extends CConsoleCommand {
 			$this->zipClose($zip_file, $user_path);
 			
 			$this->writePath($user_id, $user_path); 
-			$this->mail_user->UserMail($user_id); 
+			
+			// mail user
+			$subject = 'Your Cinch files are ready';
+			$message = 'You have files ready for download from Cinch.  Please login at http://cinch.nclive.org to retrieve your files.';
+			$this->mail_user->UserMail($user_id, $subject, $message); 
 		} 
 	}
 }

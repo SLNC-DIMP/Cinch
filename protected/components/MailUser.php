@@ -23,11 +23,11 @@ class MailUser {
 	* @access public
 	* @return boolean
 	*/
-	public function UserMail($user_id) {
+	public function UserMail($user_id, $subject, $message) {
 		$user = $this->getUser($user_id);
 		$to = $user['email'];
-		$subject = 'Your Cinch files are ready';
-		$message = 'You have files ready for download from Cinch.  Please login at http://cinch.nclive.org to retrieve your files.';
+	//	$subject = 'Your Cinch files are ready';
+	//	$message = 'You have files ready for download from Cinch.  Please login at http://cinch.nclive.org to retrieve your files.';
 		$headers = 'From: cinch_admin@nclive.org' . "\r\n";
 		
 		$mail_sent = mail($to, $subject, $message, $headers);
