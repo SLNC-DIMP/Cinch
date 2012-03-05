@@ -1,6 +1,9 @@
 <?php
 /**
 * @todo this should probably be done last
+* @todo delete user files as well as generated csv and zip files
+* @todo delete enteries from files for download, user upload lists, zip and csv paths from table
+* @todo update file_info table.  DON'T DELETE record.
 */
 class purgeSystemCommand extends CConsoleCommand {
 	public $file_info = 'file_info';
@@ -17,11 +20,23 @@ class purgeSystemCommand extends CConsoleCommand {
 	* @return object Yii DAO object
 	*/
 	public function filesToDelete() {
-		$thirty_days = time() - (30 * 24 * 60 * 60);
 		$files = Yii::app()->db->createCommand()
-			->select('id, temp_file_path, problem_file')
+			->select('id, temp_file_path')
 			->from($this->file_info)
-			->where(':download_time <= download_time', array(':download_time' => $thirty_days))
+			->where(':download_time <= download_time', array(':download_time' => $this->timeOffset()))
+			->queryAll();
+		
+		return $files;
+	}
+	
+	public function generatedFiles($table, $email_reminder = false) {
+			$field = ($table == 'csv_meta_paths') ? 'creationdate' : 'process_time';
+			$date = ($email_reminder == false) ? 30 : 20;
+			
+			$generated_files = Yii::app()->db->createCommand()
+			->select('id, path')
+			->from($table)
+			->where(':' . $field . '<=' . $field, array(':'.$field => $this->timeOffset($date)))
 			->queryAll();
 		
 		return $files;
@@ -47,6 +62,14 @@ class purgeSystemCommand extends CConsoleCommand {
 	*/
 	protected function getDateTime() {
 		return date('c');
+	}
+	
+	/**
+	* Doing it this way so it'll work in SQLite and MySQL.  SQLite doesn't have DATE_SUB() function
+	* Returns something like 2012-03-04 14:23:46
+	*/
+	protected function timeOffset($offset = 30) {
+		return date('Y-m-d H:i:s', time() - ($offset * 24 * 60 * 60));
 	}
 	
 	/**
@@ -109,6 +132,23 @@ class purgeSystemCommand extends CConsoleCommand {
 		$fh = fopen($this->error_list, 'ab');
 		fwrite($fh, $error_text . ",\r\n");
 		fclose($fh);
+	}
+	
+	/**
+	* Mails user a reminder that they have files what will be deleted in 10 days.
+	* @access protected
+	*/
+	protected function mailReminder($user_email) {
+		$subject = 'You have files on Cinch! marked for deletion';
+		$from = 'From: webmaster@example.com' . "\r\n";
+			
+		$message = "You have files marked for deletion from Cinch!\r\n";
+		$message .= "They will be deleted in 10 days from now.\r\n";
+		$message .= "If you haven't done so please retrieve your downloads soon.\r\n";
+		$message .= "\r\n";
+		$message .="Thanks, from your Cinch administrators";
+			
+		mail($user_email, $subject, $message, $headers);
 	}
 	
 	/**
