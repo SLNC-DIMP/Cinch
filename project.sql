@@ -495,7 +495,7 @@ CREATE TABLE IF NOT EXISTS `user_session_info` (
 CREATE TABLE IF NOT EXISTS `upload` (
   `id` int(7) NOT NULL auto_increment,
   `user_id` int(6) NOT NULL COMMENT "CONSTRAINT FOREIGN KEY (user_id) REFERENCES user(id)",
-  `upload_path` varchar(250) collate utf8_unicode_ci NOT NULL,
+  `path` varchar(250) collate utf8_unicode_ci NOT NULL,
   `processed` int(1) NOT NULL default '0',
   `process_time` timestamp NULL default NULL,
   PRIMARY KEY  (`id`)
@@ -551,7 +551,7 @@ CREATE TABLE IF NOT EXISTS `Word_Metadata` (
 CREATE TABLE IF NOT EXISTS `zip_gz_downloads` (
   `id` int(9) NOT NULL auto_increment,
   `user_id` int(7) NOT NULL,
-  `archive_path` varchar(500) collate utf8_unicode_ci NOT NULL,
+  `path` varchar(500) collate utf8_unicode_ci NOT NULL,
   `downloaded` int(1) NOT NULL default '0',
   `creationdate` timestamp NOT NULL default CURRENT_TIMESTAMP,
   PRIMARY KEY  (`id`)

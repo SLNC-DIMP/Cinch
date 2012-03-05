@@ -29,12 +29,22 @@ class purgeSystemCommand extends CConsoleCommand {
 		return $files;
 	}
 	
+	
+	/**
+	* Get generated csv and zip files to delete
+	* Get user upload lists
+	* @param $table
+	* @param $email_reminder
+	* @access public
+	* @return object Yii DAO object
+	*/
 	public function generatedFiles($table, $email_reminder = false) {
-			$field = ($table == 'csv_meta_paths') ? 'creationdate' : 'process_time';
-			$date = ($email_reminder == false) ? 30 : 20;
+		
+		$field = ($table == 'upload') ? 'process_time' : 'creationdate';
+		$date = ($email_reminder == false) ? 30 : 20;
 			
-			$generated_files = Yii::app()->db->createCommand()
-			->select('id, path')
+		$generated_files = Yii::app()->db->createCommand()
+			->select('id, path, user_id')
 			->from($table)
 			->where(':' . $field . '<=' . $field, array(':'.$field => $this->timeOffset($date)))
 			->queryAll();
@@ -67,6 +77,8 @@ class purgeSystemCommand extends CConsoleCommand {
 	/**
 	* Doing it this way so it'll work in SQLite and MySQL.  SQLite doesn't have DATE_SUB() function
 	* Returns something like 2012-03-04 14:23:46
+	* @access protected
+	* @return string
 	*/
 	protected function timeOffset($offset = 30) {
 		return date('Y-m-d H:i:s', time() - ($offset * 24 * 60 * 60));
@@ -90,14 +102,12 @@ class purgeSystemCommand extends CConsoleCommand {
 	* @return boolean
 	*/
 	public function removeFile($file_path, $file_id) {
-		if(file_exists($file_path)) {
-			$delete_file = @unlink($file_path);
+		$delete_file = @unlink($file_path);
 			
-			if($delete_file == false) {
-				$this->logError($this->getDateTime() . " - $file_id, with path: $file_path could not be deleted.");
-			} else {
-				$this->updateFileInfo($file_id);
-			}
+		if($delete_file == false) {
+			$this->logError($this->getDateTime() . " - $file_id, with path: $file_path could not be deleted.");
+		} else {
+			$this->updateFileInfo($file_id);
 		}
 	}
 	
@@ -170,7 +180,16 @@ class purgeSystemCommand extends CConsoleCommand {
 		}
 	}
 	
-	public function run() {
+	public function actionCheck() {
+		
+		if(empty($users)) { exit; }
+		
+		foreach($users as $user) {
+			$this->mailReminder($user);
+		}
+	}
+	
+	public function actionDelete() {
 		$files = $this->filesToDelete();
 		if(empty($files)) { exit; }
 		

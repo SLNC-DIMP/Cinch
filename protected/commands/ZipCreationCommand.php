@@ -83,7 +83,7 @@ class ZipCreationCommand extends CConsoleCommand {
 		
 		$type = ($type == 'curl') ? 'curl' : 'ftp';
 
-		return Yii::getPathOfAlias('application.' . $type . '_downloads') . DIRECTORY_SEPARATOR . $user_name[0];
+		return Yii::getPathOfAlias('application.' . $type . '_downloads') . DIRECTORY_SEPARATOR . $user_name[0] . '/downloads_' . date('Y_m_d'). '.zip';
 	}
 	
 	/**
@@ -94,7 +94,7 @@ class ZipCreationCommand extends CConsoleCommand {
 	* @return object Yii DAO object
 	*/
 	public function writePath($user_id, $path) {
-		$sql = "INSERT INTO zip_gz_downloads(user_id, archive_path) VALUES(?, ?)";
+		$sql = "INSERT INTO zip_gz_downloads(user_id, path) VALUES(?, ?)";
 		$write_zip = Yii::app()->db->createCommand($sql)
 			->execute(array($user_id, $path));
 	}
@@ -148,7 +148,8 @@ class ZipCreationCommand extends CConsoleCommand {
 	*/
 	public function zipOpen($zip_path) {
 		$zip = new ZipArchive();
-		if ($zip->open($zip_path . '/downloads_' . date('Y_m_d'). '.zip', ZIPARCHIVE::CREATE) !== true) {
+		
+		if ($zip->open($zip_path, ZIPARCHIVE::CREATE) !== true) {
 			echo "cannot open <$path>\r\n";
 			$zip = false;
 		}

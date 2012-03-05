@@ -12,7 +12,7 @@
  * @property User $user
  */
 class Upload extends CActiveRecord {
-	public $upload_path;
+	public $path;
 	
 	/**
 	 * Returns the static model of the specified AR class.
@@ -36,7 +36,7 @@ class Upload extends CActiveRecord {
 	 */
 	public function rules() {
 		return array(
-			array('upload_path', 'file', 'types'=>'txt, csv'),
+			array('path', 'file', 'types'=>'txt, csv'),
 			array('user_id, processed', 'safe')
 		);
 	}
@@ -66,7 +66,7 @@ class Upload extends CActiveRecord {
 
 		$criteria->compare('id',$this->id);
 		$criteria->compare('user_id',$this->user_id);
-		$criteria->compare('upload_path',$this->upload_path,true);
+		$criteria->compare('path',$this->upload_path,true);
 		$criteria->compare('processed',$this->processed);
 
 		return new CActiveDataProvider($this, array(

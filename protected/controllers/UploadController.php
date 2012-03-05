@@ -121,7 +121,7 @@ class UploadController extends Controller {
 		$model = new Upload;
 		
 		if(isset($_POST['Upload'])) {
-			$file = CUploadedFile::getInstance($model,'upload_path');
+			$file = CUploadedFile::getInstance($model,'path');
 			
 			if($model->validate()){
 				if(!is_dir($user_upload_dir)) {
@@ -131,7 +131,7 @@ class UploadController extends Controller {
 				$mod_name = $this->encryptName($file->getName());
 				$user_id = Yii::app()->user->id;
 				$upload_path = $user_upload_dir . '/' . $mod_name;
-				$model->attributes = array('user_id' => $user_id, 'upload_path' => $upload_path);
+				$model->attributes = array('user_id' => $user_id, 'path' => $upload_path);
 				$uploaded = $file->saveAs($upload_path);
 				
 				if($uploaded) { $model->save(); }
