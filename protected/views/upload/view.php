@@ -20,7 +20,7 @@ $this->menu=array(
 	'attributes'=>array(
 		'id',
 		'user_id',
-		'upload_path',
+		'path',
 		'processed',
 	),
 )); ?>

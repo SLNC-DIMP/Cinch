@@ -8,8 +8,8 @@
 	<?php echo CHtml::encode($data->user_id); ?>
 	<br />
 
-	<b><?php echo CHtml::encode($data->getAttributeLabel('upload_path')); ?>:</b>
-	<?php echo CHtml::encode($data->upload_path); ?>
+	<b><?php echo CHtml::encode($data->getAttributeLabel('path')); ?>:</b>
+	<?php echo CHtml::encode($data->path); ?>
 	<br />
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('processed')); ?>:</b>

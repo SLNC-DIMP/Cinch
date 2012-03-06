@@ -7,7 +7,7 @@ $this->breadcrumbs=array(
 
 $this->menu=array(
 	array('label'=>'List Upload', 'url'=>array('index')),
-	array('label'=>'Create Upload', 'url'=>array('create')),
+//	array('label'=>'Create Upload', 'url'=>array('create')),
 	array('label'=>'View Upload', 'url'=>array('view', 'id'=>$model->id)),
 	array('label'=>'Manage Upload', 'url'=>array('admin')),
 );

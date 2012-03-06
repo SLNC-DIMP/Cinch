@@ -16,9 +16,9 @@
 	</div>
 
 	<div class="row">
-		<?php echo $form->labelEx($model,'upload_path'); ?>
-		<?php echo $form->textField($model,'upload_path',array('size'=>60,'maxlength'=>250)); ?>
-		<?php echo $form->error($model,'upload_path'); ?>
+		<?php echo $form->labelEx($model,'path'); ?>
+		<?php echo $form->textField($model,'path',array('size'=>60,'maxlength'=>250)); ?>
+		<?php echo $form->error($model,'path'); ?>
 	</div>
 
 	<div class="row">

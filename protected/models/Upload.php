@@ -5,7 +5,7 @@
  * The followings are the available columns in table 'user_uploads':
  * @property integer $id
  * @property integer $user_id
- * @property string $upload_path
+ * @property string  $path
  * @property integer $processed
  *
  * The followings are the available model relations:
@@ -66,7 +66,7 @@ class Upload extends CActiveRecord {
 
 		$criteria->compare('id',$this->id);
 		$criteria->compare('user_id',$this->user_id);
-		$criteria->compare('path',$this->upload_path,true);
+		$criteria->compare('path',$this->path,true);
 		$criteria->compare('processed',$this->processed);
 
 		return new CActiveDataProvider($this, array(
