@@ -121,7 +121,7 @@ class ChecksumCommand extends CConsoleCommand {
 		}
 		
 		Utils::writeError($file_id, 3);
-		echo "Duplicate checksum found for: " . $file_list['temp_file_path'] . "\r\n";
+		echo "Duplicate checksum found for: " . $file_path . "\r\n";
 		
 		return $new_path;
 	}

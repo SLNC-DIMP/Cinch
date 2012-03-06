@@ -145,7 +145,7 @@ class MetadataCommand extends CConsoleCommand {
 		$constants = new ReflectionClass('MetadataCommand');
 		$file_types = $constants->getConstants();
 		
-		if(!empty($metadata) || !is_null($metadata)) {
+		if(!empty($metadata)) { // || !is_null($metadata)
 			$clean_file_type = $metadata['Content-Type'];
 			
 			if(!in_array($clean_file_type, $file_types)) {
@@ -180,6 +180,7 @@ class MetadataCommand extends CConsoleCommand {
 	*/
 	public function getMetadata($file) {
 		$metadata = $this->scrapeMetadata($file);
+		if(empty($metadata)) { return $metadata; }
 		
 		foreach($metadata as $metadata_value) {
 			$field_name = trim(stristr($metadata_value, ':', true)); // returns portion of string before the colon
@@ -187,9 +188,10 @@ class MetadataCommand extends CConsoleCommand {
 				$formatted_value = stristr($metadata_value, ':'); 
 			} else {
 				$formatted_value = strrchr($metadata_value, ':');
-			}		
+			}	
 			$formatted_metadata[$field_name] = trim(substr_replace($formatted_value, '', 0, 1));
 		}
+
 		return $formatted_metadata;
 	}
 	
@@ -281,7 +283,6 @@ class MetadataCommand extends CConsoleCommand {
 				$success = " Failed\r\n";
 			} else {
 				
-				
 				if(!preg_match('/(image|audio|video)/', $file_type)) {
 					$fulltext = $this->scrapeMetadata($file['temp_file_path'], 'text');
 					Utils::writeEvent($file['id'], 12);
@@ -293,10 +294,10 @@ class MetadataCommand extends CConsoleCommand {
 						$this->updateFileInfo($file['id'], 'fulltext');	
 					}
 				} 
-			
+				$this->writeMetadata($file_type, $metadata, $file['id'], $file['user_id']);
 				$success = " Added\r\n";
 			}
-			$this->writeMetadata($file_type, $metadata, $file['id'], $file['user_id']);
+			
 			$this->updateFileInfo($file['id'], 'metadata');
 			
 			echo $file['temp_file_path'] . $success; 
