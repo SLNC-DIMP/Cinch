@@ -101,7 +101,7 @@ class virusCheckCommand extends CConsoleCommand {
 			}
 		}
 		
-		if(!isset($output['errors']) && !isset($output['scan_time'])) {
+		if(!isset($output['errors']) && !isset($output['scan_time']) && !empty($output)) {
 			$output['infected'] = $this->cleanString($output[3]);
 		}
 		
