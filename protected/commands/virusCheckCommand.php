@@ -93,7 +93,7 @@ class virusCheckCommand extends CConsoleCommand {
 			$output['errors'] = $this->cleanString($output[3]);
 		} 
 		
-		if(preg_match('/^Time/i', $output[4])) {
+		if(isset($output['errors']) && preg_match('/^Time/i', $output[4])) {
 			$get_time = $this->cleanString($output[4]);
 			
 			if(preg_match('/^[0].[0]{3,}/', $get_time)) {
@@ -122,7 +122,11 @@ class virusCheckCommand extends CConsoleCommand {
 	*/
 	private function writeScan(array $scan_results) {
 		$scan = $this->scanOutput($scan_results);
-		if($scan['errors'] > 0 && $scan['scan_time'] == 1) { echo "skipped, service down\n"; return; }
+		if((isset($scan['errors']) && $scan['errors'] > 0) && 
+		   (isset($scan['scan_time']) && $scan['scan_time'] == 1)) { 
+		   	echo "skipped, service down\n"; 
+			return;
+		}
 		
 		if(!isset($scan['infected']) || $scan['infected'] > 0) {
 			if(!isset($scan['infected'])) {
