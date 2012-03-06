@@ -53,11 +53,11 @@ class purgeSystemCommand extends CConsoleCommand {
 	
 	public function getUserReminders() {
 		$sql = "SELECT user_id FROM zip_gz_downloads
-			WHERE creationdate <= " . $this->timeOffset(20) .
-		  " GROUP BY user_id";
+			WHERE creationdate <= '" . $this->timeOffset(20) .
+		  "' GROUP BY user_id";
 		
 		$user_list = Yii::app()->db->createCommand($sql)
-			->execute();
+			->queryAll();
 		
 		return $user_list;
 	}
@@ -184,8 +184,8 @@ class purgeSystemCommand extends CConsoleCommand {
 		$subject = 'You have files on Cinch! marked for deletion';
 			
 		$message = "You have files marked for deletion from Cinch!\r\n";
-		$message .= "They will be deleted in 10 days from now.\r\n";
-		$message .= "If you haven't done so please retrieve your downloads soon.\r\n";
+		$message .= "They will be deleted 10 days from now.\r\n";
+		$message .= "If you haven't done so please retrieve your downloads soon from http://cinch.nclive.org.\r\n";
 		$message .= "\r\n";
 		$message .= "Thanks, from your Cinch administrators";
 		

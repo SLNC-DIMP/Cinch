@@ -26,8 +26,6 @@ class MailUser {
 	public function UserMail($user_id, $subject, $message) {
 		$user = $this->getUser($user_id);
 		$to = $user['email'];
-	//	$subject = 'Your Cinch files are ready';
-	//	$message = 'You have files ready for download from Cinch.  Please login at http://cinch.nclive.org to retrieve your files.';
 		$headers = 'From: cinch_admin@nclive.org' . "\r\n";
 		
 		$mail_sent = mail($to, $subject, $message, $headers);
@@ -36,6 +34,8 @@ class MailUser {
 			$username = $user['username'];
 			$error = date('c') . " Email could not be sent to: $username, regarding their downloads.\r\n";
 			Yii::log($message, 'system.console.CConsoleCommand', 'warning');
+		} else {
+			echo 'Mail sent to: ' . $user['email'] . "\n";
 		}
 	}
 }
