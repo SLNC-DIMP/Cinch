@@ -6,7 +6,7 @@ $this->breadcrumbs=array(
 
 $this->menu=array(
 	array('label'=>'List Upload', 'url'=>array('index')),
-	array('label'=>'Create Upload', 'url'=>array('create')),
+//	array('label'=>'Create Upload', 'url'=>array('create')),
 	array('label'=>'Update Upload', 'url'=>array('update', 'id'=>$model->id)),
 	array('label'=>'Delete Upload', 'url'=>'#', 'linkOptions'=>array('submit'=>array('delete','id'=>$model->id),'confirm'=>'Are you sure you want to delete this item?')),
 	array('label'=>'Manage Upload', 'url'=>array('admin')),

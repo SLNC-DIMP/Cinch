@@ -66,16 +66,44 @@ class virusCheckCommand extends CConsoleCommand {
 	}
 	
 	/**
+	* Strips out scan results from a scan
+	* @param $string
+	* @access private
+	* @return string
+	*/
+	private function cleanString($string) {
+		return substr_replace(strrchr($string, ':'), '', 0, 2);
+	}
+	
+	/**
 	* Pull needed fields from virus scan output
-	* $output returned as an array with fields in a predictable order
+	* $output returned as an array with fields in a fairly predictable order
+	* [2] is set to total infected files on failed scan attempt
+	* [3] is set to total infected files on successful scan attempt
+	* [3] is set to total errors on failed scan attempt
+	* Can't get actual error message out of $output 
+	* Hence combination of scan_time and error detected to determine if it's one file or the whole system
 	* @param $output
 	* @access private
 	* @return array
 	*/
 	private function scanOutput(array $output) {
-		if(isset($output[3])) {
-			$output['infected'] = substr_replace(strrchr($output[3], ':'), '', 0, 2);
+		
+		if(preg_match('/^Total\serrors/i', $output[3])) {
+			$output['errors'] = $this->cleanString($output[3]);
 		} 
+		
+		if(preg_match('/^Time/i', $output[4])) {
+			$get_time = $this->cleanString($output[4]);
+			
+			if(preg_match('/^[0].[0]{3,}/', $get_time)) {
+				$output['scan_time'] = 1;
+			}
+		}
+		
+		if(!isset($output['errors']) && !isset($output['scan_time'])) {
+			$output['infected'] = $this->cleanString($output[3]);
+		}
 		
 		return $output;
 	}
@@ -85,6 +113,8 @@ class virusCheckCommand extends CConsoleCommand {
 	* 11 is error code for Virus detected
 	* 14 error for unable to delete file
 	* 16 Virus check couldn't scan file
+	* return on error and scan_time of 1.  
+	* This means service is down and scan can't take place. Otherwise all files in scan get deleted!!!!
 	* @param $scan_results
 	* @param $file_id
 	* @param $user_id
@@ -92,7 +122,8 @@ class virusCheckCommand extends CConsoleCommand {
 	*/
 	private function writeScan(array $scan_results) {
 		$scan = $this->scanOutput($scan_results);
-	
+		if($scan['errors'] > 0 && $scan['scan_time'] == 1) { echo "skipped, service down\n"; return; }
+		
 		if(!isset($scan['infected']) || $scan['infected'] > 0) {
 			if(!isset($scan['infected'])) {
 				$error_id = 16;
@@ -109,7 +140,6 @@ class virusCheckCommand extends CConsoleCommand {
 			if(!$delete) {
 				Utils::writeError($scan['file_id'], 14);
 				echo $message_text . ", but file could not be deleted! -" .  $scan['file_id'] . "\r\n";
-				exit;
 			} else {
 				echo $message_text . "! File deleted -" . $scan['file_id'] . "\r\n";
 			}

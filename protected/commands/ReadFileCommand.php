@@ -59,7 +59,7 @@ class ReadFileCommand extends CConsoleCommand {
 		if(empty($file_lists)) { exit; }
      
 		foreach($file_lists as $file_list) {
-			$url_list = SplFixedArray::fromArray(file($file_list['upload_path'], FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES));
+			$url_list = SplFixedArray::fromArray(file($file_list['path'], FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES));
 
 			foreach($url_list as $url) {
 				if(trim($url)=='')
