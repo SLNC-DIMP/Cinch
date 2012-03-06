@@ -553,6 +553,7 @@ CREATE TABLE IF NOT EXISTS `zip_gz_downloads` (
   `user_id` int(7) NOT NULL,
   `path` varchar(500) collate utf8_unicode_ci NOT NULL,
   `downloaded` int(1) NOT NULL default '0',
+  `deletion_reminder` int(1) NOT NULL DEFAULT '0' COMMENT '1- reminder sent. 0-reminder hasn''t been sent.',
   `creationdate` timestamp NOT NULL default CURRENT_TIMESTAMP,
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;

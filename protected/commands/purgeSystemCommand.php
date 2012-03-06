@@ -51,15 +51,33 @@ class purgeSystemCommand extends CConsoleCommand {
 		return $files;
 	}
 	
+	/**
+	* Get list of users with zip files that are at least 20 days old to send them notices of impending file deletions.
+	* @access public
+	* @return object Yii DAO object
+	*/
 	public function getUserReminders() {
-		$sql = "SELECT user_id FROM zip_gz_downloads
-			WHERE creationdate <= '" . $this->timeOffset(20) .
+		$sql = "SELECT id, user_id FROM zip_gz_downloads
+			WHERE deletion_reminder = 0 
+			AND creationdate <= '" . $this->timeOffset(20) .
 		  "' GROUP BY user_id";
 		
 		$user_list = Yii::app()->db->createCommand($sql)
 			->queryAll();
 		
 		return $user_list;
+	}
+	
+	/**
+	* Update zip file list to show that file has been accounted for in email deletion reminders 
+	* and user doens't need to be reminded again about this file.
+	* @access protected
+	* @return object Yii DAO object
+	*/
+	protected function reminderSent($file_id) {
+		$sql = "UPDATE zip_gz_downloads SET deletion_reminder = 1 WHERE id = ?";
+		$reminder_sent = Yii::app()->db->createCommand($sql)
+			->execute(array($file_id));
 	}
 	
 	/**
@@ -190,7 +208,10 @@ class purgeSystemCommand extends CConsoleCommand {
 		$message .= "Thanks, from your Cinch administrators";
 		
 		foreach($users as $user) {
-			$this->mail_user->UserMail($user['user_id'], $subject, $message);
+			$mail_sent = $this->mail_user->UserMail($user['user_id'], $subject, $message);
+			if($mail_sent) {
+				$this->reminderSent($user['id']);
+			}
 		}
 	}
 	

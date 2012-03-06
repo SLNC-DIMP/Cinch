@@ -37,5 +37,7 @@ class MailUser {
 		} else {
 			echo 'Mail sent to: ' . $user['email'] . "\n";
 		}
+		
+		return $mail_sent;
 	}
 }
