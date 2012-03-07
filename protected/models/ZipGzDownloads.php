@@ -6,7 +6,7 @@
  * The followings are the available columns in table 'zip_gz_downloads':
  * @property integer $id
  * @property integer $user_id
- * @property string $archive_path
+ * @property string $path
  * @property integer $downloaded
  * @property string $creationdate
  */
@@ -37,12 +37,12 @@ class ZipGzDownloads extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('user_id, archive_path, creationdate', 'required'),
+			array('user_id, path, creationdate', 'required'),
 			array('user_id, downloaded', 'numerical', 'integerOnly'=>true),
 			array('archive_path', 'length', 'max'=>500),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, user_id, archive_path, downloaded, creationdate', 'safe', 'on'=>'search'),
+			array('id, user_id, path, downloaded, creationdate', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -65,7 +65,7 @@ class ZipGzDownloads extends CActiveRecord
 		return array(
 			'id' => 'ID',
 			'user_id' => 'User',
-			'archive_path' => 'Archive Path',
+			'path' => 'Path',
 			'downloaded' => 'Downloaded',
 			'creationdate' => 'Creationdate',
 		);
@@ -84,7 +84,7 @@ class ZipGzDownloads extends CActiveRecord
 
 		$criteria->compare('id',$this->id);
 		$criteria->compare('user_id',$this->user_id);
-		$criteria->compare('archive_path',$this->archive_path,true);
+		$criteria->compare('path',$this->path,true);
 		$criteria->compare('downloaded',$this->downloaded);
 		$criteria->compare('creationdate',$this->creationdate,true);
 

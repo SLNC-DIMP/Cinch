@@ -19,7 +19,7 @@ $this->menu=array(
 	'attributes'=>array(
 		'id',
 		'user_id',
-		'archive_path',
+		'path',
 		'downloaded',
 		'creationdate',
 	),

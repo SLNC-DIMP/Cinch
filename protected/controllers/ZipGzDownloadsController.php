@@ -130,7 +130,7 @@ class ZipGzDownloadsController extends Controller
 	*/
 	public function actionDownload($id) {
 		$model = $this->loadModel($id);
-		$fullPath = $model['archive_path'];
+		$fullPath = $model['path'];
 		
 		// Must be fresh start
 		if( headers_sent() ) {
