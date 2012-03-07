@@ -9,7 +9,7 @@ class ErrorCsvCommand extends CConsoleCommand {
 	public $makecsv;
 	
 	public function __construct() {
-		$this->makecsv = new makeCsv;
+		$this->makecsv = new MakeCsv;
 	}
 	
 	/**

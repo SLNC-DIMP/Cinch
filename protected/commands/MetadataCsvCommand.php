@@ -13,7 +13,7 @@ class MetadataCsvCommand extends CConsoleCommand {
 	
 	public function __construct() {
 		$this->checksum = new Checksum;
-		$this->makecsv = new makeCsv;
+		$this->makecsv = new MakeCsv;
 	}
 	
 	/**
@@ -107,9 +107,9 @@ class MetadataCsvCommand extends CConsoleCommand {
 			->from("$table_name")
 			->where(':file_id = file_id and :user_id = user_id',
 			  array(':file_id' => $file_id, ':user_id' => $user_id))
-			->queryAll();
-			
+			->queryAll();		
 		
+		$fields = array();
 		foreach($metadata as $key => $value) {
 			$fields[$key] = $value;
 		}
