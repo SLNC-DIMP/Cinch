@@ -9,7 +9,7 @@ class EventCsvCommand extends CConsoleCommand {
 	public $makecsv;
 	
 	public function __construct() {
-		$this->makecsv = new makeCsv;
+		$this->makecsv = new MakeCsv;
 	}
 	/**
 	* Gets event listings for a user's files 
