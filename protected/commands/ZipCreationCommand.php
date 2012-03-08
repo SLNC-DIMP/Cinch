@@ -125,7 +125,7 @@ class ZipCreationCommand extends CConsoleCommand {
 		$manifest_pieces = preg_split('/(\/|\\\)/', $zip_path);
 		array_pop($manifest_pieces);
 		$manifest_path = implode('/', $manifest_pieces);
-		$full_path = $manifest_path . '/' . 'file_manifest.csv';
+		$full_path = $manifest_path . '/' . 'file_manifest_' . date('Y-m-d') . '.csv';
 		$file_count = $zip->numFiles;
 		
 		$fh = fopen($full_path, 'wb');
