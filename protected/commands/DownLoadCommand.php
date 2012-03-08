@@ -101,6 +101,7 @@ class DownloadCommand extends CConsoleCommand {
 	/**
 	* Updates arbitrary number of basic file information fields for downloaded file
 	* Pass in an associative array of field names and values
+	* @TODO refactor this out into its own class or Utils so it can be used everywhere
 	* @param $args array of fields/values to update
 	* @access public 
 	* @return string last insert id
@@ -118,7 +119,7 @@ class DownloadCommand extends CConsoleCommand {
 				$sql .= "$field = ?,";
 			}
 		}
-		$sql = substr_replace($sql, ' ', -1); // remove trailing slash
+		$sql = substr_replace($sql, ' ', -1); // remove trailing comma
 		$sql .= "WHERE id = ?";
 		
 		$update_files = Yii::app()->db->createCommand($sql)
@@ -248,7 +249,7 @@ class DownloadCommand extends CConsoleCommand {
 	public function currentDir($current_dir) {
 		$file_count = count(scandir($current_dir)) - 2;
 		
-		if($file_count < 500) {
+		if($file_count < 20) {
 			$working_dir = $current_dir;
 		} else {
 			$dir_suffix = strrchr($current_dir, '_');
@@ -289,7 +290,7 @@ class DownloadCommand extends CConsoleCommand {
 	private function writeCurlError($file_id) {
 		$error_id = 1;
 		Utils::writeError($file_id, $error_id);
-		$this->updateFileInfo(array('problem_file' => $error_id), $file_id);
+		$this->updateFileInfo(array('problem_file' => $error_id, 'events_frozen' => 1), $file_id);
 		
 		return $error_id;
 	}

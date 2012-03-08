@@ -200,7 +200,6 @@ class ZipCreationCommand extends CConsoleCommand {
 			
 			$user_path = $this->getUserPath($user_id);
 			$user_files = $this->getUserFiles($user_id);
-			$user_csv_files = $this->getCsvFiles($user_id);
 			
 			$zip_file = $this->zipOpen($user_path);
 			
@@ -221,6 +220,7 @@ class ZipCreationCommand extends CConsoleCommand {
 			// create file event CSV now that file events should be over
 			$this->event_csv->actionIndex();
 			
+			$user_csv_files = $this->getCsvFiles($user_id);
 			foreach($user_csv_files as $user_csv_file) {
 				$this->zipWrite($zip_file, $user_csv_file['path']);
 				$this->updateFileInfo($user_csv_file['id'], 'csv_meta_paths');

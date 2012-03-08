@@ -4,7 +4,8 @@
 * Don't want it named that as would show up as a command instead of merely being clase for others to descend from.
 */
 Yii::import('application.models.MakeCsv');
- 
+Yii::import('application.models.Utils');
+
 class EventCsvCommand extends CConsoleCommand {
 	public $makecsv;
 	
@@ -17,7 +18,7 @@ class EventCsvCommand extends CConsoleCommand {
 	* @return object Yii DAO
 	*/
 	public function getEvents() {
-		$sql = "SELECT org_file_path, temp_file_path, event_name, event_time, file_info.user_id
+		$sql = "SELECT file_info.id AS file_key, org_file_path, temp_file_path, event_name, event_time, file_info.user_id
 				FROM file_info, file_event_history, (
 					SELECT *
 					FROM event_list
@@ -28,6 +29,7 @@ class EventCsvCommand extends CConsoleCommand {
 				AND checksum_run = 1
 				AND metadata = 1
 				AND zipped = 1
+				AND events_frozen = 0
 				ORDER BY file_info.id ASC, file_event_history.event_time ASC"; 
 		
 		$event_list = Yii::app()->db->createCommand($sql)
@@ -66,6 +68,8 @@ class EventCsvCommand extends CConsoleCommand {
 			}
 			fputcsv($fh, array($file['org_file_path'], $file_path, $file['event_name'], $file['event_time']));
 			fclose($fh);
+		} else {
+			echo "Nuthin'\n";
 		}
 	}
 	
@@ -80,7 +84,10 @@ class EventCsvCommand extends CConsoleCommand {
 			foreach($events as $event) {
 				$csv_path = $this->makecsv->getUserPath($event['user_id']);
 				$this->makeReport($event, $csv_path);
+				Utils::freezeEvents($event['file_key']);
 			}
+		} else {
+			echo "Nuthin'\n";
 		}
 	}
 }

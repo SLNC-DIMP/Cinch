@@ -88,7 +88,6 @@ class virusCheckCommand extends CConsoleCommand {
 	* @return array
 	*/
 	private function scanOutput(array $output) {
-		
 		if(preg_match('/^Total\serrors/i', $output[3])) {
 			$output['errors'] = $this->cleanString($output[3]);
 		} 
@@ -148,6 +147,7 @@ class virusCheckCommand extends CConsoleCommand {
 				echo $message_text . "! File deleted -" . $scan['file_id'] . "\r\n";
 			}
 			$this->fileUpdate($scan['file_id'], 1);
+			Utils::freezeEvents($scan['file_id']);
 		} else {
 			$this->fileUpdate($scan['file_id']);
 			echo "No virus detected -" . $scan['file_id'] . "\r\n";

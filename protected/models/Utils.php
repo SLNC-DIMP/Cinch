@@ -46,4 +46,18 @@ class Utils {
 			->bindParam(":event_id", $event_id, PDO::PARAM_INT)
 			->execute();
 	}
+	
+	/**
+	* Set events_frozen flag to true in file_info table.  
+	* Events for this file have ended.
+	* @param $file_id
+	* @static
+	* @access public 
+	* @return object Yii DAO
+	*/
+	public static function freezeEvents($file_id) {
+		$sql = "UPDATE file_info SET events_frozen = 1 WHERE id = ?";
+		$freeze = Yii::app()->db->createCommand($sql);
+		$freeze->execute(array($file_id));	
+	}
 }
