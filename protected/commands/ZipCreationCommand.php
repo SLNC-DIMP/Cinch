@@ -2,15 +2,18 @@
 /**
 * Blows up if EventCsv command if not explcitly called.
 */
+Yii::import('application.models.MakCsv');
 Yii::import('application.commands.EventCsvCommand');
 Yii::import('application.models.Utils');
 
 class ZipCreationCommand extends CConsoleCommand {
+	public $make_csv;
 	public $event_csv;
 	public $mail_user;
 	private $file_info = 'file_info';
 	
 	public function __construct() {
+		$this->make_csv = new MakeCsv;
 		$this->event_csv = new EventCsvCommand;
 		$this->mail_user = new MailUser;
 	} 
@@ -43,7 +46,7 @@ class ZipCreationCommand extends CConsoleCommand {
 		$user_files = Yii::app()->db->createCommand()
 			->select('id, temp_file_path, user_id')
 			->from($this->file_info)
-			->where(array('and', ':user_id = user_id', 'checksum_run = 1', 'metadata = 1')) // add in virus_check = 1
+			->where(array('and', ':user_id = user_id', 'checksum_run = 1', 'metadata = 1', 'virus_check = 1', 'temp_file_path' != ''))
 			->bindParam(":user_id", $user_id, PDO::PARAM_INT)
 			->queryAll();
 	
@@ -200,7 +203,7 @@ class ZipCreationCommand extends CConsoleCommand {
 			
 			$user_path = $this->getUserPath($user_id);
 			$user_files = $this->getUserFiles($user_id);
-			
+			var_dump($user_files); exit;
 			$zip_file = $this->zipOpen($user_path);
 			
 			$file_count = 0;
@@ -226,10 +229,11 @@ class ZipCreationCommand extends CConsoleCommand {
 				$this->updateFileInfo($user_csv_file['id'], 'csv_meta_paths');
 			}
 			
-			$manifest = $this->createManifest($zip_file, $user_path);
-			$this->zipWrite($zip_file, $manifest);
+			$manifest_path = $this->createManifest($zip_file, $user_path);
+			$this->zipWrite($zip_file, $manifest_path);
 			$this->zipClose($zip_file, $user_path);
 			
+			$this->make_csv->addPath($user_id, $manifest_path); // add manifest to db
 			$this->writePath($user_id, $user_path); 
 			
 			// mail user
