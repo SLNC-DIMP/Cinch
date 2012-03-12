@@ -21,11 +21,20 @@ class purgeSystemCommand extends CConsoleCommand {
 	* @access public
 	* @return object Yii DAO object
 	*/
-	public function filesToDelete() {
-		$files = Yii::app()->db->createCommand()
-			->select('id, temp_file_path')
-			->from($this->file_info)
-			->where(':download_time <= download_time', array(':download_time' => $this->timeOffset()))
+	public function filesToDelete() { 
+		$sql = "SELECT id, temp_file_path FROM file_info
+			WHERE download_time <= :download_time
+			AND   virus_check = :virus_check
+			AND   checksum_run = :checksum_run
+			AND   metadata = :metadata
+			AND   temp_file_path != :path";
+		
+		$files = Yii::app()->db->createCommand($sql)
+			->bindParam(':download_time', $this->timeOffset(1))
+			->bindValue(':virus_check', 1)
+			->bindValue(':checksum_run', 1)
+			->bindValue(':metadata', 1) 
+			->bindValue(':path', '')
 			->queryAll();
 		
 		return $files;
@@ -33,7 +42,9 @@ class purgeSystemCommand extends CConsoleCommand {
 	
 	/**
 	* Get generated csv and zip files to delete
+	* creationdate is used with csv and zip files
 	* Get user upload lists
+	* Used process_time
 	* @param $table
 	* @param $email_reminder
 	* @access public
@@ -45,7 +56,7 @@ class purgeSystemCommand extends CConsoleCommand {
 		$generated_files = Yii::app()->db->createCommand()
 			->select('id, path, user_id')
 			->from($table)
-			->where(':' . $field . '<=' . $field, array(':'.$field => $this->timeOffset()))
+			->where(':' . $field . '<=' . $field, array(':'.$field => $this->timeOffset(1)))
 			->queryAll();
 		
 		return $files;
@@ -58,11 +69,13 @@ class purgeSystemCommand extends CConsoleCommand {
 	*/
 	public function getUserReminders() {
 		$sql = "SELECT id, user_id FROM zip_gz_downloads
-			WHERE deletion_reminder = 0 
-			AND creationdate <= '" . $this->timeOffset(20) .
-		  "' GROUP BY user_id";
+			WHERE deletion_reminder = :deletion_reminder 
+			AND creationdate <= :creationdate 
+			GROUP BY user_id";
 		
 		$user_list = Yii::app()->db->createCommand($sql)
+			->bindValue(':deletion_reminder', 0)
+			->bindParam(':creationdate', $this->timeOffset(20))
 			->queryAll();
 		
 		return $user_list;
@@ -89,6 +102,7 @@ class purgeSystemCommand extends CConsoleCommand {
 	*/
 	protected function clearLists($table) {
 		$sql = "DELETE FROM $table WHERE processed = ?";
+	
 		$clear = Yii::app()->db->createCommand($sql)
 			->execute(array(1));
 	}
@@ -109,7 +123,9 @@ class purgeSystemCommand extends CConsoleCommand {
 	* @return string
 	*/
 	protected function timeOffset($offset = 30) {
-		return date('Y-m-d H:i:s', time() - ($offset * 24 * 60 * 60));
+		$time = time() - ($offset * 24 * 60 * 60);
+		
+		return date('Y-m-d H:i:s', $time);
 	}
 	
 	/**
@@ -155,7 +171,7 @@ class purgeSystemCommand extends CConsoleCommand {
 				$delete_dir = @rmdir($dir);
 				
 				if($delete_dir == false) {
-					$this->logError($this->getDateTime() . " - Directory: $dir_path could not be deleted.");
+					$this->logError($this->getDateTime() . " - Directory: $dir could not be deleted.");
 				}
 			}
 		}
@@ -218,9 +234,9 @@ class purgeSystemCommand extends CConsoleCommand {
 	public function actionDelete() {
 		$files = $this->filesToDelete();
 		if(empty($files)) { exit; }
-		
-		$this->clearLists('upload');
+	
 		$this->clearLists('files_for_download');
+	//	$this->clearLists('upload');
 		
 		foreach($files as $file) {
 			$this->removeFile($file['temp_file_path'], $file['id']);
