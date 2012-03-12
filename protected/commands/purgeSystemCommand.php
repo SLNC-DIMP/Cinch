@@ -46,7 +46,6 @@ class purgeSystemCommand extends CConsoleCommand {
 	* Get user upload lists
 	* Used process_time
 	* @param $table
-	* @param $email_reminder
 	* @access public
 	* @return object Yii DAO object
 	*/
@@ -83,6 +82,7 @@ class purgeSystemCommand extends CConsoleCommand {
 	/**
 	* Update zip file list to show that file has been accounted for in email deletion reminders 
 	* and user doens't need to be reminded again about this file.
+	* @param $file_id
 	* @access protected
 	* @return object Yii DAO object
 	*/
@@ -96,6 +96,7 @@ class purgeSystemCommand extends CConsoleCommand {
 	* Delete processed download lists, url lists, and ftp lists from the database.
 	* These records aren't linked to a file on the server
 	* 1 = processed
+	* @param $table
 	* @access protected
 	* @return object Yii DAO object
 	*/
@@ -118,6 +119,7 @@ class purgeSystemCommand extends CConsoleCommand {
 	/**
 	* Doing it this way so it'll work in SQLite and MySQL.  SQLite doesn't have DATE_SUB() function
 	* Returns something like 2012-03-04 14:23:46
+	* @param $offset
 	* @access protected
 	* @return string
 	*/
@@ -129,6 +131,7 @@ class purgeSystemCommand extends CConsoleCommand {
 	
 	/**
 	* Update file_info table if an expired file is successfully deleted
+	* @param $file_id
 	* @access private
 	* @return object Yii DAO object
 	*/
@@ -138,6 +141,13 @@ class purgeSystemCommand extends CConsoleCommand {
 			->execute(array($file_id));
 	}
 	
+	/**
+	* Update a generated file table if an expired file is successfully deleted
+	* @param $table
+	* @param $file_id
+	* @access private
+	* @return object Yii DAO object
+	*/
 	private function updateGenerated($table, $file_id) {
 		$sql = "DELETE FROM $table WHERE id = ?";
 		$delete = Yii::app()->db->createCommand($sql)
@@ -147,6 +157,8 @@ class purgeSystemCommand extends CConsoleCommand {
 	/**
 	* Remove file from the file system
 	* @param $file_path
+	* @param $file_id
+	* @param $table
 	* @access public
 	* @return boolean
 	*/
@@ -180,6 +192,22 @@ class purgeSystemCommand extends CConsoleCommand {
 				if($delete_dir == false) {
 					$this->logError($this->getDateTime() . " - Directory: $dir could not be deleted.");
 				}
+			}
+		}
+	}
+	
+	/**
+	* Loop through the list of files to delete, remove them, and update appropriate table
+	* @param $files
+	* @param $downloaded_list
+	* @access public
+	*/
+	public function fileProcess($files, $download_list = false) {
+		$file_path = ($download_list == false) ? $file['path'] : $file['temp_file_path'];
+		
+		if(is_array($files) && !empty($files)) {
+			foreach($files as $file) {
+				$this->removeFile($file_path, $file['id']);
 			}
 		}
 	}
@@ -240,30 +268,18 @@ class purgeSystemCommand extends CConsoleCommand {
 	
 	public function actionDelete() {
 		$zip_files = $this->generatedFiles('zip_gz_downloads');
-		if(is_array($zip_files) && !empty($zip_files)) {
-			foreach($zip_files as $zip_file) {
-				$this->removeFile($zip_file['path'], $zip_file['id']);
-				$this->updateGenerated('zip_gz_downloads', $zip_file['id']);
-			}
-		} 
+		$this->fileProcess($zip_files);
 		
 		$csv_files = $this->generatedFiles('csv_meta_paths');
-		if(is_array($csv_files) && !empty($csv_files)) {
-			foreach($csv_files as $csv_file) {
-				$this->removeFile($csv_file['path'], $csv_file['id']);
-				$this->updateGenerated('csv_meta_paths', $csv_file['id']);
-			}
-		}
+		$this->fileProcess($csv_files);
 		
-		$this->clearLists('files_for_download');
-		$this->clearLists('upload');
+		$this->clearLists('files_for_download'); 
+		
+		$upload_lists = $this->generatedFiles('upload'); 
+		$this->fileProcess($upload_lists);
 		
 		$downloaded_files = $this->filesToDelete();
-		if(empty($downloaded_files)) { exit; }
-		
-		foreach($downloaded_files as $downloaded_file) {
-			$this->removeFile($downloaded_file['temp_file_path'], $downloaded_file['id']);
-		}
+		$this->fileProcess($downloaded_files, true);
 		
 		$this->removeDir(Yii::getPathOfAlias('application.uploads'));
 		$this->mailError();
