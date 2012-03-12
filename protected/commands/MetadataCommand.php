@@ -25,7 +25,7 @@ class MetadataCommand extends CConsoleCommand {
 			->select('id, temp_file_path, user_id, upload_file_id')
 			->from('file_info')
 			->where(array('and', 'metadata = 0', 
-					array('or', 'temp_file_path != ""', 'temp_file_path IS NOT NULL')))
+					array('or', "temp_file_path != ''", 'temp_file_path IS NOT NULL')))
 			->queryAll();
 			
 		return $get_file_list;
@@ -82,8 +82,8 @@ class MetadataCommand extends CConsoleCommand {
 	*/
 	public function updateFileInfo($file_id, $field = 'metadata', $file_type_id = NULL) {
 		if($field == 'metadata') {
-			$sql = "UPDATE file_info SET metadata = 1 WHERE id = ?";
-			$values = array($file_id);
+			$sql = "UPDATE file_info SET metadata = 1, file_type_id = ? WHERE id = ?";
+			$values = array($file_type_id, $file_id);
 		} else {
 			$sql = "UPDATE file_info SET fulltext_available = 1 WHERE id = ?";
 			$values = array($file_id);
@@ -106,6 +106,21 @@ class MetadataCommand extends CConsoleCommand {
 		Utils::setProblemFile($file_id);
 		
 		return false;
+	}
+	
+	/**
+	* Gets the id number of the Tika file type string
+	* @param $file_type
+	* @access private
+	* @return integer
+	*/
+	private function getFiletypeId($file_type) {
+		$sql = "SELECT id FROM file_type WHERE file_type = :file_type";
+		$file_id = Yii::app()->db->createCommand($sql)
+			->bindParam(":file_type", $file_type, PDO::PARAM_STR)
+			->queryColumn();
+		
+		return $file_id[0];
 	}
 	/********************* End of Model elements ***************************************/
 	
@@ -157,16 +172,6 @@ class MetadataCommand extends CConsoleCommand {
 		
 		return $clean_file_type;
 	} 
-	
-	private function getFiletypeId($file_type) {
-		if(!is_numeric($file_type)) {
-			$file_type_id = '';
-		} else {
-			return false;
-		}
-		
-		return $file_type_id;
-	}
 	
 	/**
 	* Takes metadata file and creates associative array of it.
@@ -270,13 +275,13 @@ class MetadataCommand extends CConsoleCommand {
 	*/
 	public function run() {
 		$files = $this->getFileList();
-		
 		if(empty($files)) { exit; }
 		
 		foreach($files as $file) {
 			$metadata = $this->getMetadata($file['temp_file_path']);
 			Utils::writeEvent($file['id'], 8);
 			$file_type = $this->getTikaFileType($metadata);
+			$file_type_id  = $this->getFiletypeId($file_type);
 			
 			if($file_type == 4 || $file_type == 12) {
 				$this->tikaError($file['id'], $file_type);
@@ -298,7 +303,7 @@ class MetadataCommand extends CConsoleCommand {
 				$success = " Added\r\n";
 			}
 			
-			$this->updateFileInfo($file['id'], 'metadata');
+			$this->updateFileInfo($file['id'], 'metadata', $file_type_id);
 			
 			echo $file['temp_file_path'] . $success; 
 		} 
