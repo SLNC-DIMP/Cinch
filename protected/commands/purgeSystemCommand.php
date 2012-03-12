@@ -11,7 +11,7 @@ class purgeSystemCommand extends CConsoleCommand {
 	public $mail_user;
 	
 	public function __construct() {
-		$this->error_list = Yii::getPathOfAlias('application.messages') . '\/' . 'error_list_' . date('Y-m-d') . '.txt';
+		$this->error_list = Yii::getPathOfAlias('application.messages') . '/' . 'error_list_' . date('Y-m-d') . '.txt';
 		$this->mail_user = new mailUser;
 	}
 	
@@ -52,14 +52,13 @@ class purgeSystemCommand extends CConsoleCommand {
 	*/
 	public function generatedFiles($table) {
 		$field = ($table == 'upload') ? 'process_time' : 'creationdate';
-			
-		$generated_files = Yii::app()->db->createCommand()
-			->select('id, path, user_id')
-			->from($table)
-			->where(':' . $field . '<=' . $field, array(':'.$field => $this->timeOffset(1)))
+		
+		$sql = "SELECT id, path, user_id FROM $table WHERE $field <= :timeoffset";
+		$generated_files = Yii::app()->db->createCommand($sql)
+			->bindParam(':timeoffset', $this->timeOffset(1))
 			->queryAll();
 		
-		return $files;
+		return $generated_files;
 	}
 	
 	/**
@@ -139,19 +138,27 @@ class purgeSystemCommand extends CConsoleCommand {
 			->execute(array($file_id));
 	}
 	
+	private function updateGenerated($table, $file_id) {
+		$sql = "DELETE FROM $table WHERE id = ?";
+		$delete = Yii::app()->db->createCommand($sql)
+			->execute(array($file_id));
+	}
+	
 	/**
 	* Remove file from the file system
 	* @param $file_path
 	* @access public
 	* @return boolean
 	*/
-	public function removeFile($file_path, $file_id) {
+	public function removeFile($file_path, $file_id, $table = 'file_info') {
 		$delete_file = @unlink($file_path);
 			
 		if($delete_file == false) {
 			$this->logError($this->getDateTime() . " - $file_id, with path: $file_path could not be deleted.");
-		} else {
+		} elseif($table == 'file_info') {
 			$this->updateFileInfo($file_id);
+		} else {
+			$this->updateGenerated($table, $file_id);
 		}
 	}
 	
@@ -232,14 +239,30 @@ class purgeSystemCommand extends CConsoleCommand {
 	}
 	
 	public function actionDelete() {
-		$files = $this->filesToDelete();
-		if(empty($files)) { exit; }
-	
-		$this->clearLists('files_for_download');
-	//	$this->clearLists('upload');
+		$zip_files = $this->generatedFiles('zip_gz_downloads');
+		if(is_array($zip_files) && !empty($zip_files)) {
+			foreach($zip_files as $zip_file) {
+				$this->removeFile($zip_file['path'], $zip_file['id']);
+				$this->updateGenerated('zip_gz_downloads', $zip_file['id']);
+			}
+		} 
 		
-		foreach($files as $file) {
-			$this->removeFile($file['temp_file_path'], $file['id']);
+		$csv_files = $this->generatedFiles('csv_meta_paths');
+		if(is_array($csv_files) && !empty($csv_files)) {
+			foreach($csv_files as $csv_file) {
+				$this->removeFile($csv_file['path'], $csv_file['id']);
+				$this->updateGenerated('csv_meta_paths', $csv_file['id']);
+			}
+		}
+		
+		$this->clearLists('files_for_download');
+		$this->clearLists('upload');
+		
+		$downloaded_files = $this->filesToDelete();
+		if(empty($downloaded_files)) { exit; }
+		
+		foreach($downloaded_files as $downloaded_file) {
+			$this->removeFile($downloaded_file['temp_file_path'], $downloaded_file['id']);
 		}
 		
 		$this->removeDir(Yii::getPathOfAlias('application.uploads'));
