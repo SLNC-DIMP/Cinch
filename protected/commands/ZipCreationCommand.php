@@ -203,7 +203,6 @@ class ZipCreationCommand extends CConsoleCommand {
 			
 			$user_path = $this->getUserPath($user_id);
 			$user_files = $this->getUserFiles($user_id);
-			var_dump($user_files); exit;
 			$zip_file = $this->zipOpen($user_path);
 			
 			$file_count = 0;

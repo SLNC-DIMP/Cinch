@@ -22,7 +22,7 @@ class purgeSystemCommand extends CConsoleCommand {
 	* @return object Yii DAO object
 	*/
 	public function filesToDelete() { 
-		$sql = "SELECT id, temp_file_path FROM file_info
+		$sql = "SELECT id, temp_file_path, file_type_id FROM file_info
 			WHERE download_time <= :download_time
 			AND   virus_check = :virus_check
 			AND   checksum_run = :checksum_run
@@ -38,6 +38,39 @@ class purgeSystemCommand extends CConsoleCommand {
 			->queryAll();
 		
 		return $files;
+	}
+	
+	/**
+	*
+	* @param $file_type_id
+	* @access private
+	* @return string
+	*/
+	private function getMetataTable($file_type_id) {
+		switch($file_type_id) {
+			case 1:
+				return 'PDF_Metadata';
+			case 2:
+			case 3:
+				return 'Word_Metadata';
+			case 4:
+				return 'Tiff_Metadata';
+			case 5:
+				return 'Jpg_Metadata';
+			case 6:
+				return 'Gif_Metadata';
+			case 7:
+				return 'Text_Metadata';
+			case 8:
+			case 9:
+				return 'Excel_Metadata';
+			case 10:
+				return 'PNG_Metadata';
+			case 11:
+			case 12:
+				return 'PPT_Metadata';
+		}
+		
 	}
 	
 	/**
@@ -142,7 +175,7 @@ class purgeSystemCommand extends CConsoleCommand {
 	}
 	
 	/**
-	* Update a generated file table if an expired file is successfully deleted
+	* Update a generated file table: zip, csv, metadata
 	* @param $table
 	* @param $file_id
 	* @access private
@@ -197,17 +230,14 @@ class purgeSystemCommand extends CConsoleCommand {
 	}
 	
 	/**
-	* Loop through the list of files to delete, remove them, and update appropriate table
+	* Loop through the list of files to delete, remove them
 	* @param $files
-	* @param $downloaded_list
 	* @access public
 	*/
-	public function fileProcess($files, $download_list = false) {
-		$file_path = ($download_list == false) ? $file['path'] : $file['temp_file_path'];
-		
+	public function fileProcess($files) {
 		if(is_array($files) && !empty($files)) {
 			foreach($files as $file) {
-				$this->removeFile($file_path, $file['id']);
+				$this->removeFile($file['path'], $file['id']);
 			}
 		}
 	}
@@ -279,6 +309,13 @@ class purgeSystemCommand extends CConsoleCommand {
 		$this->fileProcess($upload_lists);
 		
 		$downloaded_files = $this->filesToDelete();
+		if(is_array($downloaded_files) && !empty($downloaded_files)) {
+			foreach($files as $file) {
+				$this->removeFile($downloaded_file['temp_file_path'], $downloaded_file['id']);
+				$table = $this->getMetataTable($downloaded_file['file_type_id']);
+				$this->updateGenerated($table, $downloaded_file['id']);
+			}
+		}
 		$this->fileProcess($downloaded_files, true);
 		
 		$this->removeDir(Yii::getPathOfAlias('application.uploads'));

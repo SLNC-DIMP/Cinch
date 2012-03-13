@@ -78,6 +78,7 @@ class ErrorCsvCommand extends CConsoleCommand {
 			foreach($errors as $error) {
 				$csv_path = $this->makecsv->getUserPath($error['user_id']);
 				$this->makeReport($error, $csv_path);
+				echo "File " . $error['error_message'] . '-' . $error['org_file_path'] . " added\r\n";
 			}
 		}
 	}

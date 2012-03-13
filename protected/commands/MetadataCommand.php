@@ -24,7 +24,7 @@ class MetadataCommand extends CConsoleCommand {
 		$get_file_list =  Yii::app()->db->createCommand()
 			->select('id, temp_file_path, user_id, upload_file_id')
 			->from('file_info')
-			->where(array('and', 'metadata = 0', 
+			->where(array('and', 'metadata = 0', 'virus_check = 1', 'checksum_run = 1',
 					array('or', "temp_file_path != ''", 'temp_file_path IS NOT NULL')))
 			->queryAll();
 			

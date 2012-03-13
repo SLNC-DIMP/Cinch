@@ -194,6 +194,7 @@ class MetadataCsvCommand extends CConsoleCommand {
 				);
 				
 				$this->write($csv_path, $metadata_table, $metadata, $file['user_id']);
+				echo "File " . $file['id'] . " added to $metadata_table\r\n";
 			}
 		}
 	}
