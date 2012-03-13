@@ -119,7 +119,7 @@ class MetadataCommand extends CConsoleCommand {
 		$file_id = Yii::app()->db->createCommand($sql)
 			->bindParam(":file_type", $file_type, PDO::PARAM_STR)
 			->queryColumn();
-		
+	
 		return $file_id[0];
 	}
 	/********************* End of Model elements ***************************************/
@@ -134,7 +134,6 @@ class MetadataCommand extends CConsoleCommand {
 	*/
 	private function scrapeMetadata($file, $extract = 'metadata') {
 		$tika_path = '';
-	//	$tika = '/srv/local/tika-0.10/tika-app/target/tika-app-0.10.jar';
 		$tika = Yii::getPathOfAlias('application') . '/tika-app-1.0.jar';
 		$local = '/Users/deanfarrell/tika-app-1.0.jar';
 		if(file_exists($tika)) { $tika_path = $tika; } else { $tika_path = $local; }
@@ -280,8 +279,13 @@ class MetadataCommand extends CConsoleCommand {
 		foreach($files as $file) {
 			$metadata = $this->getMetadata($file['temp_file_path']);
 			Utils::writeEvent($file['id'], 8);
+		    
 			$file_type = $this->getTikaFileType($metadata);
-			$file_type_id  = $this->getFiletypeId($file_type);
+			if(!is_numeric($file_type)) { // returns error code on failure
+				$file_type_id  = $this->getFiletypeId($file_type);
+			} else {
+				$file_type_id = $file_type;
+			}
 			
 			if($file_type == 4 || $file_type == 12) {
 				$this->tikaError($file['id'], $file_type);
