@@ -1,5 +1,5 @@
 <?php
-Yii::import('application.commands.ReadFileCommand');
+/*Yii::import('application.commands.ReadFileCommand');
 
 class ReadFileTest extends CDbTestCase {
 	public $id = 1;
@@ -10,5 +10,5 @@ class ReadFileTest extends CDbTestCase {
 	$this->assertEquals(NULL, $update);
 		
 		$this->assertEquals(NULL, $lists);
-	}
-}
+	} 
+} */

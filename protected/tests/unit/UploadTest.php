@@ -26,7 +26,7 @@ class UploadTest extends CDbTestCase {
 		$file = $this->uploads('upload1');
 		$upload_id = $file->id;
 		$user_id = $file->user_id;
-		$file_path = $file->upload_path;
+		$file_path = $file->path;
 		
 		$this->assertEquals(1, $upload_id);
 		$this->assertEquals(1, $user_id);
