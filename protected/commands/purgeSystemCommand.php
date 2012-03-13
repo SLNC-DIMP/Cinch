@@ -316,7 +316,6 @@ class purgeSystemCommand extends CConsoleCommand {
 				$this->updateGenerated($table, $downloaded_file['id']);
 			}
 		}
-		$this->fileProcess($downloaded_files, true);
 		
 		$this->removeDir(Yii::getPathOfAlias('application.uploads'));
 		$this->mailError();
