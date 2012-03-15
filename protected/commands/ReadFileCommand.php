@@ -1,5 +1,10 @@
 <?php
 class ReadFileCommand extends CConsoleCommand {
+	
+	//public function __construct() {
+//		ini_set('max_execution_time',0);
+//		ini_set('memory_limit',-1);
+//	}
     /**
 	 * Retrieves a list of uploaded files with url links that need to be downloaded
 	 * @access public
@@ -31,8 +36,22 @@ class ReadFileCommand extends CConsoleCommand {
 			$write_files->bindParam(":url", $url, PDO::PARAM_STR);
 			$write_files->bindParam(":user_uploads_id", $user_uploads_id, PDO::PARAM_INT);
 			$write_files->bindParam(":user_id", $user_id, PDO::PARAM_INT);
-			$write_files->execute();		
+			$write_files->execute();	
+			
+			return Yii::app()->db->lastInsertID;	
 		}
+	}
+	
+	public function writeFileCount($num_files) {
+		$sql = "UPDATE upload SET urls_in_list = ?";
+		$add_file_count = Yii::app()->db->createCommand($sql)
+			->execute(array($num_files));
+	}
+	
+	public function writeFileCount($last_url_num) {
+		$sql = "UPDATE upload SET last_url_processed = ?";
+		$add_file_count = Yii::app()->db->createCommand($sql)
+			->execute(array($last_url_num));
 	}
 	
 	/**
@@ -56,19 +75,26 @@ class ReadFileCommand extends CConsoleCommand {
 	*/
 	public function run() {
     	$file_lists = $file_lists = $this->getLists();
-		if(empty($file_lists)) { exit; }
+		if(empty($file_lists)) { 
+			echo "There are no download lists to process\r\n";
+			exit; 
+		}
      
 		foreach($file_lists as $file_list) {
-			$url_list = SplFixedArray::fromArray(file($file_list['path'], FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES));
-
-			foreach($url_list as $url) {
-				if(trim($url)=='')
-				{
-					continue;
-				}
-				
-				$this->addUrl(strip_tags(trim($url)), $file_list['id'], $file_list['user_id']);
+			$urls = file($file_list['path'], FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+			$url_list = SplFixedArray::fromArray($urls);
+			$files_in_list = count($urls);
+			$this->writeFileCount($files_in_list);
 			
+			$file_num_in_list = 1;
+			foreach($url_list as $url) {
+				if(!filter_var($url, FILTER_VALIDATE_URL)) {
+					continue;
+					$file_num_in_list++;
+				}
+				$this->writeFileCount($i);
+				$file_num_in_list++;
+				$this->addUrl(strip_tags(trim($url)), $file_list['id'], $file_list['user_id']);
 			}
 			$this->updateFileList($file_list['id']);
 		} 	

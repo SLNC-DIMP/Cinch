@@ -147,6 +147,7 @@ class UploadController extends Controller {
 	
 	/**
 	* Converts a file's name into an MD5 hash so users can't easily mess with their own files.
+	* @param $file
 	* @return string encrypted file name
 	*/
 	public function encryptName($file) {
