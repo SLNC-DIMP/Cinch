@@ -38,8 +38,8 @@ class Upload extends CActiveRecord {
 	 */
 	public function rules() {
 		return array(
-			array('path', 'file', 'types'=>'txt, csv'),
 			array('urls_in_list', 'maxUrls', CUploadedFile::getInstance(self::model(),'path')),
+			array('path', 'file', 'types'=>'txt, csv'),
 			array('user_id, processed', 'safe')
 		);
 	}
@@ -47,12 +47,15 @@ class Upload extends CActiveRecord {
 	/**
 	* Counts number of urls in a file and compares them to max allowed
 	*/
-	public function maxUrls($attribute, $params) {  
-		$this->files_in_list = count(file($params[0]->tempName, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES));
-		
-		if($this->files_in_list > self::MAX_URLS) {
-			$this->addError('urls_in_list', 'Your list appears to have more than 5000 urls listed. Please limit your list to 5000 urls.');
-		} 
+	public function maxUrls($attribute, $params) { 
+		if(is_object($params[0])) {
+			$file = (file_exists($params[0]->name)) ? $params[0]->name : $params[0]->tempName;
+			$this->files_in_list = count(file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES));
+			
+			if($this->files_in_list > self::MAX_URLS) {
+				$this->addError('urls_in_list', 'Your list appears to have more than 5000 urls listed. Please limit your list to 5000 urls.');
+			} 
+		}
 	} 
 	
 	/**
