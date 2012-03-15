@@ -146,6 +146,14 @@ class UploadController extends Controller {
 	}
 	
 	/**
+	* Counts number of urls in a file
+	* @return integer
+	*/
+	public function countUrls($file) {
+		return count(file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES));
+	}
+	
+	/**
 	* Converts a file's name into an MD5 hash so users can't easily mess with their own files.
 	* @param $file
 	* @return string encrypted file name
