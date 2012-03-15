@@ -122,7 +122,7 @@ class UploadController extends Controller {
 		
 		if(isset($_POST['Upload'])) {
 			$file = CUploadedFile::getInstance($model,'path');
-			
+		
 			if($model->validate()){
 				if(!is_dir($user_upload_dir)) {
 					mkdir($user_upload_dir);
@@ -143,14 +143,6 @@ class UploadController extends Controller {
 			'uploaded' => $uploaded,
 			'dir' => $user_upload_dir,
 		));
-	}
-	
-	/**
-	* Counts number of urls in a file
-	* @return integer
-	*/
-	public function countUrls($file) {
-		return count(file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES));
 	}
 	
 	/**

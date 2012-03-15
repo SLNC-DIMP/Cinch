@@ -12,6 +12,7 @@ $this->breadcrumbs=array(
     
     <?php echo CHtml::beginForm('', 'post', array('enctype'=>'multipart/form-data')); ?>
     <?php echo CHtml::error($model, 'path'); ?>
+    <?php echo CHtml::error($model, 'urls_in_list'); ?>
     <br />
     <?php echo CHtml::activeFileField($model, 'path'); ?>
     <br /><br />

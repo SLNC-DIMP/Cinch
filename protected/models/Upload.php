@@ -13,6 +13,8 @@
  */
 class Upload extends CActiveRecord {
 	public $path;
+	public $files_in_list;
+	const MAX_URLS = 5000;
 	
 	/**
 	 * Returns the static model of the specified AR class.
@@ -37,9 +39,21 @@ class Upload extends CActiveRecord {
 	public function rules() {
 		return array(
 			array('path', 'file', 'types'=>'txt, csv'),
+			array('urls_in_list', 'maxUrls', CUploadedFile::getInstance(self::model(),'path')),
 			array('user_id, processed', 'safe')
 		);
 	}
+	
+	/**
+	* Counts number of urls in a file and compare them to max allowed
+	*/
+	public function maxUrls($attribute, $params) {
+		$this->files_in_list = count(file($params[0], FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES));
+		
+		if($this->files_in_list > MAX_URLS) {
+			$this->addError('urls_in_list', 'Your list appears to have more than 5000 urls listed. Please limit your list to 5000 urls.');
+		} 
+	} 
 	
 	/**
 	 * @return array relational rules.
