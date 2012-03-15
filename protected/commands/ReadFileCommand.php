@@ -15,6 +15,7 @@ class ReadFileCommand extends CConsoleCommand {
 			->select('*')
 			->from('upload')
 			->where('processed = :processed', array(':processed' => 0))
+			->limit(2)
 			->queryAll();
 			
 		return $get_file_lists;
@@ -48,7 +49,7 @@ class ReadFileCommand extends CConsoleCommand {
 			->execute(array($num_files));
 	}
 	
-	public function writeFileCount($last_url_num) {
+	public function incrementFileNum($last_url_num) {
 		$sql = "UPDATE upload SET last_url_processed = ?";
 		$add_file_count = Yii::app()->db->createCommand($sql)
 			->execute(array($last_url_num));
@@ -92,7 +93,7 @@ class ReadFileCommand extends CConsoleCommand {
 					continue;
 					$file_num_in_list++;
 				}
-				$this->writeFileCount($i);
+				$this->incrementFileNum($i);
 				$file_num_in_list++;
 				$this->addUrl(strip_tags(trim($url)), $file_list['id'], $file_list['user_id']);
 			}

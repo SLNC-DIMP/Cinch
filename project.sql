@@ -492,14 +492,16 @@ CREATE TABLE IF NOT EXISTS `user_session_info` (
 -- Table structure for table `user_uploads`
 --
 
-CREATE TABLE IF NOT EXISTS `upload` (
-  `id` int(7) NOT NULL auto_increment,
+CREATE TABLE `upload` (
+  `id` int(7) NOT NULL AUTO_INCREMENT,
   `user_id` int(6) NOT NULL COMMENT "CONSTRAINT FOREIGN KEY (user_id) REFERENCES user(id)",
-  `path` varchar(250) collate utf8_unicode_ci NOT NULL,
-  `processed` int(1) NOT NULL default '0',
-  `process_time` timestamp NULL default NULL,
-  PRIMARY KEY  (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+  `path` varchar(250) COLLATE utf8_unicode_ci NOT NULL,
+  `urls_in_list` int(7) NOT NULL DEFAULT '0',
+  `last_url_processed` int(15) NOT NULL DEFAULT '1',
+  `processed` int(1) NOT NULL DEFAULT '0',
+  `process_time` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `upload`

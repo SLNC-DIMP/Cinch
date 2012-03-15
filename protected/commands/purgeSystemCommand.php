@@ -1,8 +1,6 @@
 <?php
 /**
 * @todo this should probably be done last
-* @todo delete user files as well as generated csv and zip files
-* @todo delete enteries from files for download, user upload lists, zip and csv paths from table
 * @todo update file_info table.  DON'T DELETE record.
 */
 class purgeSystemCommand extends CConsoleCommand {
@@ -12,7 +10,7 @@ class purgeSystemCommand extends CConsoleCommand {
 	
 	public function __construct() {
 		$this->error_list = Yii::getPathOfAlias('application.messages') . '/' . 'error_list_' . date('Y-m-d') . '.txt';
-		$this->mail_user = new mailUser;
+		$this->mail_user = new MailUser;
 	}
 	
 	/**
@@ -35,6 +33,7 @@ class purgeSystemCommand extends CConsoleCommand {
 			->bindValue(':checksum_run', 1)
 			->bindValue(':metadata', 1) 
 			->bindValue(':path', '')
+			->limit(7500)
 			->queryAll();
 		
 		return $files;
@@ -87,7 +86,7 @@ class purgeSystemCommand extends CConsoleCommand {
 		
 		$sql = "SELECT id, path, user_id FROM $table WHERE $field <= :timeoffset";
 		$generated_files = Yii::app()->db->createCommand($sql)
-			->bindParam(':timeoffset', $this->timeOffset(1))
+			->bindParam(':timeoffset', $this->timeOffset(30))
 			->queryAll();
 		
 		return $generated_files;

@@ -45,12 +45,12 @@ class Upload extends CActiveRecord {
 	}
 	
 	/**
-	* Counts number of urls in a file and compare them to max allowed
+	* Counts number of urls in a file and compares them to max allowed
 	*/
-	public function maxUrls($attribute, $params) {
-		$this->files_in_list = count(file($params[0], FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES));
+	public function maxUrls($attribute, $params) {  
+		$this->files_in_list = count(file($params[0]->tempName, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES));
 		
-		if($this->files_in_list > MAX_URLS) {
+		if($this->files_in_list > self::MAX_URLS) {
 			$this->addError('urls_in_list', 'Your list appears to have more than 5000 urls listed. Please limit your list to 5000 urls.');
 		} 
 	} 
