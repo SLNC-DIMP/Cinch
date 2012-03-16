@@ -106,7 +106,10 @@ class ReadFileCommand extends CConsoleCommand {
 				$this->incrementFileNum($file_num_in_list, $file_list['id']);
 				$this->addUrl(strip_tags(trim($url)), $file_list['id'], $file_list['user_id']);
 			}
-			$this->updateFileList($file_list['id']);
+			
+			if($file_num_in_list == $file_list['urls_in_list']) {
+				$this->updateFileList($file_list['id']);
+			}
 		} 	
     }
 }
