@@ -10,7 +10,7 @@ class ReadFileCommand extends CConsoleCommand {
 			->select('*')
 			->from('upload')
 			->where('processed = :processed', array(':processed' => 0))
-			->limit(2)
+			->limit(1)
 			->queryAll();
 			
 		return $get_file_lists;
@@ -103,7 +103,6 @@ class ReadFileCommand extends CConsoleCommand {
 			}
 			
 			$total_files = (isset($files_in_list)) ? $files_in_list : $file_list['urls_in_list'];
-			
 			if($file_num_in_list == $total_files) {
 				$this->updateFileList($file_list['id']);
 			}
