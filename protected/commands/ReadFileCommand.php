@@ -1,11 +1,6 @@
 <?php
 class ReadFileCommand extends CConsoleCommand {
-	
-	//public function __construct() {
-//		ini_set('max_execution_time',0);
-//		ini_set('memory_limit',-1);
-//	}
-    /**
+	/**
 	 * Retrieves a list of uploaded files with url links that need to be downloaded
 	 * @access public
 	 * @return object Yii DAO
