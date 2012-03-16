@@ -43,16 +43,16 @@ class ReadFileCommand extends CConsoleCommand {
 		}
 	}
 	
-	public function writeFileCount($num_files) {
-		$sql = "UPDATE upload SET urls_in_list = ?";
+	public function writeFileCount($num_files, $list_id) {
+		$sql = "UPDATE upload SET urls_in_list = ? WHERE id = ?";
 		$add_file_count = Yii::app()->db->createCommand($sql)
-			->execute(array($num_files));
+			->execute(array($num_files, $list_id));
 	}
 	
-	public function incrementFileNum($last_url_num) {
-		$sql = "UPDATE upload SET last_url_processed = ?";
+	public function incrementFileNum($last_url_num, $list_id) {
+		$sql = "UPDATE upload SET last_url_processed = ? WHERE id = ?";
 		$add_file_count = Yii::app()->db->createCommand($sql)
-			->execute(array($last_url_num));
+			->execute(array($last_url_num, $list_id));
 	}
 	
 	/**
@@ -73,6 +73,7 @@ class ReadFileCommand extends CConsoleCommand {
 	
 	/**
 	* Process all unprocessed lists and add urls to database.  When list completes updates list as processed.
+	* If a list fails during processing rereading list will pick up where the list died.
 	*/
 	public function run() {
     	$file_lists = $file_lists = $this->getLists();
@@ -83,18 +84,26 @@ class ReadFileCommand extends CConsoleCommand {
      
 		foreach($file_lists as $file_list) {
 			$urls = file($file_list['path'], FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-			$url_list = SplFixedArray::fromArray($urls);
-			$files_in_list = count($urls);
-			$this->writeFileCount($files_in_list);
 			
-			$file_num_in_list = 1;
+			if($file_list['last_url_processed'] > 0) {
+				$urls = array_slice($urls, $file_list['last_url_processed']);
+				$file_num_in_list = $file_list['last_url_processed'];
+			} else {
+				$files_in_list = count($urls);
+				$this->writeFileCount($files_in_list, $file_list['id']);
+				$file_num_in_list = 0;
+			}
+			
+			$url_list = SplFixedArray::fromArray($urls);
+			
 			foreach($url_list as $url) {
 				if(!filter_var($url, FILTER_VALIDATE_URL)) {
 					continue;
 					$file_num_in_list++;
 				}
-				$this->incrementFileNum($i);
+				
 				$file_num_in_list++;
+				$this->incrementFileNum($file_num_in_list, $file_list['id']);
 				$this->addUrl(strip_tags(trim($url)), $file_list['id'], $file_list['user_id']);
 			}
 			$this->updateFileList($file_list['id']);

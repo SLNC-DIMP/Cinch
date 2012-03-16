@@ -46,6 +46,12 @@ class Upload extends CActiveRecord {
 	
 	/**
 	* Counts number of urls in a file and compares them to max allowed
+	* Works a little oddly if temp file exists there are too many urls
+	* If temp file doesn't exist it's okay.
+	* Hopefully this isn't taking a advantage of PHP oddities that ar subject to change
+	* @param $attribute
+	* @param $params
+	* @access public
 	*/
 	public function maxUrls($attribute, $params) { 
 		if(is_object($params[0]) && file_exists($params[0]->tempName)) {
