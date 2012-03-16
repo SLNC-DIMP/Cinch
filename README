@@ -15,7 +15,7 @@ an IMLS Sparks! Ignition grant.
 Requirements
 
 * Currently Cinch will only run on *nix systems
-* PHP 5.3+
+* PHP 5.3+ (PHP 5.4+ is recommended)
 * MySQL or SQLite
 * PECL AMQP extension needs to be installed
 
