@@ -332,8 +332,8 @@ class DownloadCommand extends CConsoleCommand {
 			curl_setopt($ch, CURLOPT_HEADER, 0);
 			curl_setopt($ch, CURLOPT_AUTOREFERER, 1);
 			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-			curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
-			curl_setopt($ch, CURLOPT_TIMEOUT, 360);
+			curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 7);
+			curl_setopt($ch, CURLOPT_TIMEOUT, 10);
 			curl_setopt($ch, CURLOPT_FILETIME, 1);
 						
 			curl_exec($ch);
