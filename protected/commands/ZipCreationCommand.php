@@ -74,7 +74,7 @@ class ZipCreationCommand extends CConsoleCommand {
 	* Get user's base download path for Zip file creation
 	* @param $user_id
 	* @param $type
-	* @access public
+	* @access private
 	* @return string
 	*/
 	private function getUserPath($user_id, $type = 'curl') {
@@ -86,7 +86,31 @@ class ZipCreationCommand extends CConsoleCommand {
 		
 		$type = ($type == 'curl') ? 'curl' : 'ftp';
 
-		return Yii::getPathOfAlias('application.' . $type . '_downloads') . DIRECTORY_SEPARATOR . $user_name[0] . '/downloads_' . date('Y_m_d'). '.zip';
+		return Yii::getPathOfAlias('application.' . $type . '_downloads') . DIRECTORY_SEPARATOR . $user_name[0] . '/downloads_' . date('Y_m_d') . '.zip';
+	}
+	
+	/**
+	* Creates incremented new file path if a zip file is approaching its size limit
+	* @param $zip_path
+	* @access private
+	* @return string
+	*/
+	private function addNewArchive($zip_path) {
+		$path = explode('.', $zip_path);
+		$pieces = count($path);
+		$file_num_piece = $path[$pieces - 2];
+		preg_match('/-[0-9]{1,}$/', $file_num_piece, $matches);
+	
+		if(!$matches) {
+			$path[$pieces - 2] = $file_num_piece .'-1';
+		} else {
+			$get_cur_num = explode('-', $file_num_piece);
+			$sub_piece = count($get_cur_num);
+			$get_cur_num[$sub_piece - 1] = end($get_cur_num) + 1;
+			$path[$pieces - 2] = implode('-', $get_cur_num);
+		}
+
+		return implode('.', $path);
 	}
 	
 	/**
@@ -126,9 +150,15 @@ class ZipCreationCommand extends CConsoleCommand {
 	*/
 	private function createManifest(ZipArchive $zip, $zip_path) {
 		$manifest_pieces = preg_split('/(\/|\\\)/', $zip_path);
-		array_pop($manifest_pieces);
+		$file_num = strrchr(array_pop($manifest_pieces), '-');
+		$file_num = strstr($file_num, '.', true);
+		
+		if(!$file_num and !preg_match('/[0-9]{1,}$/', $file_num)) {
+			$file_num = '';
+		}
+		
 		$manifest_path = implode('/', $manifest_pieces);
-		$full_path = $manifest_path . '/' . 'file_manifest_' . date('Y-m-d') . '.csv';
+		$full_path = $manifest_path . '/' . 'file_manifest_' . date('Y-m-d') . $file_num . '.csv';
 		$file_count = $zip->numFiles;
 		
 		$fh = fopen($full_path, 'wb');
@@ -144,11 +174,17 @@ class ZipCreationCommand extends CConsoleCommand {
 	
 	/**
 	* Creates a new zip archive
+	* fopen a hacky work around to generate a file so zip file size can be checked
 	* @param $zip_path
 	* @access public
 	* @return object Zip archive object
 	*/
 	public function zipOpen($zip_path) {
+		if(!file_exists($zip_path)) {
+			$fh = fopen($zip_path, 'wb');
+			fclose($fh);
+		}
+		
 		$zip = new ZipArchive();
 		
 		if ($zip->open($zip_path, ZIPARCHIVE::CREATE) !== true) {
@@ -202,7 +238,11 @@ class ZipCreationCommand extends CConsoleCommand {
 	* Add generated CSV files last.  
 	* Adds file event list as well as metadata files and error file if it exists.
 	* Add files to zip archive 10 to zip archive at a time.
-	* This won't hold true for 1st 10 file loop.  Since CSV files won't be counted. 
+	* This won't hold true for 1st 10 file loop.  Since CSV files won't be counted.
+	* Creates a new zip file for user if zip archive will go over 2GB with addition of new file or if archive has more than 65500 files
+	* max zip number of file = 5500
+	* max zip size = 1900000000 bytes 1.77 GB (pretty arbitary)
+	* Set this lower as archive only reports every 10 files after it's closed.  Closing it after every entry way too slow.
 	* Event code 9 is Zipped for download 
 	*/
 	public function run($args) {
@@ -218,6 +258,26 @@ class ZipCreationCommand extends CConsoleCommand {
 			
 			$file_count = 0;
 			foreach($user_files as $file) {
+				$curr_file_size = $this->sizeCheck($file['temp_file_path']);
+				$curr_zip_size = $this->sizeCheck($zip_file->filename);
+				echo $curr_zip_size."\n";
+	
+				if((($curr_file_size + $curr_zip_size) < 1900000000) && ($zip_file->numFiles < 65500)) {
+					$this->zipWrite($zip_file, $file['temp_file_path']);
+					Utils::writeEvent($file['id'], 9);
+					$this->updateFileInfo($file['id']);
+				} else {
+					$manifest_path = $this->createManifest($zip_file, $user_path);
+					$this->zipWrite($zip_file, $manifest_path);
+					$this->zipClose($zip_file, $user_path);
+					$this->make_csv->addPath($user_id, $manifest_path); // add manifest to db
+					$this->writePath($user_id, $user_path); 
+					
+					$file_count = 0; 
+					$user_path = $this->addNewArchive($user_path); // switch to new zip file for current user
+					$zip_file = $this->zipOpen($user_path);
+				}
+				
 				if($file_count < 10) { 
 					$file_count++;
 				} else {
@@ -225,9 +285,6 @@ class ZipCreationCommand extends CConsoleCommand {
 					$zip_file = $this->zipOpen($user_path);
 					$file_count = 0;
 				}
-				$this->zipWrite($zip_file, $file['temp_file_path']);
-				Utils::writeEvent($file['id'], 9);
-				$this->updateFileInfo($file['id']); 
 			} 
 			
 			// create file event CSV now that file events should be over
@@ -247,10 +304,10 @@ class ZipCreationCommand extends CConsoleCommand {
 			$this->writePath($user_id, $user_path); 
 			
 			// mail user
-			$subject = 'Your Cinch files are ready';
+			$subject = 'You have Cinch files ready';
 			$message = 'You have files ready for download from Cinch.  Please login at http://cinch.nclive.org to retrieve your files.';
 			$this->mail_user->UserMail($user_id, $subject, $message); 
 		} 
 	}
 }
-// 2,133,378,802 4,294,967,295 
+

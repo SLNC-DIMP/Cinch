@@ -347,11 +347,12 @@ class DownloadCommand extends CConsoleCommand {
 					      'last_modified' => $set_modified_time), 
 					      $db_file_id 
 				);
+				$return_vars = array('full_path' => $file_path, 'last_mod_time' => $last_modified_time);
+				
 			} else {
 				$this->writeCurlError($db_file_id);
 				@unlink($file_path);
-			//	$file_path = '';
-			//	$last_modified_time = 0;
+				$return_vars = false;
 			}
 				
 			curl_close($ch);
@@ -359,7 +360,7 @@ class DownloadCommand extends CConsoleCommand {
 			
 			Utils::writeEvent($db_file_id, 1);
 		
-			// return array('full_path' => $file_path, 'last_mod_time' => $last_modified_time); 
+			return $return_vars; 
 		
 		} else {
 			Utils::writeEvent($db_file_id, 13);
