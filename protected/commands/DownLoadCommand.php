@@ -333,7 +333,7 @@ class DownloadCommand extends CConsoleCommand {
 			curl_setopt($ch, CURLOPT_AUTOREFERER, 1);
 			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
 			curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 7);
-			curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+			curl_setopt($ch, CURLOPT_TIMEOUT, 20);
 			curl_setopt($ch, CURLOPT_FILETIME, 1);
 						
 			curl_exec($ch);
@@ -344,24 +344,22 @@ class DownloadCommand extends CConsoleCommand {
 			
 				$this->updateFileInfo(
 					array('temp_file_path' => $file_path, 
-						  'last_modified' => $set_modified_time), 
+					      'last_modified' => $set_modified_time), 
 					      $db_file_id 
 				);
 			} else {
 				$this->writeCurlError($db_file_id);
+				@unlink($file_path);
+			//	$file_path = '';
+			//	$last_modified_time = 0;
 			}
 				
 			curl_close($ch);
 			fclose($fp);
 			
 			Utils::writeEvent($db_file_id, 1);
-			
-			if(isset($curl_error)) { 
-				@unlink($file_path); 
-				return;
-			}
 		
-			return array('full_path' => $file_path, 'last_mod_time' => $last_modified_time); 
+			// return array('full_path' => $file_path, 'last_mod_time' => $last_modified_time); 
 		
 		} else {
 			Utils::writeEvent($db_file_id, 13);

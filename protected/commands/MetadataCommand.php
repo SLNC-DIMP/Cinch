@@ -128,6 +128,7 @@ class MetadataCommand extends CConsoleCommand {
 	/**
 	* Extracts file level metadata using Apache Tika
 	* Or conversely extracts document text
+	* Run it in server mode so it doesn't need to reload Tika each time
 	* @param $file
 	* @param $extract - Options metadata is default text, html, xml other possible  values
 	* @access private
@@ -138,6 +139,8 @@ class MetadataCommand extends CConsoleCommand {
 		$tika = Yii::getPathOfAlias('application') . '/tika-app-1.0.jar';
 		$local = '/Users/deanfarrell/tika-app-1.0.jar';
 		if(file_exists($tika)) { $tika_path = $tika; } else { $tika_path = $local; }
+		
+		system('java -jar ' . $tika_path . ' --server');
 		
 		$output = array();
 		$command = 'java -jar ' . $tika_path . ' --' . $extract . ' ' . $file;

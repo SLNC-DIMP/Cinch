@@ -122,9 +122,9 @@ class ZipCreationCommand extends CConsoleCommand {
 	* Using preg_split as explode might not work with Windows in this case
 	* @param $zip
 	* @param $zip_path
-	* @access public
+	* @access private
 	*/
-	public function createManifest(ZipArchive $zip, $zip_path) {
+	private function createManifest(ZipArchive $zip, $zip_path) {
 		$manifest_pieces = preg_split('/(\/|\\\)/', $zip_path);
 		array_pop($manifest_pieces);
 		$manifest_path = implode('/', $manifest_pieces);
@@ -186,6 +186,17 @@ class ZipCreationCommand extends CConsoleCommand {
 	}
 	
 	/**
+	* Check a zip file's size to see if it's nearing the 2GB limit of certain file systems
+	* Or conversely if adding the current file would put zip file over the limit.
+	* @param $file
+	* @access public
+	* @return string
+	*/
+	private function sizeCheck($file) {
+		return filesize($file);
+	}
+	
+	/**
 	* Add files to zip archive, including writing event to file_event_history
 	* Create file_event_history csv here.  Otherwise it will be missing Zip event.
 	* Add generated CSV files last.  
@@ -242,3 +253,4 @@ class ZipCreationCommand extends CConsoleCommand {
 		} 
 	}
 }
+// 2,133,378,802 4,294,967,295 
