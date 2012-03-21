@@ -333,7 +333,7 @@ class DownloadCommand extends CConsoleCommand {
 			curl_setopt($ch, CURLOPT_AUTOREFERER, 1);
 			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
 			curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 7);
-			curl_setopt($ch, CURLOPT_TIMEOUT, 20);
+			curl_setopt($ch, CURLOPT_TIMEOUT, 15);
 			curl_setopt($ch, CURLOPT_FILETIME, 1);
 						
 			curl_exec($ch);
@@ -344,7 +344,7 @@ class DownloadCommand extends CConsoleCommand {
 			
 				$this->updateFileInfo(
 					array('temp_file_path' => $file_path, 
-					      'last_modified' => $set_modified_time), 
+						  'last_modified' => $set_modified_time), 
 					      $db_file_id 
 				);
 				$return_vars = array('full_path' => $file_path, 'last_mod_time' => $last_modified_time);
