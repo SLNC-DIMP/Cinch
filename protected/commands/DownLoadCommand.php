@@ -344,7 +344,7 @@ class DownloadCommand extends CConsoleCommand {
 			
 				$this->updateFileInfo(
 					array('temp_file_path' => $file_path, 
-						  'last_modified' => $set_modified_time), 
+					      'last_modified' => $set_modified_time), 
 					      $db_file_id 
 				);
 				$return_vars = array('full_path' => $file_path, 'last_mod_time' => $last_modified_time);
