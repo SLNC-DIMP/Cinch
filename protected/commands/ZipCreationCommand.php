@@ -296,7 +296,8 @@ class ZipCreationCommand extends CConsoleCommand {
 	* Add files to zip archive 10 to zip archive at a time.
 	* This won't always hold true since CSV files won't be counted.
 	* Creates a new zip file for user if zip archive will go over 0.5GB with addition of new file or if archive has more than 65500 files
-	* Event code 9 is Zipped for download 
+	* Event code 9 is Zipped for download
+	* @todo if file gets to the else statement of zip size it isn't rechecked for size.  Shouldn't actually be a huge problem baring a gigantic file
 	*/
 	public function run($args) {
 		$users = $this->getUserFileCount();
