@@ -20,7 +20,7 @@ class MakeCsv {
 	}
 	
 	/**
-	* Write CSV file path to $db
+	* Write CSV file path to db and returns last insert id
 	* @param $file_path
 	* @param $user_id
 	* @access public
@@ -29,5 +29,7 @@ class MakeCsv {
 		$sql = "INSERT INTO csv_meta_paths(user_id, path) VALUES(?, ?)";
 		$fields = Yii::app()->db->createCommand($sql)
 			->execute(array($user_id, $file_path));
+		
+		return Yii::app()->db->lastInsertID;
 	}
 }
