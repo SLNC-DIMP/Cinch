@@ -69,7 +69,7 @@ class EventCsvCommand extends CConsoleCommand {
 			fputcsv($fh, array($file['org_file_path'], $file_path, $file['event_name'], $file['event_time']));
 			fclose($fh);
 		} else {
-			echo "Nuthin'\n";
+			echo "There are no event reports to generate'\n";
 		}
 	}
 	
@@ -87,7 +87,7 @@ class EventCsvCommand extends CConsoleCommand {
 				Utils::freezeEvents($event['file_key']);
 			}
 		} else {
-			echo "Nuthin'\n";
+			echo "There are no new events to add to a csv file'\n";
 		}
 	}
 }

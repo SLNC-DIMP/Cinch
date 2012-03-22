@@ -11,6 +11,16 @@ class ZipCreationCommand extends CConsoleCommand {
 	public $event_csv;
 	public $mail_user;
 	private $file_info = 'file_info';
+	/**
+	* max zip number of file = 65500
+	* @var integer
+	*/
+	const ZIP_FILE_LIMIT = 65500;
+	/**
+	* max zip size = 524288000 bytes 0.5 GB  Otherwise file requires too much memory to download
+	* @var integer
+	*/
+	const ZIP_SIZE_LIMIT = 524288000;
 	
 	public function __construct() {
 		$this->make_csv = new MakeCsv;
@@ -185,8 +195,28 @@ class ZipCreationCommand extends CConsoleCommand {
 		$this->zipWrite($zip_file, $manifest_path);
 		$this->zipClose($zip_file, $user_path);
 			
-		$csv_path_id = $this->make_csv->addPath($user_id, $manifest_path); // add final manifest to db
-		$this->updateFileInfo($csv_path_id, 'csv_meta_paths'); // mark final manifest as zipped 
+		$csv_path_id = $this->make_csv->addPath($user_id, $manifest_path); // add manifest to db
+		$this->updateFileInfo($csv_path_id, 'csv_meta_paths'); // mark manifest as zipped 
+	}
+	
+	/**
+	* Writes metadata and errors_csv files to every zip archive
+	* Events csv file will only show up in the last archive as events haven't ended yet.
+	* Then writes the results to the db
+	* @param $zip_file
+	* @param $user_id
+	* @param $mark_zipped
+	* @access private
+	*/
+	private function addMetaCsvFiles(ZipArchive $zip_file, $user_id, $mark_zipped = true) {
+		$user_csv_files = $this->getCsvFiles($user_id);
+		foreach($user_csv_files as $user_csv_file) {
+			$this->zipWrite($zip_file, $user_csv_file['path']);
+			
+			if($mark_zipped == true) {
+				$this->updateFileInfo($user_csv_file['id'], 'csv_meta_paths');
+			}
+		}
 	}
 	
 	/**
@@ -209,7 +239,7 @@ class ZipCreationCommand extends CConsoleCommand {
 			$zip = false;
 		}
 
-		return $zip;
+		return $zip; // update `file_info` SET zipped= 0, events_frozen=0
 	}
 	
 	/**
@@ -242,11 +272,20 @@ class ZipCreationCommand extends CConsoleCommand {
 	* Check a zip file's size to see if it's nearing the 2GB limit of certain file systems
 	* Or conversely if adding the current file would put zip file over the limit.
 	* @param $file
-	* @access public
+	* @access private
 	* @return string
 	*/
 	private function sizeCheck($file) {
 		return filesize($file);
+	}
+	
+	/**
+	* Event code 9 is Zipped for download
+	*/
+	private function zipWriteEvents(ZipArchive $zip_file, $file_path, $file_id) {
+		$this->zipWrite($zip_file, $file_path);
+		Utils::writeEvent($file_id, 9);
+		$this->updateFileInfo($file_id);
 	}
 	
 	/**
@@ -256,10 +295,7 @@ class ZipCreationCommand extends CConsoleCommand {
 	* Adds file event list as well as metadata files and error file if it exists.
 	* Add files to zip archive 10 to zip archive at a time.
 	* This won't always hold true since CSV files won't be counted.
-	* Creates a new zip file for user if zip archive will go over 2GB with addition of new file or if archive has more than 65500 files
-	* max zip number of file = 5500
-	* max zip size = 1900000000 bytes 1.77 GB (pretty arbitary)
-	* Set max zip size this low as archive only reports every 10 files after its temporarly closed.  Closing it after every entry way too slow.
+	* Creates a new zip file for user if zip archive will go over 0.5GB with addition of new file or if archive has more than 65500 files
 	* Event code 9 is Zipped for download 
 	*/
 	public function run($args) {
@@ -278,17 +314,17 @@ class ZipCreationCommand extends CConsoleCommand {
 				$curr_file_size = $this->sizeCheck($file['temp_file_path']);
 				$curr_zip_size = $this->sizeCheck($zip_file->filename);
 	
-				if((($curr_file_size + $curr_zip_size) < 1900000000) && ($zip_file->numFiles < 65500)) {
-					$this->zipWrite($zip_file, $file['temp_file_path']);
-					Utils::writeEvent($file['id'], 9);
-					$this->updateFileInfo($file['id']);
+				if((($curr_file_size + $curr_zip_size) < self::ZIP_SIZE_LIMIT) && ($zip_file->numFiles < self::ZIP_FILE_LIMIT)) {
+					$this->zipWriteEvents($zip_file, $file['temp_file_path'], $file['id']);
 				} else {
+					$this->addMetaCsvFiles($zip_file, $user_id, false);
 					$this->addManifest($zip_file, $user_path, $user_id);
 					$this->writeZipPath($user_id, $user_path);
 					
 					$file_count = 0; 
 					$user_path = $this->addNewArchive($user_path); // switch to new zip file for current user
 					$zip_file = $this->zipOpen($user_path);
+					$this->zipWriteEvents($zip_file, $file['temp_file_path'], $file['id']);
 				}
 				
 				if($file_count < 10) { 
@@ -303,11 +339,7 @@ class ZipCreationCommand extends CConsoleCommand {
 			// create file event CSV now that file events should be over
 			$this->event_csv->actionIndex();
 			
-			$user_csv_files = $this->getCsvFiles($user_id);
-			foreach($user_csv_files as $user_csv_file) {
-				$this->zipWrite($zip_file, $user_csv_file['path']);
-				$this->updateFileInfo($user_csv_file['id'], 'csv_meta_paths');
-			}
+			$this->addMetaCsvFiles($zip_file, $user_id);
 			
 			$this->addManifest($zip_file, $user_path, $user_id);
 			$this->writeZipPath($user_id, $user_path); 
