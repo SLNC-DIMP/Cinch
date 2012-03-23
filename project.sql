@@ -324,6 +324,33 @@ CREATE TABLE IF NOT EXISTS `files_for_download` (
 -- Dumping data for table `files_for_download`
 --
 
+--
+-- Table structure for table `Gif_Metadata`
+--
+
+CREATE TABLE IF NOT EXISTS `Gif_Metadata` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `black_is_zero` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `color_space_type` varchar(25) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `num_channels` int(4) DEFAULT NULL,
+  `compression_type` varchar(25) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `lossless_compression` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `compression_num_progressive_scans` int(4) DEFAULT NULL,
+  `file_size` int(10) DEFAULT NULL,
+  `data_sample_format` varchar(25) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `horizontal_pixel_offset` int(5) DEFAULT NULL,
+  `orientation` varchar(25) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `vertical_pixel_offset` int(5) DEFAULT NULL,
+  `graphic_control_extension` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_descriptor` varchar(300) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `height` int(5) DEFAULT NULL,
+  `file_name` varchar(1024) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `width` int(5) DEFAULT NULL,
+  `file_id` int(12) NOT NULL,
+  `user_id` int(7) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
 
 --
 -- Table structure for table `jpg_metadata`
@@ -451,6 +478,21 @@ CREATE TABLE IF NOT EXISTS `Rights` (
 
 
 -- --------------------------------------------------------
+
+--
+-- Table structure for table `Text_Metadata`
+--
+
+CREATE TABLE IF NOT EXISTS `Text_Metadata` (
+  `id` int(12) NOT NULL AUTO_INCREMENT,
+  `content_encoding` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `file_size` int(12) DEFAULT NULL COMMENT 'file size is in bytes',
+  `file_name` varchar(1024) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `file_id` int(12) NOT NULL,
+  `user_id` int(7) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=1 ;
+
 
 --
 -- Table structure for table `user`
