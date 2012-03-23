@@ -274,7 +274,7 @@ class DownloadCommand extends CConsoleCommand {
 	}
 	
 	/**
-	* Checks to see if a file exists before trying to download it.
+	* Checks a file's size before trying to download it.
 	* See http://stackoverflow.com/questions/2602612/php-remote-file-size-without-downloading-file
 	* @param $url
 	* @access protected
