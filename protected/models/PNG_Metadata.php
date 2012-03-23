@@ -1,7 +1,7 @@
 <?php
-class Gif_Metadata extends FileTypeActiveRecord {
+class PNG_Metadata extends FileTypeActiveRecord {
 	/**
-	* Writes extracted Gif image metadata to the database
+	* Writes extracted PNG image metadata to the database
 	* @param $metadata
 	* @param $file_id
 	* @param $user_id
@@ -17,13 +17,18 @@ class Gif_Metadata extends FileTypeActiveRecord {
 			"Compression Lossless" => "lossless_compression",
 			"Compression NumProgressiveScans" => "compression_num_progressive_scans",
 			"Content-Length" => "file_size",
+			"Data BitsPerSample" => "bits_per_sample",
+			"Data PlanarConfiguration" => "planar_configuration",
 			"Data SampleFormat" => "data_sample_format",
-			"Dimension HorizontalPixelOffset" => "horizontal_pixel_offset",
 			"Dimension ImageOrientation" => "orientation",
-			"Dimension VerticalPixelOffset" => "vertical_pixel_offset",
-			"GraphicControlExtension" => "graphic_control_extension",
-			"ImageDescriptor" => "image_descriptor",
+			"Dimension PixelAspectRatio" => "pixel_aspect_ratio",
+			"Dimension VerticalPixelSize" => "vertical_pixel_size",
+			"Dimension HorizontalPixelSize" => "horizontal_pixel_size",
+			"IHDR" => "ihdr",
+			"Text TextEntry" => "text_entry",
+			"Transparency Alpha" => "transparency_alpha",
 			"height" => "height",
+			"pHYs" => "phys",
 			"resourceName" => "file_name",
 			"width" => "width",
 			'file_id' => 'file_id',
@@ -35,7 +40,7 @@ class Gif_Metadata extends FileTypeActiveRecord {
 		$full_metadata = $this->addIdInfo($metadata, array('file_id' => $file_id, 'user_id' => $user_id));
 		$bind_params = $this->bindValuesBuilder($query_fields, $full_metadata);
 		
-		$sql = 'INSERT INTO Gif_Metadata(' . $this->queryBuilder($query_fields) . ') 
+		$sql = 'INSERT INTO PNG_Metadata(' . $this->queryBuilder($query_fields) . ') 
 			VALUES(' . $this->queryBuilder($query_fields, true) . ')';
 		
 		$write_files = Yii::app()->db->createCommand($sql);

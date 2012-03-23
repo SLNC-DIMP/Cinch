@@ -416,6 +416,39 @@ CREATE TABLE IF NOT EXISTS `PDF_Metadata` (
 
 
 --
+-- Table structure for table `PNG_Metadata`
+--
+
+CREATE TABLE IF NOT EXISTS `PNG_Metadata` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `black_is_zero` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `color_space_type` varchar(25) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `num_channels` int(4) DEFAULT NULL,
+  `compression_type` varchar(25) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `lossless_compression` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `compression_num_progressive_scans` int(4) DEFAULT NULL,
+  `file_size` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `bits_per_sample` varchar(25) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `planar_configuration` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `data_sample_format` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `orientation` varchar(25) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `pixel_aspect_ratio` varchar(25) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `vertical_pixel_size` varchar(25) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `horizontal_pixel_size` varchar(25) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `ihdr` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `text_entry` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `transparency_alpha` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `height` int(5) DEFAULT NULL,
+  `phys` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `file_name` varchar(1024) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `width` int(5) DEFAULT NULL,
+  `file_id` int(12) NOT NULL,
+  `user_id` int(7) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+
+--
 -- Table structure for table `PPT_Metadata`
 --
 
