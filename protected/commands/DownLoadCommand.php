@@ -11,6 +11,11 @@ class DownloadCommand extends CConsoleCommand {
 	public $problem_downloads = 'problem_downloads';
 	public $remote_checksum;
 	public $full_path;
+	/**
+	* max file size = 429496730 bytes 0.4 GB  Otherwise file might not fit into specified zip file limit
+	* @var integer
+	*/
+	const FILE_SIZE_LIMIT = 429496730;
 	
 	public function __construct() {
 		$this->remote_checksum = new ChecksumCommand;
@@ -79,7 +84,7 @@ class DownloadCommand extends CConsoleCommand {
 	* @return string last insert id
 	*/
 	public function setFileInfo($url, $remote_checksum, $user_id, $upload_file_id) {
-		$dynamic_file = ($this->initFileType($url) == 1) ? 0 : 1;
+		$dynamic_file = (is_numeric($this->initFileType($url))) ? 0 : 1;
 		$sql = "INSERT INTO file_info(org_file_path, 
 				remote_checksum,
 				dynamic_file, 
@@ -163,11 +168,13 @@ class DownloadCommand extends CConsoleCommand {
 			$file_type = strrchr($file_name, '.');
 			$path_base = substr_replace($file_name, '', -strlen($file_type));
 			$file_name = $path_base . '_dupname_' . mt_rand(1, 99999999) . $file_type;
-		} elseif($file_extension != 1 && $duplicate == 1) {
+		} elseif(is_string($file_extension) && $duplicate == 1) {
 			$file_name = $file_name . $file_extension;
-		} elseif($file_extension != 1 && $duplicate > 0) {
+		} elseif(is_string($file_extension) && $duplicate > 0) {
 			$file_name = $file_name . '_dupname_' . mt_rand(1, 99999999) . $file_extension;
-		} 
+		} elseif($file_extension == 2) {
+			$file_name = $file_extension;
+		}
 		
 		Utils::writeEvent($file_id, 2);
 
@@ -183,13 +190,15 @@ class DownloadCommand extends CConsoleCommand {
 	* @return string
 	*/
 	public function initFileType($file) {
-		$bad_extensions = array('gov', 'com', 'edu', 'info', 'org');
-		$file_info = pathinfo($file, PATHINFO_EXTENSION);
+		$supported_extensions = array('pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'png', 'gif', 'txt', 'csv');
+		$file_info = @pathinfo($file, PATHINFO_EXTENSION);
 		
-		if($file_info && !in_array($file_info, $bad_extensions) && strlen($file_info) > 2) {
+		if(in_array($file_info, $supported_extensions)) {
 			$file_type = 1;
-		} else {
+		} elseif($file_info == "" || is_null($file_info)) {
 			$file_type = '.pdf';
+		} else {
+			$file_type = 2;
 		}
 		
 		return $file_type;
@@ -271,9 +280,21 @@ class DownloadCommand extends CConsoleCommand {
 	* @return string
 	*/
 	protected function fileExists($url) {
+		$file_size = 0;
+		
 		$fn = @fopen($url, 'r');
-		$error_id = ($fn != false) ? 0 : 1;
-		if($fn) { fclose($fn); }
+		if($fn) {
+			$file_size = filesize($url);
+			fclose($fn);
+		}
+		
+		if($file_size > FILE_SIZE_LIMIT) {
+			$error_id = 2;
+		} elseif(!$fn) {
+			$error_id = 1;
+		} else {
+			$error_id = 0;
+		}
 		
 		return $error_id;
 	}
@@ -315,13 +336,16 @@ class DownloadCommand extends CConsoleCommand {
 		$remote_checksum = $this->remote_checksum->createRemoteChecksum($url);
 		$db_file_id = $this->setFileInfo($url, $remote_checksum, $current_user_id, $file_list_id);
 		
-		if($remote_checksum != false) {
+		if($remote_checksum) {
+			$dup_file = $this->sameName($url, $current_user_id);
+			$file_name = $this->cleanName($url, $db_file_id, $dup_file);
+		}	
+		
+		if($remote_checksum && $file_name != 2) {
 			$current_username = $this->getUrlOwner($current_user_id);
 			$start_dir = $this->getStartDir($current_username);
 			$current_dir = $this->currentDir($start_dir);
 			
-			$dup_file = $this->sameName($url, $current_user_id);
-			$file_name = $this->cleanName($url, $db_file_id, $dup_file);
 			$file_path = $current_dir . '/' . $file_name;
 			
 			$ch = curl_init($url);

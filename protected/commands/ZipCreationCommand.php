@@ -17,10 +17,10 @@ class ZipCreationCommand extends CConsoleCommand {
 	*/
 	const ZIP_FILE_LIMIT = 65500;
 	/**
-	* max zip size = 524288000 bytes 0.5 GB  Otherwise file requires too much memory to download
+	* max zip size = 536870912 bytes 0.5 GB  Otherwise file requires too much memory to download
 	* @var integer
 	*/
-	const ZIP_SIZE_LIMIT = 524288000;
+	const ZIP_SIZE_LIMIT = 536870912;
 	
 	public function __construct() {
 		$this->make_csv = new MakeCsv;
