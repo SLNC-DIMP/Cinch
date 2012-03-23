@@ -74,6 +74,9 @@ class MetadataCsvCommand extends CConsoleCommand {
 			case 5:
 				$table = 'Jpg_Metadata';
 				break;
+			case 6:
+				$table = 'Gif_Metadata';
+				break;
 			case 7:
 				$table = 'Text_Metadata';
 				break;
@@ -81,12 +84,12 @@ class MetadataCsvCommand extends CConsoleCommand {
 			case 9:
 				$table = 'Excel_Metadata';
 				break;
+			case 10:
+				$table = 'PNG_Metadata';
+				break;
 			case 11:
 			case 12:
 				$table = 'PPT_Metadata';
-				break;
-			default:
-				$table = 'PDF_Metadata';
 				break;
 		}
 		

@@ -183,7 +183,7 @@ class DownloadCommand extends CConsoleCommand {
 	
 	/**
 	* Returns self reporting file extension.  Defaults to PDF if no extension given.
-	* Checks for some base url extensions
+	* Checks for allowed file types extensions
 	* $file_info length should sort out country codes
 	* @param $file
 	* @access public
@@ -275,28 +275,29 @@ class DownloadCommand extends CConsoleCommand {
 	
 	/**
 	* Checks to see if a file exists before trying to download it.
+	* See http://stackoverflow.com/questions/2602612/php-remote-file-size-without-downloading-file
 	* @param $url
 	* @access protected
 	* @return string
 	*/
-	protected function fileExists($url) {
+	protected function fileSize($url) {
 		$file_size = 0;
+		$ch = curl_init($url);
+		curl_setopt($ch, CURLOPT_NOBODY, 1);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_HEADER, 1);
+		curl_setopt($ch, CURLOPT_AUTOREFERER, 1);
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+		$data = curl_exec($ch);
+		curl_close($ch);
 		
-		$fn = @fopen($url, 'r');
-		if($fn) {
-			$file_size = filesize($url);
-			fclose($fn);
+		if (preg_match('/Content-Length: (\d+)/', $data, $matches)) {
+		  $file_size = (int)$matches[1];
 		}
+
+		$error = ($file_size < self::FILE_SIZE_LIMIT) ? false : true;
 		
-		if($file_size > FILE_SIZE_LIMIT) {
-			$error_id = 2;
-		} elseif(!$fn) {
-			$error_id = 1;
-		} else {
-			$error_id = 0;
-		}
-		
-		return $error_id;
+		return $error;
 	}
 	
 	/**
@@ -339,9 +340,10 @@ class DownloadCommand extends CConsoleCommand {
 		if($remote_checksum) {
 			$dup_file = $this->sameName($url, $current_user_id);
 			$file_name = $this->cleanName($url, $db_file_id, $dup_file);
+			$file_size_limit = $this->fileSize($url);
 		}	
 		
-		if($remote_checksum && $file_name != 2) {
+		if($remote_checksum && $file_name != 2 && $file_size_limit == false) {
 			$current_username = $this->getUrlOwner($current_user_id);
 			$start_dir = $this->getStartDir($current_username);
 			$current_dir = $this->currentDir($start_dir);

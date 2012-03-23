@@ -467,7 +467,7 @@ CREATE TABLE IF NOT EXISTS `PPT_Metadata` (
   `slide_count` int(4) default NULL,
   `template` varchar(50) collate utf8_unicode_ci default NULL,
   `publisher` varchar(255) collate utf8_unicode_ci default NULL,
-  `resourcename` varchar(255) collate utf8_unicode_ci default NULL,
+  `resource_name` varchar(255) collate utf8_unicode_ci default NULL,
   `subject` varchar(255) collate utf8_unicode_ci default NULL,
   `title` varchar(255) collate utf8_unicode_ci default NULL,
   `pages` int(5) default NULL,

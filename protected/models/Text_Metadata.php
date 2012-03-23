@@ -13,8 +13,6 @@ class Text_Metadata extends FileTypeActiveRecord {
 			'Content-Encoding' => 'content_encoding', 
 			'Content-Length' => 'file_size', 
 			'resourceName' => 'file_name',
-			'doc_title' => 'possible_doc_title',
-			'doc_keywords' => 'possible_doc_keywords',
 			'file_id' => 'file_id',
 			'user_id' => 'user_id'
 		);

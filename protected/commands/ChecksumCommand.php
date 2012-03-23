@@ -15,7 +15,7 @@ class ChecksumCommand extends CConsoleCommand {
 	* @access protected
 	* @return string
 	*/
-	protected function createChecksum($file, $type = 'sha1', $remote = false) {
+	public function createChecksum($file, $type = 'sha1', $remote = false) {
 		if($remote == true || file_exists($file)) {
 			$checksum = ($type == 'sha1') ? sha1_file($file) : md5_file($file);	
 		} else {
