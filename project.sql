@@ -518,13 +518,13 @@ CREATE TABLE IF NOT EXISTS `Rights` (
 
 CREATE TABLE IF NOT EXISTS `Text_Metadata` (
   `id` int(12) NOT NULL AUTO_INCREMENT,
-  `content_encoding` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `content_encoding` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   `file_size` int(12) DEFAULT NULL COMMENT 'file size is in bytes',
-  `file_name` varchar(1024) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `file_name` varchar(1024) COLLATE utf8_unicode_ci DEFAULT NULL,
   `file_id` int(12) NOT NULL,
   `user_id` int(7) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 
 --

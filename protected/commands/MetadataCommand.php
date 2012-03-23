@@ -65,7 +65,7 @@ class MetadataCommand extends CConsoleCommand {
 				$write = new Jpg_Metadata;
 				break;
 			case self::PNG:
-				$write = new Png_Metadata;
+				$write = new PNG_Metadata;
 				break;
 			case self::TEXT:
 				$write = new Text_Metadata;
