@@ -332,7 +332,7 @@ class purgeSystemCommand extends CConsoleCommand {
 	}
 	
 	public function actionDelete() {
-	/*	$zip_files = $this->generatedFiles('zip_gz_downloads');
+		$zip_files = $this->generatedFiles('zip_gz_downloads');
 		$this->fileProcess($zip_files);
 		
 		$csv_files = $this->generatedFiles('csv_meta_paths');
@@ -350,13 +350,13 @@ class purgeSystemCommand extends CConsoleCommand {
 				$table = $this->getMetataTable($downloaded_file['file_type_id']);
 				$this->updateGenerated($table, $downloaded_file['id']);
 			}
-		} */
+		} 
 		
 		$user_dirs = array('uploads', 'curl_downloads'); // remove empty directories
 		foreach($user_dirs as $user_dir) {
 			$this->removeDir(Yii::getPathOfAlias('application.' . $user_dir));
 		}
 		
-	//	$this->mailError();
+		$this->mailError();
 	}
 }
