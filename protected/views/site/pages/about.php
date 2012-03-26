@@ -18,7 +18,7 @@ A project to develop a bulk download and FTP service to a central repository tha
     <li>Jpeg</li>
     <li>PNG</li>
     <li>Gif</li>
-    <li>Text files (e.g. files with .txt or .csv extensions)
+    <li>Text files (e.g. files with .txt or .csv extensions)</li>
 </ul>
 
 <p>Funding for the CINCH: Capture, Ingest, &amp; Checksum tool is made possible through an IMLS Sparks! Ignition grant.</p>

@@ -45,6 +45,23 @@ class ZipGzDownloads extends CActiveRecord
 			array('id, user_id, path, downloaded, creationdate', 'safe', 'on'=>'search'),
 		);
 	}
+	
+	/**
+	* See http://www.yiiframework.com/forum/index.php/topic/18451-restrict-users-to-their-own-records/ for Yii scope info
+	* Limits users to only viewing their own downloads
+	* Admins can view all downloads
+	* @return array empty for admin, user_id condition for others.
+	*/
+	public function defaultScope() {
+		$scope = array();
+		if(!Yii::app()->user->checkAccess('deleteUser')) {
+			$scope = array(
+				'condition' => 'user_id=' . Yii::app()->user->id
+			);
+		} 
+		
+		return $scope;
+	}
 
 	/**
 	 * @return array relational rules.
@@ -54,6 +71,7 @@ class ZipGzDownloads extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
+			'User' => array(self::BELONGS_TO, 'User', 'user_id'),
 		);
 	}
 
