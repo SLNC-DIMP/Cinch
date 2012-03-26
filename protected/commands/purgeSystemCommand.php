@@ -210,43 +210,35 @@ class purgeSystemCommand extends CConsoleCommand {
 	* Remove directory from the file system if empty
 	* RecursiveDirectoryIterator should account for . and .. files.
 	* This should look at files beneath each user's root folder.
+	* See http://stackoverflow.com/questions/2524151/php-get-all-subdirectories-of-a-given-directory
 	* @param $dir_path
 	* @access public
 	* @return boolean
 	*/
-/*	public function removeDir($dir_path) {
+	public function removeDir($dir_path) {
 		$dir_list = new RecursiveIteratorIterator(
-			new RecursiveDirectoryIterator(
-				$dir_path,
-					RecursiveIteratorIterator::SELF_FIRST |
-					FilesystemIterator::SKIP_DOTS |
-					FilesystemIterator::UNIX_PATHS
-			)
-		);
-		
-		
+				new RecursiveDirectoryIterator($dir_path), 
+				    RecursiveIteratorIterator::SELF_FIRST);
+
 		foreach($dir_list as $dir) {
-			if( $dir->isDir()) {
-				echo $dir;
-			}
-			
-			if($dir->isDir() && empty($dir)) {
-				$delete_dir = @rmdir($dir);
+			if( $dir->isDir() && count(scandir($dir->getRealpath())) == 2) {
+				
+				$delete_dir = @rmdir($dir->getRealpath());
 				
 				if($delete_dir == false) {
-					$this->logError($this->getDateTime() . " - Directory: $dir could not be deleted.");
+					$this->logError($this->getDateTime() . " - Directory: " . $dir->getRealpath() . " could not be deleted.");
 				}
 			}
-
 		}
 		
 		
-	} */
+	} 
 	
 	/**
 	* http://stackoverflow.com/questions/4747905/how-can-you-find-all-immediate-sub-directories-of-the-current-dir-on-linux
+	* Back up if other method goes awry
 	*/
-	public function removeDir($dir_path) {
+/*	public function removeDir($dir_path) {
 		exec(escapeshellcmd('find ' . $dir_path . ' -type d'), $dirs);
 		unset($dirs[0]); // this is the base dir for the downloads/uploads so leave it there
 		
@@ -262,7 +254,7 @@ class purgeSystemCommand extends CConsoleCommand {
 			} 
 
 		}
-	}
+	} */
 	
 	/**
 	* Loop through the list of files to delete, remove them
