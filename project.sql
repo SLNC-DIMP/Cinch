@@ -516,7 +516,7 @@ CREATE TABLE IF NOT EXISTS `Rights` (
 -- Table structure for table `Text_Metadata`
 --
 
-CREATE TABLE IF NOT EXISTS  `Text_Metadata` (
+CREATE TABLE IF NOT EXISTS `Text_Metadata` (
   `id` int(12) NOT NULL AUTO_INCREMENT,
   `content_encoding` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   `file_size` int(12) DEFAULT NULL COMMENT 'file size is in bytes',
@@ -526,7 +526,7 @@ CREATE TABLE IF NOT EXISTS  `Text_Metadata` (
   `file_id` int(12) NOT NULL,
   `user_id` int(7) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 
 --

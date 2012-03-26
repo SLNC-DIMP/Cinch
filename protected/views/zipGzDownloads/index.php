@@ -3,9 +3,11 @@ $this->breadcrumbs=array(
 	'Download Your Files',
 );
 
-$this->menu=array(
-	array('label'=>'Manage Downloads', 'url'=>array('admin')),
-);
+if(Yii::app()->user->checkAccess('deleteUser')) {
+	$this->menu=array(
+		array('label'=>'Manage Downloads', 'url'=>array('admin')),
+	);
+}
 ?>
 
 <h1>Your Available Downloads</h1>
