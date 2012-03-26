@@ -214,10 +214,22 @@ class purgeSystemCommand extends CConsoleCommand {
 	* @access public
 	* @return boolean
 	*/
-	public function removeDir($dir_path) {
-		$dir_list = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir_path, FilesystemIterator::SKIP_DOTS));
+/*	public function removeDir($dir_path) {
+		$dir_list = new RecursiveIteratorIterator(
+			new RecursiveDirectoryIterator(
+				$dir_path,
+					RecursiveIteratorIterator::SELF_FIRST |
+					FilesystemIterator::SKIP_DOTS |
+					FilesystemIterator::UNIX_PATHS
+			)
+		);
+		
 		
 		foreach($dir_list as $dir) {
+			if( $dir->isDir()) {
+				echo $dir;
+			}
+			
 			if($dir->isDir() && empty($dir)) {
 				$delete_dir = @rmdir($dir);
 				
@@ -225,6 +237,30 @@ class purgeSystemCommand extends CConsoleCommand {
 					$this->logError($this->getDateTime() . " - Directory: $dir could not be deleted.");
 				}
 			}
+
+		}
+		
+		
+	} */
+	
+	/**
+	* http://stackoverflow.com/questions/4747905/how-can-you-find-all-immediate-sub-directories-of-the-current-dir-on-linux
+	*/
+	public function removeDir($dir_path) {
+		exec(escapeshellcmd('find ' . $dir_path . ' -type d'), $dirs);
+		unset($dirs[0]); // this is the base dir for the downloads/uploads so leave it there
+		
+		foreach($dirs as $dir) {
+			$count = count(scandir($dir));
+			
+			if($count == 2) { // check for . and .. files
+				$delete_dir = @rmdir($dir);
+				
+				if($delete_dir == false) {
+					$this->logError($this->getDateTime() . " - Directory: $dir could not be deleted.");
+				}
+			} 
+
 		}
 	}
 	
@@ -296,7 +332,7 @@ class purgeSystemCommand extends CConsoleCommand {
 	}
 	
 	public function actionDelete() {
-		$zip_files = $this->generatedFiles('zip_gz_downloads');
+	/*	$zip_files = $this->generatedFiles('zip_gz_downloads');
 		$this->fileProcess($zip_files);
 		
 		$csv_files = $this->generatedFiles('csv_meta_paths');
@@ -314,9 +350,13 @@ class purgeSystemCommand extends CConsoleCommand {
 				$table = $this->getMetataTable($downloaded_file['file_type_id']);
 				$this->updateGenerated($table, $downloaded_file['id']);
 			}
+		} */
+		
+		$user_dirs = array('uploads', 'curl_downloads'); // remove empty directories
+		foreach($user_dirs as $user_dir) {
+			$this->removeDir(Yii::getPathOfAlias('application.' . $user_dir));
 		}
 		
-		$this->removeDir(Yii::getPathOfAlias('application.uploads'));
-		$this->mailError();
+	//	$this->mailError();
 	}
 }
