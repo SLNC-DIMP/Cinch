@@ -209,7 +209,7 @@ class purgeSystemCommand extends CConsoleCommand {
 	/**
 	* Remove directory from the file system if empty
 	* RecursiveDirectoryIterator should account for . and .. files.
-	* This should look at files beneath each user's root folder.
+	* This should look at files beneath downloads/uploads root directories.
 	* See http://stackoverflow.com/questions/2524151/php-get-all-subdirectories-of-a-given-directory
 	* @param $dir_path
 	* @access public
