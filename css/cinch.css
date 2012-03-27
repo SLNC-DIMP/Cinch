@@ -1,0 +1,27 @@
+body {
+	background: none repeat scroll 0 0 #EBF7F9;
+}
+
+#mainmenu {
+	background: none repeat scroll left top #0C93B0;
+	/* background: url("bg.gif") repeat-x scroll left top white; */
+}
+
+#header {
+	border-top: none;
+	margin-top: -4px;
+}
+
+#mainmenu ul li a:hover, #mainmenu ul li.active a {
+    color: #0C93B0;;
+}
+
+#cinch_image {
+	float: right;
+	position:relative;
+	padding-left: 15px;
+}
+
+#cinch_text {
+	padding-top: 10px;
+}
