@@ -1,4 +1,4 @@
-A project to develop a bulk download and FTP service to a central repository 
+A project to develop a bulk download service to a central repository 
 that will maintain original file timestamps, extract file level metadata, 
 create file checksums and periodically validate checksums for continued file integrity. 
 
