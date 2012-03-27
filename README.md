@@ -2,7 +2,7 @@ A project to develop a bulk download service to a central repository
 that will maintain original file timestamps, extract file level metadata, 
 create file checksums and periodically validate checksums for continued file integrity. 
 
-Users merely need to upload a list of URLs to download or an FTP address and 
+Users merely need to upload a list of URLs to download and 
 when the process completes they can download the requested files and file metadata 
 to their local environment.
 
@@ -31,7 +31,6 @@ Requirements
 * Currently Cinch will only run on *nix systems
 * PHP 5.3+ (PHP 5.4+ is recommended)
 * MySQL or SQLite
-* PECL AMQP extension needs to be installed
 
 After download, you may need to run the setup.sh shell file before initially running application.
 
@@ -43,5 +42,4 @@ Parts of Cinch include:
 - jQuery <http://jquery.com>
 - jQuery UI <http://jqueryui.com>
 - Apache Tika <http://tika.apache.org>
-- RabbitMQ <http://www.rabbitmq.com>
 - ClamAV <http://www.clamav.net>
