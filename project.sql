@@ -263,7 +263,9 @@ INSERT INTO `file_type` (`id`, `file_type`, `file_type_name`) VALUES
 (7, 'text/plain', 'Text File'),
 (8, 'application/vnd.ms-excel', 'MS Excel 2003 format'),
 (9, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'MS Excel 2007 format'),
-(10, 'image/png', 'PNG');
+(10, 'image/png', 'PNG'),
+(11, 'application/vnd.ms-powerpoint', 'MS PPT 2003 format'),
+(12, 'application/vnd.openxmlformats-officedocument.presentationml.presentation', 'MS PPT 2007 format');
 
 --
 -- Table structure for table `file_info`

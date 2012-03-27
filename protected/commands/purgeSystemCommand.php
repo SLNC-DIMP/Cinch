@@ -52,8 +52,8 @@ class purgeSystemCommand extends CConsoleCommand {
 			case 2:
 			case 3:
 				return 'Word_Metadata';
-			case 4:
-				return 'Tiff_Metadata';
+		//	case 4:
+		//		return 'Tiff_Metadata';
 			case 5:
 				return 'Jpg_Metadata';
 			case 6:
@@ -215,11 +215,11 @@ class purgeSystemCommand extends CConsoleCommand {
 	* @access public
 	* @return boolean
 	*/
-	public function removeDir($dir_path) {
+/*	public function removeDir($dir_path) {
 		$dir_list = new RecursiveIteratorIterator(
 				new RecursiveDirectoryIterator($dir_path), 
 				    RecursiveIteratorIterator::SELF_FIRST);
-
+		
 		foreach($dir_list as $dir) {
 			if( $dir->isDir() && count(scandir($dir->getRealpath())) == 2) {
 				
@@ -231,14 +231,13 @@ class purgeSystemCommand extends CConsoleCommand {
 			}
 		}
 		
-		
-	} 
+	} */
 	
 	/**
 	* http://stackoverflow.com/questions/4747905/how-can-you-find-all-immediate-sub-directories-of-the-current-dir-on-linux
 	* Back up if other method goes awry
 	*/
-/*	public function removeDir($dir_path) {
+	public function removeDir($dir_path) {
 		exec(escapeshellcmd('find ' . $dir_path . ' -type d'), $dirs);
 		unset($dirs[0]); // this is the base dir for the downloads/uploads so leave it there
 		
@@ -250,11 +249,15 @@ class purgeSystemCommand extends CConsoleCommand {
 				
 				if($delete_dir == false) {
 					$this->logError($this->getDateTime() . " - Directory: $dir could not be deleted.");
+				} else {
+					echo $dir . " deleted\r\n";
 				}
-			} 
+			} else {
+				echo $dir . " is not empty\r\n";
+			}
 
 		}
-	} */
+	} 
 	
 	/**
 	* Loop through the list of files to delete, remove them
@@ -337,7 +340,7 @@ class purgeSystemCommand extends CConsoleCommand {
 		
 		$downloaded_files = $this->filesToDelete();
 		if(is_array($downloaded_files) && !empty($downloaded_files)) {
-			foreach($files as $file) {
+			foreach($downloaded_files as $downloaded_file) {
 				$this->removeFile($downloaded_file['temp_file_path'], $downloaded_file['id']);
 				$table = $this->getMetataTable($downloaded_file['file_type_id']);
 				$this->updateGenerated($table, $downloaded_file['id']);
