@@ -54,14 +54,15 @@ class ChecksumCommand extends CConsoleCommand {
 	* Uses ROBOCOPY /COPYALL for Windows (won't copy files if permissions are different)
 	* Creates directory if there isn't one and makes it writable.
 	* Error code 3 - Duplicate checksum found
-	* Error code 13 - Duplicate filename found
+	* Error code 13 - Unable to move file
+	* Error code 17 - Duplicate filename found
 	* Event code 6 - file moved
 	* @param $file_path
 	* @param $file_id
 	* @param $checksum_dup
 	* @access public
 	*/
-	public function moveDupes($file_path, $file_id, $checksum_dup = 0) {
+	public function moveDupes($file_path, $file_id, $checksum_dup = 0, $filename_dup = 0) {
 		$split_path = preg_split('/(\/|\\\)/i', $file_path);
 		$windows_root = $split_path; // needed by Windows OS only
 		$root_pieces_count = count($split_path) - 2;
@@ -71,12 +72,16 @@ class ChecksumCommand extends CConsoleCommand {
 			$base_path .= $split_path[$i] . '/';
 		}
 	
-		if($checksum_dup > 0) {
+		if($checksum_dup > 0 && $filename_dup == 0) {
 			$dup_dir_name = 'dup_checksum';
-			$error_id = 3;
+			Utils::writeError($file_id, 3);
+		} elseif($checksum_dup > 0 && $filename_dup > 0) {
+			$dup_dir_name = 'dup_checksum';
+			Utils::writeError($file_id, 3);
+			Utils::writeError($file_id, 17);
 		} else {
 			$dup_dir_name = 'dup_name';
-			$error_id = 15;
+			Utils::writeError($file_id, 17);
 		}
 		
 		$dup_dir_path = $base_path . $dup_dir_name;
@@ -111,7 +116,6 @@ class ChecksumCommand extends CConsoleCommand {
 		
 		if($this->createChecksum($new_path) == $this->checksum->getOneFileChecksum($file_id)) {
 			Utils::writeEvent($file_id, 6);
-			Utils::writeError($file_id, $error_id);
 			@unlink("$file_path");
 		} else {
 			Utils::writeError($file_id, 13);
@@ -120,8 +124,8 @@ class ChecksumCommand extends CConsoleCommand {
 			return false;
 		}
 		
-		Utils::writeError($file_id, 3);
-		echo "Duplicate checksum found for: " . $file_path . "\r\n";
+		//Utils::writeError($file_id, 3);
+		echo "Duplicate checksum/filename found for: " . $file_path . "\r\n";
 		
 		return $new_path;
 	}
@@ -182,7 +186,7 @@ class ChecksumCommand extends CConsoleCommand {
 					echo "checksum for:" . $file_list['temp_file_path'] . " is " . $checksum . "\r\n";
 					
 					if($is_dup_checksum != 0 || $is_dup_filename != 0) {
-						$dup_move_path = $this->moveDupes($file_list['temp_file_path'], $file_list['id'], $is_dup_checksum);
+						$dup_move_path = $this->moveDupes($file_list['temp_file_path'], $file_list['id'], $is_dup_checksum, $is_dup_filename);
 					
 						if($dup_move_path != false) {
 							$this->checksum->writeDupMove($dup_move_path, $file_list['id']);

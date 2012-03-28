@@ -160,7 +160,7 @@ CREATE TABLE IF NOT EXISTS `error_type` (
 INSERT INTO `error_type` (`id`, `error_message`) VALUES
 (1, 'Unable to download file'),
 (2, 'Could not create checksum'),
-(3, 'Duplicate Checksum. File moved for manual inspection.'),
+(3, 'Duplicate Checksum.'),
 (4, 'Unable to extract file metadata'),
 (5, 'Corrupt File. Checksum mismatch'),
 (6, 'Filtered URL. File not downloaded'),
@@ -173,7 +173,8 @@ INSERT INTO `error_type` (`id`, `error_message`) VALUES
 (13, 'Unable to move file'),
 (14, 'Unable to delete file'),
 (15, 'Unable to determine full text status'),
-(16, 'Virus check couldn''t scan file');
+(16, 'Virus check couldn''t scan file'),
+(17, 'Duplicate Filename');
 
 
 --
