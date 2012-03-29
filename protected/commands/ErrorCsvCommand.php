@@ -18,7 +18,7 @@ class ErrorCsvCommand extends CConsoleCommand {
 	* @return object Yii DAO
 	*/
 	public function getErrorFiles() {
-		$sql = "SELECT org_file_path, temp_file_path, error_message, file_info.user_id
+		$sql = "SELECT problem_files.id AS error_key, org_file_path, temp_file_path, error_message, file_info.user_id
 				FROM file_info, problem_files, (
 					SELECT *
 					FROM error_type
@@ -26,12 +26,23 @@ class ErrorCsvCommand extends CConsoleCommand {
 				WHERE file_info.id = problem_files.file_id
 				AND error_list.id = problem_files.error_id
 				AND problem_file = 1
-				AND zipped != 1"; 
+				AND csv_added = 0"; 
 		
 		$error_list = Yii::app()->db->createCommand($sql)
 			->queryAll();
 		
 		return $error_list;
+	}
+	
+	/**
+	* Updates the problem file table to show that the entry has been added to error csv file.
+	* @param $file_id
+	* @access private
+	*/
+	private function csvAdded($file_id) {
+		$sql = "UPDATE problem_files SET csv_added = 1 WHERE id = ?";
+		$error_list = Yii::app()->db->createCommand($sql)
+			->execute(array($file_id));
 	}
 	
 	/**
@@ -78,6 +89,7 @@ class ErrorCsvCommand extends CConsoleCommand {
 			foreach($errors as $error) {
 				$csv_path = $this->makecsv->getUserPath($error['user_id']);
 				$this->makeReport($error, $csv_path);
+				$this->csvAdded($error['error_key']);
 				echo "File " . $error['error_message'] . '-' . $error['org_file_path'] . " added\r\n";
 			}
 		}
