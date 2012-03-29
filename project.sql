@@ -491,6 +491,7 @@ CREATE TABLE IF NOT EXISTS `problem_files` (
   `id` int(7) NOT NULL auto_increment,
   `error_id` int(3) NOT NULL,
   `file_id` int(10) NOT NULL,
+  `csv_added` int(1) NOT NULL default '0' COMMENT 'problem has been added to error csv file',
   `problem_time` timestamp NOT NULL default CURRENT_TIMESTAMP,
   PRIMARY KEY  (`id`),
   KEY `error_id` (`error_id`),

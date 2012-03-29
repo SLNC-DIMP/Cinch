@@ -33,7 +33,7 @@ class purgeSystemCommand extends CConsoleCommand {
 			->bindValue(':checksum_run', 1)
 			->bindValue(':metadata', 1) 
 			->bindValue(':path', '')
-		//	->limit(7500)
+			->limit(7500)
 			->queryAll();
 		
 		return $files;
@@ -329,6 +329,6 @@ class purgeSystemCommand extends CConsoleCommand {
 			$this->removeDir(Yii::getPathOfAlias('application.' . $user_dir));
 		}
 		
-		$this->mailError();
+		$this->mailError(); 
 	}
 }
