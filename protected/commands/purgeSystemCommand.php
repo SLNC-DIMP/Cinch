@@ -28,12 +28,12 @@ class purgeSystemCommand extends CConsoleCommand {
 			AND   temp_file_path != :path";
 		
 		$files = Yii::app()->db->createCommand($sql)
-			->bindParam(':download_time', $this->timeOffset(1))
+			->bindParam(':download_time', $this->timeOffset(30))
 			->bindValue(':virus_check', 1)
 			->bindValue(':checksum_run', 1)
 			->bindValue(':metadata', 1) 
 			->bindValue(':path', '')
-			->limit(7500)
+		//	->limit(7500)
 			->queryAll();
 		
 		return $files;
@@ -204,6 +204,8 @@ class purgeSystemCommand extends CConsoleCommand {
 		} else {
 			$this->updateGenerated($table, $file_id);
 		}
+		
+		if($delete_file) { echo $file_path . " deleted\r\n"; }
 	}
 	
 	/**
@@ -235,7 +237,10 @@ class purgeSystemCommand extends CConsoleCommand {
 	
 	/**
 	* http://stackoverflow.com/questions/4747905/how-can-you-find-all-immediate-sub-directories-of-the-current-dir-on-linux
+	* Deletes empty directories in a given path
 	* Back up if other method goes awry
+	* @param $dir_path
+	* @access public
 	*/
 	public function removeDir($dir_path) {
 		exec(escapeshellcmd('find ' . $dir_path . ' -type d'), $dirs);
@@ -244,7 +249,7 @@ class purgeSystemCommand extends CConsoleCommand {
 		foreach($dirs as $dir) {
 			$count = count(scandir($dir));
 			
-			if($count == 2) { // check for . and .. files
+			if($count == 2) { // check for . and .. directories
 				$delete_dir = @rmdir($dir);
 				
 				if($delete_dir == false) {
@@ -296,7 +301,7 @@ class purgeSystemCommand extends CConsoleCommand {
 			$message = "The following deletion errors occured:\r\n";
 			$message .= file_get_contents($this->error_list);
 			
-			mail($to, $subject, $message, $headers);
+			mail($to, $subject, $message, $from);
 		} else {
 			return false;
 		}

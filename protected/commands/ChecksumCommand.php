@@ -192,7 +192,7 @@ class ChecksumCommand extends CConsoleCommand {
 							$this->checksum->writeDupMove($dup_move_path, $file_list['id']);
 						} else {
 							echo "Duplicate file: " . $file_list['temp_file_path'] . " couldn't be moved\r\n";
-							Utils::writeError($file_list['id'], 13);
+							// Utils::writeError($file_list['id'], 13);
 						}
 					}
 				} else {
