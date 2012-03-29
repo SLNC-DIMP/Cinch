@@ -25,3 +25,7 @@ body {
 #cinch_text {
 	padding-top: 10px;
 }
+
+#no_bullets  {
+	list-style-type:none;
+}
