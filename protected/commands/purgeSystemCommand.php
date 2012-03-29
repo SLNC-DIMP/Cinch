@@ -209,36 +209,8 @@ class purgeSystemCommand extends CConsoleCommand {
 	}
 	
 	/**
-	* Remove directory from the file system if empty
-	* RecursiveDirectoryIterator should account for . and .. files.
-	* This should look at files beneath downloads/uploads root directories.
-	* See http://stackoverflow.com/questions/2524151/php-get-all-subdirectories-of-a-given-directory
-	* @param $dir_path
-	* @access public
-	* @return boolean
-	*/
-/*	public function removeDir($dir_path) {
-		$dir_list = new RecursiveIteratorIterator(
-				new RecursiveDirectoryIterator($dir_path), 
-				    RecursiveIteratorIterator::SELF_FIRST);
-		
-		foreach($dir_list as $dir) {
-			if( $dir->isDir() && count(scandir($dir->getRealpath())) == 2) {
-				
-				$delete_dir = @rmdir($dir->getRealpath());
-				
-				if($delete_dir == false) {
-					$this->logError($this->getDateTime() . " - Directory: " . $dir->getRealpath() . " could not be deleted.");
-				}
-			}
-		}
-		
-	} */
-	
-	/**
 	* http://stackoverflow.com/questions/4747905/how-can-you-find-all-immediate-sub-directories-of-the-current-dir-on-linux
 	* Deletes empty directories in a given path
-	* Back up if other method goes awry
 	* @param $dir_path
 	* @access public
 	*/
@@ -269,10 +241,10 @@ class purgeSystemCommand extends CConsoleCommand {
 	* @param $files
 	* @access public
 	*/
-	public function fileProcess($files) {
+	public function fileProcess($files, $table) {
 		if(is_array($files) && !empty($files)) {
 			foreach($files as $file) {
-				$this->removeFile($file['path'], $file['id']);
+				$this->removeFile($file['path'], $file['id'], $table);
 			}
 		}
 	}
@@ -315,13 +287,13 @@ class purgeSystemCommand extends CConsoleCommand {
 		$users = $this->getUserReminders();
 		if(empty($users)) { exit; }
 		
-		$subject = 'You have files on Cinch! marked for deletion';
+		$subject = 'You have files on CINCH! marked for deletion';
 			
 		$message = "You have files marked for deletion from Cinch!\r\n";
 		$message .= "They will be deleted 10 days from now.\r\n";
 		$message .= "If you haven't done so please retrieve your downloads soon from http://cinch.nclive.org.\r\n";
 		$message .= "\r\n";
-		$message .= "Thanks, from your Cinch administrators";
+		$message .= "Thanks, from your CINCH administrators";
 		
 		foreach($users as $user) {
 			$mail_sent = $this->mail_user->UserMail($user['user_id'], $subject, $message);
@@ -333,15 +305,15 @@ class purgeSystemCommand extends CConsoleCommand {
 	
 	public function actionDelete() {
 		$zip_files = $this->generatedFiles('zip_gz_downloads');
-		$this->fileProcess($zip_files);
+		$this->fileProcess($zip_files, 'zip_gz_downloads');
 		
 		$csv_files = $this->generatedFiles('csv_meta_paths');
-		$this->fileProcess($csv_files);
+		$this->fileProcess($csv_files, 'csv_meta_paths');
 		
 		$this->clearLists('files_for_download'); 
 		
 		$upload_lists = $this->generatedFiles('upload'); 
-		$this->fileProcess($upload_lists);
+		$this->fileProcess($upload_lists, 'upload');
 		
 		$downloaded_files = $this->filesToDelete();
 		if(is_array($downloaded_files) && !empty($downloaded_files)) {

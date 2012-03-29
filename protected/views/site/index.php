@@ -12,7 +12,7 @@ The CINCH project will develop a tool that allows users to bulk download files t
     <li>Download the retrieved files and file metadata to their local environment.</li>
 </ol>
 
-<p>The tool will maintain original file timestamps; rename file names with a unique, intelligent identifier; run virus scans; extract file-level metadata; create file checksums; validate checksums for file integrity; and track all actions in an audit trail document. With repeated uses, the CINCH tool will track file duplicates.<p>
+<p>The tool will maintain original file timestamps; rename files with a unique, intelligent identifier; run virus scans; extract file-level metadata; create file checksums; validate checksums for file integrity; and track all actions in an audit trail document. With repeated uses, the CINCH tool will track file duplicates.<p>
  
 <p>Funding for the CINCH: Capture, Ingest, &amp; Checksum tool is made possible through an IMLS Sparks! Ignition grant.</p>
 </div>

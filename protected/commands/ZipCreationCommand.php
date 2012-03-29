@@ -37,6 +37,7 @@ class ZipCreationCommand extends CConsoleCommand {
 		$users_with_files = Yii::app()->db->createCommand()
 			->select('user_id, COUNT("user_id") AS file_count')
 			->from('file_info')
+			->where('events_frozen = 0')
 			->group('user_id')
 			->order('file_count desc')
 			->queryAll();
@@ -46,8 +47,6 @@ class ZipCreationCommand extends CConsoleCommand {
 	
 	/**
 	* Gets all a user's files for which zip files haven't been created.
-	* Problem file error 2 is checksum not created
-	* Problem file error 4 is couldn't get metadata
 	* @param $user_id
 	* @access public
 	* @return object Yii DAO object
@@ -56,7 +55,13 @@ class ZipCreationCommand extends CConsoleCommand {
 		$user_files = Yii::app()->db->createCommand()
 			->select('id, temp_file_path, user_id')
 			->from($this->file_info)
-			->where(array('and', ':user_id = user_id', 'checksum_run = 1', 'metadata = 1', 'virus_check = 1', 'temp_file_path' != ''))
+			->where(array('and', 
+				':user_id = user_id', 
+				'checksum_run = 1', 
+				'metadata = 1', 
+				'virus_check = 1', 
+				'events_frozen = 0', 
+				'temp_file_path' != ''))
 			->bindParam(":user_id", $user_id, PDO::PARAM_INT)
 			->queryAll();
 	
@@ -301,7 +306,7 @@ class ZipCreationCommand extends CConsoleCommand {
 	*/
 	public function run($args) {
 		$users = $this->getUserFileCount();
-		if(empty($users)) { exit; }
+		if(empty($users)) { echo "Nothing to zip\r\n"; exit; }
 		
 		foreach($users as $user) {
 			$user_id = $user['user_id'];
