@@ -20,7 +20,7 @@ instance yourself please see our <a href="https://github.com/lfarrell/Cinch">Git
     <li>http://anothersite.gov/docs/another_file.doc</li>  
 </ul>
 
-<h3>Why can my upload list only have 4,500 files listed for CINCH to collect?</h3>
+<h3>Why can my upload list only have 10,000 files listed for CINCH to collect?</h3>
 <p>This is because our server has problems dealing with a large number files at one pass.  However feel free to upload as many lists as you like.  We'll get to them all.</p>
 
 <h3>Should I save a copy of my upload list(s)?</h3>
