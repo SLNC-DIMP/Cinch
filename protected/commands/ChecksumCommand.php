@@ -10,14 +10,15 @@ class ChecksumCommand extends CConsoleCommand {
 	
 	/**
 	* Create an MD5 or SHA1 checksum.  Default is SHA1
+	* Escapes weird filename characters
 	* @param $file
 	* @param $type
 	* @access protected
 	* @return string
 	*/
 	public function createChecksum($file, $type = 'sha1', $remote = false) {
-		if($remote == true || file_exists($file)) {
-			$checksum = ($type == 'sha1') ? sha1_file($file) : md5_file($file);	
+		if($remote == true || file_exists("$file")) {
+			$checksum = ($type == 'sha1') ? sha1_file("$file") : md5_file("$file");	
 		} else {
 			return false;	
 		}

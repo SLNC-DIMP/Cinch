@@ -32,7 +32,7 @@ class DownloadCommand extends CConsoleCommand {
 			->select('*')
 			->from($this->download_file_list)
 			->where('processed = :processed', array(':processed' => 0))
-			->limit(4000)
+			->limit(4500)
 			->queryAll();
 			
 		return $get_file_list;
@@ -159,7 +159,7 @@ class DownloadCommand extends CConsoleCommand {
 	* @return string
 	*/
 	public function cleanName($file, $file_id, $duplicate =  1) {
-		$patterns = array('/^(http|https):\/\//i', '/(\/|\s|\?|&|=|\\\|\(|\)|\{|\}|\'|")/');
+		$patterns = array('/^(http|https):\/\//i', '/(\/|\s|\?|&|=|\\\|\(|\)|\{|\}|\'|"|;|:)/');
 		$replacements = array('', '_');
 		$file_name = preg_replace($patterns, $replacements, $file);
 		$file_extension = $this->initFileType($file);

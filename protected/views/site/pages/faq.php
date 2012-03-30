@@ -16,7 +16,8 @@ instance yourself please see our <a href="https://github.com/lfarrell/Cinch">Git
 <p>Simply create a file with a .txt or .csv extension placing the full url for each file to download on its own line like so:</p>
 <ul id="no_bullets">
 	<li>http://mysite.gov/pdfs/important.pdf</li>
-    <li>http://anothersite.gov/docs/another_file.doc</li>
+    <li>https://agency.org/files/2012/my_file.docx</li>
+    <li>http://anothersite.gov/docs/another_file.doc</li>  
 </ul>
 
 <h3>Why can my upload list only have 4,500 files listed for CINCH to collect?</h3>
@@ -34,4 +35,20 @@ instance yourself please see our <a href="https://github.com/lfarrell/Cinch">Git
 
 <h3>Why are my files deleted after 30 days?</h3>
 <p>Simply put we don't have enough room on our server to keep everyones files in perpetuity.  You will receive an email 20 days after your files are processed notifying you that your files will be deleted soon.</p>
+
+<h3>What is the life cycle of my files in CINCH?</h3>
+<p>Here's a high level overview of what happens after you upload your url list:</p>
+<ol>
+	<li>Each url from your list is written to a database for processing.</li>
+    <li>Each file is downloaded.</li>
+    <li>Each file is run through a virus check.</li>
+    <li>Each file's checksum is generated.</li>
+    <li>Each file's metadata is extracted.</li>
+    <li>Each file's metadata is added to a metadata.csv for inclusion in a zip file</li>
+    <li>Any files with errors have their error information added to an error.csv for inclusion in a zip file.</li>
+    <li>Each file is added to a zip file along with the metadata.csv file, errors.csv file, and a file_events_history.csv file.</li>
+    <li>You receive a message that you have files are ready for download.</li>
+    <li>After 20 days you receive an email that your files will be deleted soon.</li>
+    <li>After 30 days your files are deleted from the system.</li>
+</ol>
 
