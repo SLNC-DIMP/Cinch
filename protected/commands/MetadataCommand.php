@@ -143,7 +143,7 @@ class MetadataCommand extends CConsoleCommand {
 		system('java -jar ' . $tika_path . ' --server');
 		
 		$output = array();
-		$command = 'java -jar ' . $tika_path . ' --' . $extract . ' ' . $file;
+		$command = 'java -jar ' . $tika_path . ' --' . $extract . ' ' . "$file";
 		
 		exec(escapeshellcmd($command), $output);
 		
