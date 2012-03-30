@@ -41,7 +41,7 @@ class ErrorCsvCommand extends CConsoleCommand {
 	*/
 	private function csvAdded($file_id) {
 		$sql = "UPDATE problem_files SET csv_added = 1 WHERE id = ?";
-		$error_list = Yii::app()->db->createCommand($sql)
+		Yii::app()->db->createCommand($sql)
 			->execute(array($file_id));
 	}
 	

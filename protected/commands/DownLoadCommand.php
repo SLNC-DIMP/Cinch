@@ -127,7 +127,7 @@ class DownloadCommand extends CConsoleCommand {
 		$sql = substr_replace($sql, ' ', -1); // remove trailing comma
 		$sql .= "WHERE id = ?";
 		
-		$update_files = Yii::app()->db->createCommand($sql)
+		Yii::app()->db->createCommand($sql)
 			->execute($values);
 		
 		return Yii::app()->db->lastInsertID;
@@ -328,13 +328,12 @@ class DownloadCommand extends CConsoleCommand {
 	* Event code 13 Download failed
 	* @param $user
 	* @param $current_user_id
-	* @param $file_id
 	* @param $file_list_id
 	* @access public
 	* @return array file info including: file type id, and boolean on whether it's a dynamic file. 
 	* As well as File name and last modified time
 	*/
-	public function CurlProcessing($url, $current_user_id, $file_id, $file_list_id) {
+	public function CurlProcessing($url, $current_user_id, $file_list_id) {
 		$remote_checksum = $this->remote_checksum->createRemoteChecksum($url);
 		$db_file_id = $this->setFileInfo($url, $remote_checksum, $current_user_id, $file_list_id);
 		
@@ -422,7 +421,7 @@ class DownloadCommand extends CConsoleCommand {
 		if(empty($urls)) { exit; }
 		
 		foreach($urls as $url) {
-			$download = $this->CurlProcessing($url['url'],  $url['user_id'], $url['id'], $url['user_uploads_id']);
+			$download = $this->CurlProcessing($url['url'],  $url['user_id'], $url['user_uploads_id']);
 			
 			if(is_array($download)) {
 				echo $url['url'] . " downloaded\r\n";			

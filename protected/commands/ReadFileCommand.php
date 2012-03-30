@@ -40,13 +40,13 @@ class ReadFileCommand extends CConsoleCommand {
 	
 	public function writeFileCount($num_files, $list_id) {
 		$sql = "UPDATE upload SET urls_in_list = ? WHERE id = ?";
-		$add_file_count = Yii::app()->db->createCommand($sql)
+		Yii::app()->db->createCommand($sql)
 			->execute(array($num_files, $list_id));
 	}
 	
 	public function incrementFileNum($last_url_num, $list_id) {
 		$sql = "UPDATE upload SET last_url_processed = ? WHERE id = ?";
-		$add_file_count = Yii::app()->db->createCommand($sql)
+		Yii::app()->db->createCommand($sql)
 			->execute(array($last_url_num, $list_id));
 	}
 	

@@ -41,9 +41,9 @@ class virusCheckCommand extends CConsoleCommand {
 	* @TODO may need sudo privileges
 	* @access private
 	*/
-	private function updateDefs() {
+/*	private function updateDefs() {
 		system(escapeshellcmd('freshclam'));
-	}
+	} */
 	
 	/**
 	* Scan a file for viruses

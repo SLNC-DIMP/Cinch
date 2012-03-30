@@ -120,7 +120,7 @@ class purgeSystemCommand extends CConsoleCommand {
 	*/
 	protected function reminderSent($file_id) {
 		$sql = "UPDATE zip_gz_downloads SET deletion_reminder = 1 WHERE id = ?";
-		$reminder_sent = Yii::app()->db->createCommand($sql)
+		Yii::app()->db->createCommand($sql)
 			->execute(array($file_id));
 	}
 	
@@ -134,8 +134,7 @@ class purgeSystemCommand extends CConsoleCommand {
 	*/
 	protected function clearLists($table) {
 		$sql = "DELETE FROM $table WHERE processed = ?";
-	
-		$clear = Yii::app()->db->createCommand($sql)
+		Yii::app()->db->createCommand($sql)
 			->execute(array(1));
 	}
 	
@@ -169,7 +168,7 @@ class purgeSystemCommand extends CConsoleCommand {
 	*/
 	private function updateFileInfo($file_id) {
 		$sql = "UPDATE file_info SET temp_file_path = '', expired_deleted = 1 WHERE id = ?";
-		$clear = Yii::app()->db->createCommand($sql)
+		Yii::app()->db->createCommand($sql)
 			->execute(array($file_id));
 	}
 	
@@ -182,7 +181,7 @@ class purgeSystemCommand extends CConsoleCommand {
 	*/
 	private function updateGenerated($table, $file_id) {
 		$sql = "DELETE FROM $table WHERE id = ?";
-		$delete = Yii::app()->db->createCommand($sql)
+		Yii::app()->db->createCommand($sql)
 			->execute(array($file_id));
 	}
 	

@@ -107,7 +107,7 @@ class ChecksumCommand extends CConsoleCommand {
 			$command = 'ROBOCOPY ' . "$base_path" . ' ' . "$dup_dir_path" . ' ' . "$file_name" . ' /COPYALL'; 
 		}
 		
-		$move_file = system(escapeshellcmd($command), $retval);
+		system(escapeshellcmd($command), $retval);
 		
 		if($retval != 0) { // This needs to be the following on Windows: $move_file == false
 			Utils::writeError($file_id, 13);
@@ -171,7 +171,7 @@ class ChecksumCommand extends CConsoleCommand {
 	* 13 is error code for "Unable to move file"
 	* Event type 5 is checksum created.
 	*/
-	public function actionCreate($args) {
+	public function actionCreate() {
 		$file_lists = $this->checksum->getFileList();
 		
 		if(count($file_lists) > 0) {

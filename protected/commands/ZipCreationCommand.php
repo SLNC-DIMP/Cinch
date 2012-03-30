@@ -137,7 +137,7 @@ class ZipCreationCommand extends CConsoleCommand {
 	*/
 	public function writeZipPath($user_id, $path) {
 		$sql = "INSERT INTO zip_gz_downloads(user_id, path) VALUES(?, ?)";
-		$write_zip = Yii::app()->db->createCommand($sql)
+		Yii::app()->db->createCommand($sql)
 			->execute(array($user_id, $path));
 	}
 	
@@ -150,7 +150,7 @@ class ZipCreationCommand extends CConsoleCommand {
 	*/
 	public function updateFileInfo($file_id, $tablename = 'file_info') {
 		$sql = "UPDATE " . $tablename . " SET zipped = 1 WHERE id = ?";
-		$write_zip = Yii::app()->db->createCommand($sql)
+		Yii::app()->db->createCommand($sql)
 			->execute(array($file_id));
 	}
 	
@@ -240,7 +240,7 @@ class ZipCreationCommand extends CConsoleCommand {
 		$zip = new ZipArchive();
 		
 		if ($zip->open($zip_path, ZIPARCHIVE::CREATE) !== true) {
-			echo "cannot open <$path>\r\n";
+			echo "cannot open <$zip_path>\r\n";
 			$zip = false;
 		}
 
@@ -303,7 +303,7 @@ class ZipCreationCommand extends CConsoleCommand {
 	* Creates a new zip file for user if zip archive will go over 0.5GB with addition of new file or if archive has more than 65500 files
 	* Event code 9 is Zipped for download
 	*/
-	public function run($args) {
+	public function run() {
 		$users = $this->getUserFileCount();
 		if(empty($users)) { echo "Nothing to zip\r\n"; exit; }
 		
