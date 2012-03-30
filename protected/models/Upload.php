@@ -14,7 +14,7 @@
 class Upload extends CActiveRecord {
 	public $path;
 	public $files_in_list;
-	const MAX_URLS = 4500;
+	const MAX_URLS = 10000;
 	
 	/**
 	 * Returns the static model of the specified AR class.
@@ -58,7 +58,7 @@ class Upload extends CActiveRecord {
 			$this->files_in_list = count(file($params[0]->tempName, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES));
 			
 			if($this->files_in_list > self::MAX_URLS) {
-				$this->addError('urls_in_list', 'Your list appears to have more than 4500 urls listed. Please limit your list to 4500 urls.');
+				$this->addError('urls_in_list', 'Your list appears to have more than 10,000 urls listed. Please limit your list to 10,000 urls.');
 			} 
 		}
 	} 

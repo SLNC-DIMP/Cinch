@@ -56,7 +56,15 @@ class ReadFileCommand extends CConsoleCommand {
 		$write_files->execute();		
 	}
 	
-	public function buildValues($url, $file_list, $user_id) {
+	/**
+	* Build values for addUrl query
+	* @param $url
+	* @param $file_list,
+	* @param $user_id
+	* @access private
+	* @return array
+	*/
+	private function buildValues($url, $file_list, $user_id) {
 		$values = array();
 		$values[] = "$url, $file_list, $user_id";
 		
