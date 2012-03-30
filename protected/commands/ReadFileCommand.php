@@ -24,17 +24,12 @@ class ReadFileCommand extends CConsoleCommand {
 	* @access public
 	* @return object Yii DAO
 	*/
-	public function addUrl($url, $user_uploads_id, $user_id) {
+	public function addUrl(array $values) {
 		if(trim($url)!='')
 		{
-			$sql = "INSERT INTO files_for_download(url, user_uploads_id, user_id) VALUES(:url, :user_uploads_id, :user_id)";
-			$write_files = Yii::app()->db->createCommand($sql);
-			$write_files->bindParam(":url", $url, PDO::PARAM_STR);
-			$write_files->bindParam(":user_uploads_id", $user_uploads_id, PDO::PARAM_INT);
-			$write_files->bindParam(":user_id", $user_id, PDO::PARAM_INT);
-			$write_files->execute();	
-			
-			return Yii::app()->db->lastInsertID;	
+			$sql = "INSERT INTO files_for_download(url, user_uploads_id, user_id) VALUES(?, ?, ?)";
+			$write_files = Yii::app()->db->createCommand($sql)
+				->execute($values);	
 		}
 	}
 	
@@ -44,11 +39,6 @@ class ReadFileCommand extends CConsoleCommand {
 			->execute(array($num_files, $list_id));
 	}
 	
-	public function incrementFileNum($last_url_num, $list_id) {
-		$sql = "UPDATE upload SET last_url_processed = ? WHERE id = ?";
-		Yii::app()->db->createCommand($sql)
-			->execute(array($last_url_num, $list_id));
-	}
 	
 	/**
 	* Update file list as processed
@@ -64,6 +54,13 @@ class ReadFileCommand extends CConsoleCommand {
 	//	$write_files->bindParam(":process_time", $process_time, PDO::PARAM_INT);
 		$write_files->bindParam(":id", $id, PDO::PARAM_INT);
 		$write_files->execute();		
+	}
+	
+	public function buildValues($url, $file_list, $user_id) {
+		$values = array();
+		$values[] = "$url, $file_list, $user_id";
+		
+		return $values;
 	}
 	
 	/**
@@ -93,14 +90,16 @@ class ReadFileCommand extends CConsoleCommand {
 			
 			foreach($url_list as $url) {
 				if(!filter_var($url, FILTER_VALIDATE_URL)) {
-					continue;
 					$file_num_in_list++;
+					continue;
 				}
 				
-				$file_num_in_list++;
-				$this->incrementFileNum($file_num_in_list, $file_list['id']);
-				$this->addUrl(strip_tags(trim($url)), $file_list['id'], $file_list['user_id']);
+				$file_num_in_list++;  
+				
+				$values = $this->buildValues(strip_tags(trim($url)), $file_list['id'], $file_list['user_id']);
 			}
+			
+			$this->addUrl($values);
 			
 			$total_files = (isset($files_in_list)) ? $files_in_list : $file_list['urls_in_list'];
 			if($file_num_in_list == $total_files) {
