@@ -37,7 +37,9 @@ class ZipCreationCommand extends CConsoleCommand {
 		$users_with_files = Yii::app()->db->createCommand()
 			->select('user_id, COUNT("user_id") AS file_count')
 			->from('file_info')
-			->where('events_frozen = 0')
+			->where('and', array('events_frozen = 0', 
+								 'temp_file_path IS NOT NULL', 
+								 'temp_file_path !=""'))
 			->group('user_id')
 			->order('file_count desc')
 			->queryAll();

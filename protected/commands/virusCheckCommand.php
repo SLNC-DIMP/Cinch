@@ -158,7 +158,6 @@ class virusCheckCommand extends CConsoleCommand {
 		$files = $this->getFiles();
 		if(empty($files)) { exit; }
 		
-	//	$this->updateDefs();
 		foreach($files as $file) {
 			$scan = $this->virusScan($file['temp_file_path'], $file['id']);
 			$this->writeScan($scan);
