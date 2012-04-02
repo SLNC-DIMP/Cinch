@@ -47,32 +47,15 @@ class ChecksumCommand extends CConsoleCommand {
 	}
 	
 	/**
-	* Move duplicate files from their current directory to their own directory under a users directory
-	* If a file has a duplicate checksum and duplicate filename it goes into duplicate checksum folder
-	* Duplicate filenames are taken care of at download time to prevent naming collisions
-	* Escape paths with double quoates or they may not copy or delete files if weird characters in path.
-	* Uses cp -p for Linux
-	* Uses ROBOCOPY /COPYALL for Windows (won't copy files if permissions are different)
-	* Creates directory if there isn't one and makes it writable.
+	* Find which dup folder a file should go in and write the appropriate errors
 	* Error code 3 - Duplicate checksum found
-	* Error code 13 - Unable to move file
 	* Error code 17 - Duplicate filename found
-	* Event code 6 - file moved
-	* @param $file_path
-	* @param $file_id
 	* @param $checksum_dup
-	* @access public
+	* @param $filename_dup
+	* @access protected
+	* @return string
 	*/
-	public function moveDupes($file_path, $file_id, $checksum_dup = 0, $filename_dup = 0) {
-		$split_path = preg_split('/(\/|\\\)/i', $file_path);
-		$windows_root = $split_path; // needed by Windows OS only
-		$root_pieces_count = count($split_path) - 2;
-		
-		$base_path = '';
-		for($i=0; $i<$root_pieces_count; $i++) {
-			$base_path .= $split_path[$i] . '/';
-		}
-	
+	protected function errorBaseName($checksum_dup, $filename_dup) {
 		if($checksum_dup > 0 && $filename_dup == 0) {
 			$dup_dir_name = 'dup_checksum';
 			Utils::writeError($file_id, 3);
@@ -85,6 +68,35 @@ class ChecksumCommand extends CConsoleCommand {
 			Utils::writeError($file_id, 17);
 		}
 		
+		return $dup_dir_name;
+	}
+	
+	/**
+	* Move duplicate files from their current directory to their own directory under a users directory
+	* If a file has a duplicate checksum and duplicate filename it goes into duplicate checksum folder
+	* Duplicate filenames are taken care of at download time to prevent naming collisions
+	* Escape paths with double quoates or they may not copy or delete files if weird characters in path.
+	* Uses cp -p for Linux
+	* Uses ROBOCOPY /COPYALL for Windows (won't copy files if permissions are different)
+	* Creates directory if there isn't one and makes it writable.
+	* Error code 13 - Unable to move file
+	* Event code 6 - file moved
+	* @param $file_path
+	* @param $file_id
+	* @param $checksum_dup
+	* @access public
+	*/
+	public function moveDupes($file_path, $file_id, $checksum_dup = 0, $filename_dup = 0) {
+		$split_path = preg_split('/(\/|\\\)/i', $file_path);
+	//	$windows_root = $split_path; // needed by Windows OS only
+		$root_pieces_count = count($split_path) - 2;
+		
+		$base_path = '';
+		for($i=0; $i<$root_pieces_count; $i++) {
+			$base_path .= $split_path[$i] . '/';
+		}
+	
+		$dup_dir_name = $this->errorBaseName($checksum_dup, $filename_dup);
 		$dup_dir_path = $base_path . $dup_dir_name;
 		
 		if(!file_exists($dup_dir_path)) {
@@ -94,9 +106,9 @@ class ChecksumCommand extends CConsoleCommand {
 		$split_path[$root_pieces_count] = $dup_dir_name;
 		$new_path = implode('/', $split_path);
 		
-		if(strtoupper(substr(php_uname('s'), 0, 3)) !== 'WIN') {
+	//	if(strtoupper(substr(php_uname('s'), 0, 3)) !== 'WIN') {
 			$command = 'cp -p ' . "$file_path" . ' ' . "$new_path"; 
-		} else {
+		/*} else {
 			$root_path = '';
 			for($i=0; $i<count($windows_root) - 1; $i++) {
 				$root_path .= $windows_root[$i] . '/';
@@ -105,7 +117,7 @@ class ChecksumCommand extends CConsoleCommand {
 			$file_name = end($windows_root);
 		
 			$command = 'ROBOCOPY ' . "$base_path" . ' ' . "$dup_dir_path" . ' ' . "$file_name" . ' /COPYALL'; 
-		}
+		} */
 		
 		system(escapeshellcmd($command), $retval);
 		

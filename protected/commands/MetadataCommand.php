@@ -307,6 +307,7 @@ class MetadataCommand extends CConsoleCommand {
 						$this->updateFileInfo($file['id'], 'fulltext');	
 					}
 				} 
+				
 				$this->writeMetadata($file_type, $metadata, $file['id'], $file['user_id']);
 				$success = " Added\r\n";
 			}

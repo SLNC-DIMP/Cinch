@@ -159,9 +159,13 @@ class DownloadCommand extends CConsoleCommand {
 	* @return string
 	*/
 	public function cleanName($file, $file_id, $duplicate =  1) {
-		$patterns = array('/^(http|https):\/\//i', '/(\/|\s|\?|&|=|\\\|\(|\)|\{|\}|\'|"|;|:)/');
+		$patterns = array('/^(http|https):\/\//i', '/\s/');
 		$replacements = array('', '_');
 		$file_name = preg_replace($patterns, $replacements, $file);
+		
+		$other_replaces = array('?', '&', '=', '\\', '/', '(', ')', '{', '}', ';', ':',"'", '"', '%');
+		$file_name = str_replace($other_replaces, '_', $file_name);
+		
 		$file_extension = $this->initFileType($file);
 		
 		if($file_extension == 1 && $duplicate > 1) {
@@ -177,7 +181,7 @@ class DownloadCommand extends CConsoleCommand {
 		}
 		
 		Utils::writeEvent($file_id, 2);
-
+		
 		return $file_name; 
 	}
 	
