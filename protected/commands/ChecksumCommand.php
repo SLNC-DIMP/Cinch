@@ -55,7 +55,7 @@ class ChecksumCommand extends CConsoleCommand {
 	* @access protected
 	* @return string
 	*/
-	protected function errorBaseName($checksum_dup, $filename_dup) {
+	protected function errorBaseName($checksum_dup, $filename_dup, $file_id) {
 		if($checksum_dup > 0 && $filename_dup == 0) {
 			$dup_dir_name = 'dup_checksum';
 			Utils::writeError($file_id, 3);
@@ -96,7 +96,7 @@ class ChecksumCommand extends CConsoleCommand {
 			$base_path .= $split_path[$i] . '/';
 		}
 	
-		$dup_dir_name = $this->errorBaseName($checksum_dup, $filename_dup);
+		$dup_dir_name = $this->errorBaseName($checksum_dup, $filename_dup, $file_id);
 		$dup_dir_path = $base_path . $dup_dir_name;
 		
 		if(!file_exists($dup_dir_path)) {
