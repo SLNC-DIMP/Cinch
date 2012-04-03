@@ -4,7 +4,7 @@ $this->breadcrumbs=array(
 ); ?>
 <div id="upload_form">
 	<h2>Select a file to upload to Cinch</h2>
-    <p>Files must be .txt or .cvs files.  Please make sure each URL listed is on its own line in your file, and limit your list to a maximum of 4500 urls.</p>
+    <p>Files must be .txt or .cvs files.  Please make sure each URL listed is on its own line in your file, and limit your list to a maximum of 10,000 urls.</p>
 	<?php if($uploaded):?>
         <p>Your file was successfully uploaded. We'll send you an email when your files are ready for download.</p>
         <br />

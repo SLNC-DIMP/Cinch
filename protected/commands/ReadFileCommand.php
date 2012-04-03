@@ -10,7 +10,7 @@ class ReadFileCommand extends CConsoleCommand {
 			->select('*')
 			->from('upload')
 			->where('processed = :processed', array(':processed' => 0))
-			->limit(1)
+			->limit(3)
 			->queryAll();
 			
 		return $get_file_lists;
@@ -24,13 +24,16 @@ class ReadFileCommand extends CConsoleCommand {
 	* @access public
 	* @return object Yii DAO
 	*/
-	public function addUrl(array $values) {
-		if(trim($url)!='')
-		{
-			$sql = "INSERT INTO files_for_download(url, user_uploads_id, user_id) VALUES(?, ?, ?)";
-			$write_files = Yii::app()->db->createCommand($sql)
-				->execute($values);	
+	public function addUrls(array $values) {
+		$num_inserts = count($values) / 3;
+		$sql = "INSERT INTO files_for_download(url, user_uploads_id, user_id) VALUES ";
+		for($i=0; $i<$num_inserts; $i++) {
+			$sql .= "(?, ?, ?),";
 		}
+		$sql = preg_replace('/,$/', '', $sql);
+		
+		Yii::app()->db->createCommand($sql)
+			->execute($values);	
 	}
 	
 	public function writeFileCount($num_files, $list_id) {
@@ -57,21 +60,6 @@ class ReadFileCommand extends CConsoleCommand {
 	}
 	
 	/**
-	* Build values for addUrl query
-	* @param $url
-	* @param $file_list,
-	* @param $user_id
-	* @access private
-	* @return array
-	*/
-	private function buildValues($url, $file_list, $user_id) {
-		$values = array();
-		$values[] = "$url, $file_list, $user_id";
-		
-		return $values;
-	}
-	
-	/**
 	* Process all unprocessed lists and add urls to database.  When list completes updates list as processed.
 	* If a list fails during processing rereading list will pick up where the list died.
 	*/
@@ -84,33 +72,26 @@ class ReadFileCommand extends CConsoleCommand {
      
 		foreach($file_lists as $file_list) {
 			$urls = file($file_list['path'], FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+			$files_in_list = count($urls);
+			$this->writeFileCount($files_in_list, $file_list['id']);
+			$file_num_in_list = 0;
+			$values = array();
 			
-			if($file_list['last_url_processed'] > 0) {
-				$urls = array_slice($urls, $file_list['last_url_processed']);
-				$file_num_in_list = $file_list['last_url_processed'];
-			} else {
-				$files_in_list = count($urls);
-				$this->writeFileCount($files_in_list, $file_list['id']);
-				$file_num_in_list = 0;
-			}
-			
-			$url_list = SplFixedArray::fromArray($urls);
-			
-			foreach($url_list as $url) {
-				if(!filter_var($url, FILTER_VALIDATE_URL)) {
+			foreach($urls as $url) {
+				if(!filter_var(trim($url), FILTER_VALIDATE_URL)) {
 					$file_num_in_list++;
 					continue;
 				}
 				
 				$file_num_in_list++;  
-				
-				$values = $this->buildValues(strip_tags(trim($url)), $file_list['id'], $file_list['user_id']);
+				$values[] = trim($url);
+				$values[] = $file_list['id'];
+				$values[] = $file_list['user_id'];
 			}
+		
+			$this->addUrls($values);
 			
-			$this->addUrl($values);
-			
-			$total_files = (isset($files_in_list)) ? $files_in_list : $file_list['urls_in_list'];
-			if($file_num_in_list == $total_files) {
+			if($file_num_in_list == $files_in_list) {
 				$this->updateFileList($file_list['id']);
 			}
 		} 	

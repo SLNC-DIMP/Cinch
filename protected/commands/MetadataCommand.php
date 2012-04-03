@@ -293,7 +293,7 @@ class MetadataCommand extends CConsoleCommand {
 			
 			if($file_type == 4 || $file_type == 12) {
 				$this->tikaError($file['id'], $file_type);
-				$success = " Failed\r\n";
+				$success = " Failed";
 			} else {
 				
 				if(!preg_match('/(image|audio|video)/', $file_type)) {
@@ -309,12 +309,12 @@ class MetadataCommand extends CConsoleCommand {
 				} 
 				
 				$this->writeMetadata($file_type, $metadata, $file['id'], $file['user_id']);
-				$success = " Added\r\n";
+				$success = " Added";
 			}
 			
 			$this->updateFileInfo($file['id'], 'metadata', $file_type_id);
 			
-			echo $file['temp_file_path'] . $success; 
+			echo $file['temp_file_path'] . $success . "\r\n"; 
 		} 
 	}
 }
