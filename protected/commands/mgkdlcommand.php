@@ -5,7 +5,7 @@
 Yii::import('application.commands.ChecksumCommand');
 Yii::import('application.models.Utils');
 
-class DownloadCommand extends CConsoleCommand {
+class MgkdlCommand extends CConsoleCommand {
 	public $download_file_list = 'files_for_download';
 	public $file_info_table = 'file_info';
 	public $problem_downloads = 'problem_downloads';
@@ -431,19 +431,90 @@ class DownloadCommand extends CConsoleCommand {
 	}
 	
 	public function run() {
-        $urls = $this->getUrls();
+	    $urls = $this->getUrls();
+
 		if(empty($urls)) { exit; }
+		$exchangeName = "mgk";
+
+		$conn = $this->connectAMQP();
+		$conn->connect();
+		$channel = $this->createChannel($conn);
 		
-		foreach($urls as $key => $url) {
+		$ex = new AMQPExchange($channel);
+		$ex->setName($exchangeName);
+		$ex->setType(AMQP_EX_TYPE_DIRECT);
+		$ex->setFlags(AMQP_DURABLE | AMQP_AUTODELETE);
+		$ex->declare();
+		
+		$i = 0;
+		foreach($urls as $url) {
+			$which_queue = ($i % 2 == 0) ? 'queue1' : 'queue2';
+			$ex->publish($url['url'], $which_queue);
+		
+			$queue = $this->createQueue($channel);
+			$queue->setName('queue1');
+			$queue->declare();
 			
-			$download = $this->CurlProcessing($url['url'],  $url['user_id'], $url['user_uploads_id']);
+			$queue2 = $this->createQueue($channel);
+			$queue2->setName('queue2');
+			$queue2->declare();
 			
-			if(is_array($download)) {
-				echo $url['url'] . " downloaded\r\n";			
-			} else {
-				echo "Problem downloading: " . $url['url'] . "\r\n"; // text just a visual cue.
-			}
-			$this->updateFileList($url['id']); 
+			$queue->bind('mgk', 'queue1');
+			$queue2->bind('mgk', 'queue2');
+			
+			$msg = $queue->get(AMQP_AUTOACK);
+			$msg2 = $queue2->get(AMQP_AUTOACK);
+			
+			if($msg || $msg2) {
+				$download = $this->CurlProcessing($url['url'],  $url['user_id'], $url['user_uploads_id']);
+				
+				if(is_array($download)) {
+					echo $url['url'] . " downloaded\r\n";			
+				} else {
+					echo "Problem downloading: " . $url['url'] . "\r\n"; // text just a visual cue.
+				}
+				$this->updateFileList($url['id']); 
+			} 
+			
+			$i++;
 		}
-    }
+    	}
+
+	public function connectAMQP() {
+		$conn = new AMQPConnection();
+		$conn->connect();
+		
+		return $conn;
+	}
+
+	public function createChannel(AMQPConnection $conn) {
+		return new AMQPChannel($conn);
+	}
+	
+	public function createExchange(AMQPChannel $channel) {
+		return new AMQPExchange($channel);
+	//	$exchange->declare('exhange1', AMQP_EX_TYPE_FANOUT);
+	}
+	
+	public function createQueue(AMQPChannel $channel) {
+		return new AMQPQueue($channel);
+	//	$queue->declare('queue1');
+	}
+
+	public function getRabbitExchange($routeName)
+	{
+		$exchangeName = "mgk";
+
+		$conn = $this->connectAMQP();
+		$conn->connect();
+		$channel = $this->createChannel($conn);
+		
+		$ex = new AMQPExchange($channel);
+		$ex->setName($exchangeName);
+		$ex->setType(AMQP_EX_TYPE_DIRECT);
+		$ex->setFlags(AMQP_DURABLE | AMQP_AUTODELETE);
+		$ex->declare();
+		
+		return $ex;
+	}
 }

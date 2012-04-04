@@ -66,6 +66,7 @@ class ZipCreationCommand extends CConsoleCommand {
 				'metadata = 1', 
 				'virus_check = 1', 
 				'events_frozen = 0', 
+				'temp_file_path IS NOT NULL',
 				'temp_file_path' != ''))
 			->bindParam(":user_id", $user_id, PDO::PARAM_INT)
 			->queryAll();

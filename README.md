@@ -32,7 +32,7 @@ an IMLS Sparks! Ignition grant.
   <span rel="dct:publisher" resource="[_:publisher]">the person who associated CC0</span>
   with CINCH has waived all copyright and related or neighboring rights to
   <span property="dct:title">CINCH</span>.
-This work is published from:
+This work is published from the:
 <span property="vcard:Country" datatype="dct:ISO3166"
       content="US" about="[_:publisher]">
   United States</span>.
