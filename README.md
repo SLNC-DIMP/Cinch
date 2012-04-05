@@ -49,12 +49,14 @@ After download, you may need to run the setup.sh shell file before initially run
 
 If you want to run the unit tests you'll need to have Pear, PHPUnit and vfsStream installed.
 
+Adding PHPUnit:
 <ol>
 	<li>pear config-set auto_discover 1</li>
 	<li>pear install pear.phpunit.de/PHPUnit</li>
 	<li>pear install phpunit/DbUnit</li>
 </ol>
 
+Adding vfsStream:
 <ol>
 	<li>pear channel-discover pear.php-tools.net</li>
 	<li>pear install pat/vfsStream-beta</li>
