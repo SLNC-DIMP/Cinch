@@ -49,12 +49,16 @@ After download, you may need to run the setup.sh shell file before initially run
 
 If you want to run the unit tests you'll need to have Pear, PHPUnit and vfsStream installed.
 
-pear config-set auto_discover 1
-pear install pear.phpunit.de/PHPUnit
-pear install phpunit/DbUnit
+<ol>
+	<li>pear config-set auto_discover 1</li>
+	<li>pear install pear.phpunit.de/PHPUnit</li>
+	<li>pear install phpunit/DbUnit</li>
+</ol>
 
-pear channel-discover pear.php-tools.net
-pear install pat/vfsStream-beta
+<ol>
+	<li>pear channel-discover pear.php-tools.net</li>
+	<li>pear install pat/vfsStream-beta</li>
+</ol>
 
 Then navigate to Cinch/protected/test and run the following command:  phpunit unit 
 
