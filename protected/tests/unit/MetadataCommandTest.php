@@ -1,18 +1,18 @@
 <?php
-Yii::import('application.commands.DownloadCommand');
+Yii::import('application.commands.MetadataCommand');
 require_once 'vfsStream/vfsStream.php';
 
-class DownloadCommandTest extends CDbTestCase {
+class MetadataCommandTest extends CDbTestCase {
 	public function setUp() {
         vfsStreamWrapper::register();
         vfsStreamWrapper::setRoot(new vfsStreamDirectory('exampleDir'));
     }
 	
 	public function testShellCommand() {
-		 $commandName='Download';
+		 $commandName='Metadata';
 		 $CCRunner=new CConsoleCommandRunner();
 					
-		 $download = new DownloadCommand($commandName,$CCRunner);
-		// $this->assertTrue($download->run(array()));
+		 $metadata = new MetadataCommand($commandName,$CCRunner);
+		// $this->assertTrue($metadata->run(array()));
 	}
 }

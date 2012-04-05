@@ -1,18 +1,18 @@
 <?php
-Yii::import('application.commands.DownloadCommand');
+Yii::import('application.commands.ChecksumCommand');
 require_once 'vfsStream/vfsStream.php';
 
-class DownloadCommandTest extends CDbTestCase {
+class ChecksumCommandTest extends CDbTestCase {
 	public function setUp() {
         vfsStreamWrapper::register();
         vfsStreamWrapper::setRoot(new vfsStreamDirectory('exampleDir'));
     }
 	
 	public function testShellCommand() {
-		 $commandName='Download';
+		 $commandName='Checksum';
 		 $CCRunner=new CConsoleCommandRunner();
 					
-		 $download = new DownloadCommand($commandName,$CCRunner);
-		// $this->assertTrue($download->run(array()));
+		 $checksum = new ChecksumCommand($commandName,$CCRunner);
+		// $this->assertTrue($checksum->run(array()));
 	}
 }

@@ -3,17 +3,25 @@ Yii::import('application.controllers.UploadController');
 
 class UploadTest extends CDbTestCase {
 	public $fixtures = array('uploads' => 'Upload');
+	public $upload;
+	
+	public function __construct() {
+		$this->upload = new UploadController('uploadTest');
+	}
 	
 	public function testEncryptName() {
-	
+		$file = md5('file');
+		$extension = '.txt';
+		$file_test = $this->upload->encryptName('file.txt');
+		
+		$this->assertEquals($file . $extension, $file_test);
 	}
 	
 	public function testGetUsrUploadDir() {
-		$upload = new UploadController('uploadTest');
 		$user_name = 'Guest'; // default Yii user
 		
 		// pulls out full path from this location
-		$path = $upload->getUsrUploadDir(); 
+		$path = $this->upload->getUsrUploadDir(); 
 		$unix_path = str_replace('\\', '/', $path);
 		
 		// switch to projects sub-path.  Clunky, but works

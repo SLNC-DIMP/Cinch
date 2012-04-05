@@ -1,18 +1,18 @@
 <?php
-Yii::import('application.commands.DownloadCommand');
+Yii::import('application.commands.zipCreationCommand');
 require_once 'vfsStream/vfsStream.php';
 
-class DownloadCommandTest extends CDbTestCase {
+class zipCreationCommandTest extends CDbTestCase {
 	public function setUp() {
         vfsStreamWrapper::register();
         vfsStreamWrapper::setRoot(new vfsStreamDirectory('exampleDir'));
     }
 	
 	public function testShellCommand() {
-		 $commandName='Download';
+		 $commandName='zipCreation';
 		 $CCRunner=new CConsoleCommandRunner();
 					
-		 $download = new DownloadCommand($commandName,$CCRunner);
-		// $this->assertTrue($download->run(array()));
+		 $zip = new DownloadCommand($commandName,$CCRunner);
+		// $this->assertTrue($zip->run(array()));
 	}
 }

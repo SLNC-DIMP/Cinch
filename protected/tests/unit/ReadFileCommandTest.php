@@ -5,12 +5,16 @@ class ReadFileCommandTest extends CDbTestCase {
 	function testShellCommand() {
 		 $commandName='ReadFile';
 		 $CCRunner=new CConsoleCommandRunner();
-					
 		 $readfile = new ReadFileCommand($commandName,$CCRunner);
-		 $lists = $readfile->getLists();
+		 
+		 // get lists to process
+		 $lists = count($readfile->getLists());
+		 $file_count = $readfile->writeFileCount(4, 1);
 		
-		 $this->assertEquals(2, count($readfile->getLists()));
-		 $this->assertNotEquals(4, count($readfile->getLists()));
+		 $this->assertEquals(2, $lists);
+		 $this->assertNotEquals(4, $lists);
+		 
+		 //
      }
 
 }
