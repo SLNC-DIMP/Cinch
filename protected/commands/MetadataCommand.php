@@ -26,7 +26,7 @@ class MetadataCommand extends CConsoleCommand {
 			->from('file_info')
 			->where(array('and', 'metadata = 0', 'virus_check = 1', 'checksum_run = 1',
 					array('or', "temp_file_path != ''", 'temp_file_path IS NOT NULL')))
-			->limit(4000)
+			->limit(4500)
 			->queryAll();
 			
 		return $get_file_list;

@@ -91,6 +91,9 @@ class MetadataCsvCommand extends CConsoleCommand {
 			case 12:
 				$table = 'PPT_Metadata';
 				break;
+			default:
+				$table = false;
+				break;
 		}
 		
 		return $table;
@@ -190,14 +193,16 @@ class MetadataCsvCommand extends CConsoleCommand {
 			foreach($files as $file) {
 				$csv_path = $this->makecsv->getUserPath($file['user_id']);
 				$metadata_table = $this->findMetaTable($file['file_type_id']);
-				$metadata = $this->findMetadata(
-					$metadata_table, 
-					$file['id'], 
-					$file['user_id']
-				);
-				
-				$this->write($csv_path, $metadata_table, $metadata, $file['user_id']);
-				echo "File " . $file['id'] . " added to $metadata_table\r\n";
+				if($metadata_table) {
+					$metadata = $this->findMetadata(
+						$metadata_table, 
+						$file['id'], 
+						$file['user_id']
+					);
+					
+					$this->write($csv_path, $metadata_table, $metadata, $file['user_id']);
+					echo "File " . $file['id'] . " added to $metadata_table\r\n";
+				}
 			}
 		}
 	}

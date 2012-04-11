@@ -26,6 +26,9 @@ class ErrorCsvCommand extends CConsoleCommand {
 				WHERE file_info.id = problem_files.file_id
 				AND error_list.id = problem_files.error_id
 				AND problem_file = 1
+				AND virus_check = 1
+				AND checksum_run = 1
+				AND metadata = 1
 				AND csv_added = 0"; 
 		
 		$error_list = Yii::app()->db->createCommand($sql)

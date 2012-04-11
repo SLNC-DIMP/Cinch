@@ -91,18 +91,6 @@ class Checksum {
 	}
 	
 	/**
-	* Determines if a file has been previously downloaded by a user
-	* @param $temp_file_path
-	* @param $file_id
-	* @access public 
-	*/
-	public function writeDupMove($temp_file_path, $id) {
-		$sql = "UPDATE " . $this->table . " SET temp_file_path = ? WHERE id = ?";
-		$write = Yii::app()->db->createCommand($sql)
-			->execute(array($temp_file_path, $id));
-	}
-	
-	/**
 	* Write checksum errors to the database
 	* @param $checksum
 	* @param $id

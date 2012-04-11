@@ -58,7 +58,7 @@ class ZipCreationCommand extends CConsoleCommand {
 	*/
 	public function getUserFiles($user_id) {
 		$user_files = Yii::app()->db->createCommand()
-			->select('id, temp_file_path, user_id')
+			->select('id, temp_file_path, problem_file, user_id')
 			->from($this->file_info)
 			->where(array('and', 
 				':user_id = user_id', 
@@ -69,6 +69,7 @@ class ZipCreationCommand extends CConsoleCommand {
 				'temp_file_path IS NOT NULL',
 				'temp_file_path' != ''))
 			->bindParam(":user_id", $user_id, PDO::PARAM_INT)
+			->order(array('user_id DESC','problem_file ASC'))
 			->queryAll();
 	
 		return $user_files;
@@ -95,10 +96,10 @@ class ZipCreationCommand extends CConsoleCommand {
 	* Get user's base download path for Zip file creation
 	* @param $user_id
 	* @param $type
-	* @access private
+	* @access protected
 	* @return string
 	*/
-	private function getUserPath($user_id, $type = 'curl') {
+	protected function getUserPath($user_id, $type = 'curl') {
 		$user_name = Yii::app()->db->createCommand()
 			->select('username')
 			->from('user')
@@ -113,10 +114,10 @@ class ZipCreationCommand extends CConsoleCommand {
 	/**
 	* Creates incremented new file path if a zip file is approaching its size limit
 	* @param $zip_path
-	* @access private
+	* @access protected
 	* @return string
 	*/
-	private function addNewArchive($zip_path) {
+	protected function addNewArchive($zip_path) {
 		$path = explode('.', $zip_path);
 		$pieces = count($path);
 		$file_num_piece = $path[$pieces - 2];
@@ -167,9 +168,9 @@ class ZipCreationCommand extends CConsoleCommand {
 	* Using preg_split as explode might not work with Windows in this case
 	* @param $zip
 	* @param $zip_path
-	* @access private
+	* @access protected
 	*/
-	private function createManifest(ZipArchive $zip, $zip_path) {
+	protected function createManifest(ZipArchive $zip, $zip_path) {
 		$manifest_pieces = preg_split('/(\/|\\\)/', $zip_path);
 		$file_num = strrchr(array_pop($manifest_pieces), '-');
 		$file_num = strstr($file_num, '.', true);
@@ -199,9 +200,9 @@ class ZipCreationCommand extends CConsoleCommand {
 	* @param $zip_file
 	* @param $user_path
 	* @param $user_id
-	* @access private
+	* @access protected
 	*/
-	private function addManifest(ZipArchive $zip_file, $user_path, $user_id) {
+	protected function addManifest(ZipArchive $zip_file, $user_path, $user_id) {
 		$manifest_path = $this->createManifest($zip_file, $user_path);
 		$this->zipWrite($zip_file, $manifest_path);
 		$this->zipClose($zip_file, $user_path);
@@ -217,9 +218,9 @@ class ZipCreationCommand extends CConsoleCommand {
 	* @param $zip_file
 	* @param $user_id
 	* @param $mark_zipped
-	* @access private
+	* @access protected
 	*/
-	private function addMetaCsvFiles(ZipArchive $zip_file, $user_id, $mark_zipped = true) {
+	protected function addMetaCsvFiles(ZipArchive $zip_file, $user_id, $mark_zipped = true) {
 		$user_csv_files = $this->getCsvFiles($user_id);
 		foreach($user_csv_files as $user_csv_file) {
 			$this->zipWrite($zip_file, $user_csv_file['path']);
@@ -231,7 +232,7 @@ class ZipCreationCommand extends CConsoleCommand {
 	}
 	
 	/**
-	* Creates a new zip archive
+	* Creates a new zip archive and add problem file directory
 	* fopen a hacky work around to generate a file so zip file size can be checked
 	* @param $zip_path
 	* @access public
@@ -248,9 +249,25 @@ class ZipCreationCommand extends CConsoleCommand {
 		if ($zip->open($zip_path, ZIPARCHIVE::CREATE) !== true) {
 			echo "cannot open <$zip_path>\r\n";
 			$zip = false;
+		} else {
+			$this->addZipDir($zip, $zip_path);
 		}
 
 		return $zip; // update `file_info` SET zipped= 0, events_frozen=0
+	}
+	
+	/**
+	* Add a problem file directory to zip archive.
+	* @param $zip ZipArchive object
+	* @param $zip_path
+	* @access protected
+	*/
+	protected function addZipDir(ZipArchive $zip, $zip_path) {
+		if ($zip->open($zip_path) === TRUE && $zip->locateName('problem_files') == false) {
+			$zip->addEmptyDir('problem_files');
+		} else {
+			$zip = false;
+		}
 	}
 	
 	/**
@@ -258,11 +275,15 @@ class ZipCreationCommand extends CConsoleCommand {
 	* @param $zip ZipArchive object
 	* @param $file
 	* @access public
-	* @return object Zip archive object
 	*/
-	public function zipWrite(ZipArchive $zip, $file) {
+	public function zipWrite(ZipArchive $zip, $file, $problem = false) {
 		if(file_exists($file)) {
 			$short_path = str_replace('/', '', strrchr($file, '/'));
+			
+			if($problem == true) {
+				$short_path = 'problem_files/' . $short_path; 
+			}
+			
 			echo $short_path . "\r\n";
 			$zip->addFile($file, $short_path);
 		}
@@ -283,18 +304,20 @@ class ZipCreationCommand extends CConsoleCommand {
 	* Check a zip file's size to see if it's nearing the 2GB limit of certain file systems
 	* Or conversely if adding the current file would put zip file over the limit.
 	* @param $file
-	* @access private
+	* @access protected
 	* @return string
 	*/
-	private function sizeCheck($file) {
+	protected function sizeCheck($file) {
 		return filesize($file);
 	}
 	
 	/**
+	* Adds event csv to zip file and updates that it's been zipped.
 	* Event code 9 is Zipped for download
+	* @access protected
 	*/
-	private function zipWriteEvents(ZipArchive $zip_file, $file_path, $file_id) {
-		$this->zipWrite($zip_file, $file_path);
+	protected function zipWriteEvents(ZipArchive $zip_file, $file_path, $file_id, $problem = false) {
+		$this->zipWrite($zip_file, $file_path, $problem);
 		Utils::writeEvent($file_id, 9);
 		$this->updateFileInfo($file_id);
 	}
@@ -326,7 +349,7 @@ class ZipCreationCommand extends CConsoleCommand {
 				$curr_zip_size = $this->sizeCheck($zip_file->filename);
 	
 				if((($curr_file_size + $curr_zip_size) < self::ZIP_SIZE_LIMIT) && ($zip_file->numFiles < self::ZIP_FILE_LIMIT)) {
-					$this->zipWriteEvents($zip_file, $file['temp_file_path'], $file['id']);
+					$this->zipWriteEvents($zip_file, $file['temp_file_path'], $file['id'], $file['problem_file']);
 				} else {
 					$this->addMetaCsvFiles($zip_file, $user_id, false);
 					$this->addManifest($zip_file, $user_path, $user_id);
@@ -335,7 +358,7 @@ class ZipCreationCommand extends CConsoleCommand {
 					$file_count = 0; 
 					$user_path = $this->addNewArchive($user_path); // switch to new zip file for current user
 					$zip_file = $this->zipOpen($user_path);
-					$this->zipWriteEvents($zip_file, $file['temp_file_path'], $file['id']);
+					$this->zipWriteEvents($zip_file, $file['temp_file_path'], $file['id'], $file['problem_file']);
 				}
 				
 				if($file_count < 10) { 
