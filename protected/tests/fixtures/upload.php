@@ -20,7 +20,7 @@ return array(
 		'path' => '/uploads/user_3/fbf9d4df65733515ebbe412dcb9e19c4.txt',
 		'urls_in_list' => 250,
 		'last_url_processed' => 25,
-		'processed' => 1,
+		'processed' => 0,
 		'process_time' => '2012-01-01 12:00:00'
 	)	
 );
