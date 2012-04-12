@@ -78,13 +78,15 @@ class MetadataCommand extends CConsoleCommand {
 	/**
 	* Write file processed for metadata
 	* @param $file_id
+	* @param $field
+	* @param $file_type_id
 	* @access public
 	* @return object Yii DAO
 	*/
-	public function updateFileInfo($file_id, $field = 'metadata', $file_type_id = NULL) {
+	public function updateFileInfo($file_id, $field = 'metadata', $file_type_id = NULL, $problem_file = 0) {
 		if($field == 'metadata') {
-			$sql = "UPDATE file_info SET metadata = 1, file_type_id = ? WHERE id = ?";
-			$values = array($file_type_id, $file_id);
+			$sql = "UPDATE file_info SET metadata = 1, file_type_id = ?, problem_file = ? WHERE id = ?";
+			$values = array($file_type_id, $problem_file, $file_id);
 		} else {
 			$sql = "UPDATE file_info SET fulltext_available = 1 WHERE id = ?";
 			$values = array($file_id);
@@ -99,10 +101,10 @@ class MetadataCommand extends CConsoleCommand {
 	* Metadata extraction error code is 4
 	* @param $file_id
 	* @param $error_id
-	* @access private
+	* @access protected
 	* @return boolean
 	*/
-	private function tikaError($file_id, $error_id) {
+	protected function tikaError($file_id, $error_id) {
 		Utils::writeError($file_id, $error_id);	
 		Utils::setProblemFile($file_id);
 		
@@ -110,12 +112,25 @@ class MetadataCommand extends CConsoleCommand {
 	}
 	
 	/**
+	* Get list of available file types
+	* @access protected
+	* @return object Yii DAO
+	*/
+	protected function getMimeTypes() {
+		$sql = "SELECT * FROM  file_type";
+		$file_type_ids = Yii::app()->db->createCommand($sql)
+			->queryAll();
+		
+		return $file_type_ids;
+	}
+	
+	/**
 	* Gets the id number of the Tika file type string
 	* @param $file_type
-	* @access private
+	* @access protected
 	* @return integer
 	*/
-	private function getFiletypeId($file_type) {
+	protected function getFiletypeId($file_type) {
 		$sql = "SELECT id FROM file_type WHERE file_type = :file_type";
 		$file_id = Yii::app()->db->createCommand($sql)
 			->bindParam(":file_type", $file_type, PDO::PARAM_STR)
@@ -131,10 +146,10 @@ class MetadataCommand extends CConsoleCommand {
 	* Run it in server mode so it doesn't need to reload Tika each time
 	* @param $file
 	* @param $extract - Options metadata is default text, html, xml other possible  values
-	* @access private
+	* @access protected
 	* @return array
 	*/
-	private function scrapeMetadata($file, $extract = 'metadata') {
+	protected function scrapeMetadata($file, $extract = 'metadata') {
 		$tika_path = '';
 		$tika = Yii::getPathOfAlias('application') . '/tika-app-1.1.jar';
 		$local = '/Users/deanfarrell/tika-app-1.1.jar';
@@ -176,8 +191,38 @@ class MetadataCommand extends CConsoleCommand {
 		return $clean_file_type;
 	} 
 	
+	/*
+	* Get id of actual file extension to compare Tika reported extension id
+	* Since JPEG extensions can vary reset JPG to right extension id (5)
+	* Since text files vary set .csv files to correct text extension id (7)
+	* @param $file_path
+	* @access public
+	* @return integer
+	*/
+	public function getExpectedMimetype($file_path) {
+		$mime_types = $this->getMimeTypes();
+		foreach($mime_types as $type) {
+			$types[$type['id']] = $type['file_type_name'];
+		}
+		$types[] = 'JPG';
+		$types[] = 'CSV';
+		$type_count = count($types);
+	
+		$file_extension = @pathinfo($file_path, PATHINFO_EXTENSION);
+		$file_type_id = array_search(strtoupper($file_extension), $types);
+		
+		if($file_type_id == $type_count) { 
+			$file_type_id = 7; 
+		} elseif($file_type_id == $type_count - 1) {
+			$file_type_id = 5;
+		} 
+		
+		return $file_type_id;
+		
+	}
+	
 	/**
-	* Takes metadata file and creates associative array of it.
+	* Takes metadata file and creates associative array of it.  update `file_info` set `metadata`=0 WHERE `metadata`=1
 	* Metadata values come in like so, Content-Type: whatever/whatever, File-Type:text/plain so need to split this out on the :
 	* and make the first part the key and the second part the array value.
 	* Time/date values get truncated if using strrchr, while others, notably page count format incorrectly on stristr.
@@ -199,7 +244,23 @@ class MetadataCommand extends CConsoleCommand {
 			}	
 			$formatted_metadata[$field_name] = trim(substr_replace($formatted_value, '', 0, 1));
 		}
+		
+		$formatted_metadata = $this->checkPageCount($formatted_metadata);
 
+		return $formatted_metadata;
+	}
+	
+	/*
+	* resets page count to NULL if value is 0
+	* @param $formatted_metadata (array)
+	* @access protected
+	* @return array
+	*/
+	protected function checkPageCount(array $formatted_metadata) {
+		if(array_key_exists('xmpTPg', $formatted_metadata) && $formatted_metadata['xmpTPg'] == 0) { 
+			$formatted_metadata['xmpTPg'] = NULL; 
+		}
+		
 		return $formatted_metadata;
 	}
 	
@@ -208,10 +269,10 @@ class MetadataCommand extends CConsoleCommand {
 	* Expects a string 
 	* Stop words are a modified list of those found at: List from http://www.textfixer.com/resources/common-english-words.txt
 	* @param $text
-	* @access private
+	* @access protected
 	* @return array
 	*/
-	private function getCleanText(array $tika_text) {
+	protected function getCleanText(array $tika_text) {
 		$stop_words = array("able","about","across","after","almost","also","among","because","been","cannot","could","dear","does","either","else","ever","every","from","have","hers","however","into","just","least","like","likely","might","most","must","neither","often","only","other","rather","said","says","should","since","some","than","that","their","them","then","there","these","they","this","twas","wants","were","what","when","where","which","while","whom","will","with","would","your");
 		$text = implode(' ', $tika_text);
 		$words = preg_split('/\s{1,}/i', $text);
@@ -273,8 +334,10 @@ class MetadataCommand extends CConsoleCommand {
 	* Determine full text availability if not an audio, video or image file
 	* Update metadata to 1 in file info for every record the metadata command iterates over.
 	* If nothing needs to be done command exits
-	* 4 code for can't grab metadata
+	* 8 event code is metadata extraction
+	* 4 error code for can't grab metadata
 	* 12 error code for unsupported file type
+	* 18 error code file mime-type doesn't match file extension
 	*/
 	public function run() {
 		$files = $this->getFileList();
@@ -287,6 +350,12 @@ class MetadataCommand extends CConsoleCommand {
 			$file_type = $this->getTikaFileType($metadata);
 			if(!is_numeric($file_type)) { // returns error code on failure
 				$file_type_id  = $this->getFiletypeId($file_type);
+				$self_reported_file_type = $this->getExpectedMimetype($file['temp_file_path']);
+				
+				if($file_type_id != $self_reported_file_type) { 
+					Utils::writeError($file['id'], 18);	
+					$problem_file = 1; 
+				}
 			} else {
 				$file_type_id = $file_type;
 			}
@@ -312,7 +381,7 @@ class MetadataCommand extends CConsoleCommand {
 				$success = " Added";
 			}
 			
-			$this->updateFileInfo($file['id'], 'metadata', $file_type_id);
+			$this->updateFileInfo($file['id'], 'metadata', $file_type_id, $problem_file);
 			
 			echo $file['temp_file_path'] . $success . "\r\n"; 
 		} 
