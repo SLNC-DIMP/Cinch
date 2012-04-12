@@ -83,10 +83,10 @@ class MetadataCommand extends CConsoleCommand {
 	* @access public
 	* @return object Yii DAO
 	*/
-	public function updateFileInfo($file_id, $field = 'metadata', $file_type_id = NULL, $problem_file = 0) {
+	public function updateFileInfo($file_id, $field = 'metadata', $file_type_id = NULL) {
 		if($field == 'metadata') {
-			$sql = "UPDATE file_info SET metadata = 1, file_type_id = ?, problem_file = ? WHERE id = ?";
-			$values = array($file_type_id, $problem_file, $file_id);
+			$sql = "UPDATE file_info SET metadata = 1, file_type_id = ? WHERE id = ?";
+			$values = array($file_type_id, $file_id);
 		} else {
 			$sql = "UPDATE file_info SET fulltext_available = 1 WHERE id = ?";
 			$values = array($file_id);
@@ -222,7 +222,7 @@ class MetadataCommand extends CConsoleCommand {
 	}
 	
 	/**
-	* Takes metadata file and creates associative array of it.  update `file_info` set `metadata`=0 WHERE `metadata`=1
+	* Takes metadata file and creates associative array of it.
 	* Metadata values come in like so, Content-Type: whatever/whatever, File-Type:text/plain so need to split this out on the :
 	* and make the first part the key and the second part the array value.
 	* Time/date values get truncated if using strrchr, while others, notably page count format incorrectly on stristr.
@@ -353,8 +353,7 @@ class MetadataCommand extends CConsoleCommand {
 				$self_reported_file_type = $this->getExpectedMimetype($file['temp_file_path']);
 				
 				if($file_type_id != $self_reported_file_type) { 
-					Utils::writeError($file['id'], 18);	
-					$problem_file = 1; 
+					$this->tikaError($file['id'], 18);	
 				}
 			} else {
 				$file_type_id = $file_type;
@@ -381,7 +380,7 @@ class MetadataCommand extends CConsoleCommand {
 				$success = " Added";
 			}
 			
-			$this->updateFileInfo($file['id'], 'metadata', $file_type_id, $problem_file);
+			$this->updateFileInfo($file['id'], 'metadata', $file_type_id);
 			
 			echo $file['temp_file_path'] . $success . "\r\n"; 
 		} 

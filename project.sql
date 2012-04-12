@@ -151,7 +151,7 @@ CREATE TABLE IF NOT EXISTS `error_type` (
   `id` int(3) NOT NULL auto_increment,
   `error_message` varchar(75) collate utf8_unicode_ci NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=17 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=19 ;
 
 --
 -- Dumping data for table `error_type`
@@ -174,7 +174,8 @@ INSERT INTO `error_type` (`id`, `error_message`) VALUES
 (14, 'Unable to delete file'),
 (15, 'Unable to determine full text status'),
 (16, 'Virus check couldn''t scan file'),
-(17, 'Duplicate Filename');
+(17, 'Duplicate Filename'),
+(18, 'file mime-type doesn''t match file extension');
 
 
 --
@@ -185,7 +186,7 @@ CREATE TABLE IF NOT EXISTS `event_list` (
   `id` int(3) NOT NULL auto_increment,
   `event_name` varchar(250) collate utf8_unicode_ci NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=13 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=14 ;
 
 --
 -- Dumping data for table `event_list`
@@ -248,7 +249,7 @@ CREATE TABLE IF NOT EXISTS `file_type` (
   `file_type` varchar(125) collate utf8_unicode_ci NOT NULL,
   `file_type_name` varchar(50) collate utf8_unicode_ci NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=11 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=13 ;
 
 --
 -- Dumping data for table `file_type`
