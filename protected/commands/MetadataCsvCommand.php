@@ -8,8 +8,19 @@ Yii::import('application.models.Utils');
  * @license CC0 1.0 Universal {@link http://creativecommons.org/publicdomain/zero/1.0/}
  */
 class MetadataCsvCommand extends CConsoleCommand {
+	/**
+	* regular expression to look for strings with 'id' in them.
+	* @var $compare
+	*/
 	public $compare = '/(id|id$)/i';
+	/**
+	
+	* @var $checksum
+	*/
 	public $checksum;
+	/**
+	* @var $makecsv
+	*/
 	public $makecsv;
 	
 	public function __construct() {
@@ -42,6 +53,7 @@ class MetadataCsvCommand extends CConsoleCommand {
 	
 	/**
 	* Gets fulltext status for file.
+	* @param $file_id
 	* @access public
 	* @return string
 	*/
@@ -102,7 +114,7 @@ class MetadataCsvCommand extends CConsoleCommand {
 	
 	/**
 	* Returns extracted metadata for a file
-	* @param $meta_type
+	* @param $table_name
 	* @param $file_id
 	* @param $user_id
 	* @access public
@@ -153,7 +165,10 @@ class MetadataCsvCommand extends CConsoleCommand {
 	
 	/**
 	* Writes column headers, returned metadata and checksum to a .csv file
+	* @param $user_path
+	* @param $table_name
 	* @param $metadata
+	* @param $user_id
 	* @access public
 	*/
 	public function write($user_path, $table_name, $metadata, $user_id) {

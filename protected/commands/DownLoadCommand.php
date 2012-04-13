@@ -8,10 +8,27 @@ Yii::import('application.models.Utils');
  * @license CC0 1.0 Universal {@link http://creativecommons.org/publicdomain/zero/1.0/}
  */ 
 class DownloadCommand extends CConsoleCommand {
+	/**
+	* Files_for_download table
+	* @var $download_file_list
+	*/
 	public $download_file_list = 'files_for_download';
+	/**
+	* file_info table
+	* @var $file_info_table
+	*/
 	public $file_info_table = 'file_info';
+	/**
+	* @var $problem_downloads
+	*/
 	public $problem_downloads = 'problem_downloads';
+	/**
+	* @var $remote_checksum
+	*/
 	public $remote_checksum;
+	/**
+	* @var $full_path
+	*/
 	public $full_path;
 	/**
 	* max file size = 429496730 bytes 0.4 GB  Otherwise file might not fit into specified zip file limit
@@ -82,7 +99,7 @@ class DownloadCommand extends CConsoleCommand {
 	* @param $user_id
 	* @param $upload_file_id
 	* @access public 
-	* @return string last insert id
+	* @return string
 	*/
 	public function setFileInfo($url, $remote_checksum, $user_id, $upload_file_id) {
 		$dynamic_file = (is_numeric($this->initFileType($url))) ? 0 : 1;
@@ -108,10 +125,10 @@ class DownloadCommand extends CConsoleCommand {
 	* Updates arbitrary number of basic file information fields for downloaded file
 	* Pass in an associative array of field names and values
 	* @TODO refactor this out into its own class or Utils so it can be used everywhere
-	* @param $args array of fields/values to update
+	* @param $args
 	* @param $file_id
 	* @access public 
-	* @return string last insert id
+	* @return string
 	*/
 	public function updateFileInfo(array $args, $file_id) {
 		$fields = array_keys($args);

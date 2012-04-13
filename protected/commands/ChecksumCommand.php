@@ -7,6 +7,9 @@ Yii::import('application.models.Utils');
  * @license CC0 1.0 Universal {@link http://creativecommons.org/publicdomain/zero/1.0/}
  */
 class ChecksumCommand extends CConsoleCommand {
+	/**
+	* @var $checksum
+	*/
 	public $checksum;
 	
 	public function __construct() {
@@ -57,6 +60,7 @@ class ChecksumCommand extends CConsoleCommand {
 	* Error code 3 - Duplicate checksum found
 	* Error code 17 - Duplicate filename found
 	* @param $checksum_dup
+	* @param $filename_dup
 	* @param $filename_dup
 	* @access protected
 	*/

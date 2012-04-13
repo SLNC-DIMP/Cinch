@@ -6,8 +6,18 @@
 * @todo update file_info table.  DON'T DELETE record.
 */
 class purgeSystemCommand extends CConsoleCommand {
+	/**
+	* gets file_info table
+	* @var $file_info
+	*/
 	public $file_info = 'file_info';
+	/**
+	* @var $error_list
+	*/
 	public $error_list;
+	/**
+	* @var $mail_user
+	*/
 	public $mail_user;
 	
 	public function __construct() {
@@ -42,7 +52,7 @@ class purgeSystemCommand extends CConsoleCommand {
 	}
 	
 	/**
-	*
+	* Gets correct table to write metadata to.
 	* @param $file_type_id
 	* @access private
 	* @return string

@@ -7,6 +7,9 @@ Yii::import('application.models.MakeCsv');
  * @license CC0 1.0 Universal {@link http://creativecommons.org/publicdomain/zero/1.0/}
  */
 class ErrorCsvCommand extends CConsoleCommand {
+	/**
+	* @var $makecsv
+	*/
 	public $makecsv;
 	
 	public function __construct() {

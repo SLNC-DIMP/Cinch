@@ -1,11 +1,11 @@
 <?php
+Yii::import('application.models.Utils');
+
 /**
 * This is the command for detecting viruses and deleting file if a virus is found.
 * @author Dean Farrell
 * @license CC0 1.0 Universal {@link http://creativecommons.org/publicdomain/zero/1.0/}
 */
-Yii::import('application.models.Utils');
-
 class virusCheckCommand extends CConsoleCommand {
 	/**
 	* Get file list for virus checks
@@ -88,7 +88,7 @@ class virusCheckCommand extends CConsoleCommand {
 	* [3] is set to total errors on failed scan attempt
 	* Can't get actual error message out of $output 
 	* Hence combination of scan_time and error detected to determine if it's one file or the whole system
-	* @param $output
+	* @param $output array
 	* @access private
 	* @return array
 	*/
@@ -119,9 +119,7 @@ class virusCheckCommand extends CConsoleCommand {
 	* 16 Virus check couldn't scan file
 	* return on error and scan_time of 1.  
 	* This means service is down and scan can't take place. Otherwise all files in scan get deleted!!!!
-	* @param $scan_results
-	* @param $file_id
-	* @param $user_id
+	* @param $scan_results array
 	* @access private
 	*/
 	private function writeScan(array $scan_results) {

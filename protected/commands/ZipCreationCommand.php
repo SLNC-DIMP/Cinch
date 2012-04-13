@@ -9,9 +9,22 @@ Yii::import('application.models.Utils');
  * @license CC0 1.0 Universal {@link http://creativecommons.org/publicdomain/zero/1.0/}
  */
 class ZipCreationCommand extends CConsoleCommand {
+	/**
+	* @var $make_csv
+	*/
 	public $make_csv;
+	/**
+	* @var $event_csv
+	*/
 	public $event_csv;
+	/**
+	* @var $mail_user
+	*/
 	public $mail_user;
+	/**
+	* Gets the file_info table
+	* @var $file_info
+	*/
 	private $file_info = 'file_info';
 	/**
 	* max zip number of file = 65500
@@ -168,7 +181,7 @@ class ZipCreationCommand extends CConsoleCommand {
 	* See Yeslifer comment at http://us3.php.net/manual/en/function.ziparchive-getnameindex.php
 	* as numFiles appears to be an undocumented method
 	* Using preg_split as explode might not work with Windows in this case
-	* @param $zip
+	* @param $zip object
 	* @param $zip_path
 	* @access protected
 	*/
@@ -199,7 +212,7 @@ class ZipCreationCommand extends CConsoleCommand {
 	/**
 	* Creates zip file manifest
 	* Adds it to the zip file and writes the results to the db
-	* @param $zip_file
+	* @param $zip_file object
 	* @param $user_path
 	* @param $user_id
 	* @access protected
@@ -217,7 +230,7 @@ class ZipCreationCommand extends CConsoleCommand {
 	* Writes metadata and errors_csv files to every zip archive
 	* Events csv file will only show up in the last archive as events haven't ended yet.
 	* Then writes the results to the db
-	* @param $zip_file
+	* @param $zip_file object
 	* @param $user_id
 	* @param $mark_zipped
 	* @access protected
@@ -260,7 +273,7 @@ class ZipCreationCommand extends CConsoleCommand {
 	
 	/**
 	* Add a problem file directory to zip archive.
-	* @param $zip ZipArchive object
+	* @param $zip object
 	* @param $zip_path
 	* @access protected
 	*/
@@ -274,8 +287,9 @@ class ZipCreationCommand extends CConsoleCommand {
 	
 	/**
 	* Write a file to a zip archive
-	* @param $zip ZipArchive object
+	* @param $zip object
 	* @param $file
+	* @param $problem
 	* @access public
 	*/
 	public function zipWrite(ZipArchive $zip, $file, $problem = false) {
@@ -293,7 +307,7 @@ class ZipCreationCommand extends CConsoleCommand {
 	
 	/**
 	* Close a zip archive
-	* @param $zip ZipArchive object
+	* @param $zip object
 	* @param $path
 	* @access public
 	* @return object Zip archive object
@@ -316,6 +330,10 @@ class ZipCreationCommand extends CConsoleCommand {
 	/**
 	* Adds event csv to zip file and updates that it's been zipped.
 	* Event code 9 is Zipped for download
+	* @param $zip_file object
+	* @param $file_path
+	* @param $file_id
+	* @param $problem
 	* @access protected
 	*/
 	protected function zipWriteEvents(ZipArchive $zip_file, $file_path, $file_id, $problem = false) {

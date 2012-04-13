@@ -196,7 +196,7 @@ class MetadataCommand extends CConsoleCommand {
 		return $clean_file_type;
 	} 
 	
-	/*
+	/**
 	* Get id of actual file extension to compare Tika reported extension id
 	* Since JPEG extensions can vary reset JPG to right extension id (5)
 	* Since text files vary set .csv files to correct text extension id (7)
@@ -255,7 +255,7 @@ class MetadataCommand extends CConsoleCommand {
 		return $formatted_metadata;
 	}
 	
-	/*
+	/**
 	* resets page count to NULL if value is 0
 	* @param $formatted_metadata (array)
 	* @access protected
@@ -273,7 +273,7 @@ class MetadataCommand extends CConsoleCommand {
 	* Clean up extracted text and just return words longer than 3 characters and non-stop words.
 	* Expects a string 
 	* Stop words are a modified list of those found at: List from http://www.textfixer.com/resources/common-english-words.txt
-	* @param $text
+	* @param $tika_text
 	* @access protected
 	* @return array
 	*/
@@ -296,7 +296,7 @@ class MetadataCommand extends CConsoleCommand {
 	
 	/**
 	* Extract top 5 keywords ie 5 words with the highest frequency count 
-	* @param $clean_words
+	* @param $tika_text
 	* @access public
 	* @return string
 	*/
@@ -313,7 +313,7 @@ class MetadataCommand extends CConsoleCommand {
 	* Extract possible document title
 	* If opening segments are empty they are skipped until text segment is it.
 	* Then breaks off at next empty segment.
-	* @param $text
+	* @param $tika_text
 	* @access public
 	* @return string
 	*/

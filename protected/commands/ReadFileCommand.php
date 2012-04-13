@@ -23,9 +23,7 @@ class ReadFileCommand extends CConsoleCommand {
 	
 	/**
 	* Writes URL listings, user id and list id to files_for_download table
-	* @param $url
-	* @param $user_uploads_id
-	* @param $user_id
+	* @param $values
 	* @access public
 	* @return object Yii DAO
 	*/
@@ -41,6 +39,13 @@ class ReadFileCommand extends CConsoleCommand {
 			->execute($values);	
 	}
 	
+	/**
+	* Writes URL file count to urls_in_list table
+	* @param $num_files
+	* @param $list_id
+	* @access public
+	* @return object Yii DAO
+	*/
 	public function writeFileCount($num_files, $list_id) {
 		$sql = "UPDATE upload SET urls_in_list = ? WHERE id = ?";
 		Yii::app()->db->createCommand($sql)
