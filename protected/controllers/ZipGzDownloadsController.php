@@ -143,7 +143,9 @@ class ZipGzDownloadsController extends Controller
 		}
 	  
 		// File Exists?
-		if(file_exists($fullPath) && $model['user_id'] == Yii::app()->user->id) {
+		if(file_exists($fullPath) && 
+		   ($model['user_id'] == Yii::app()->user->id || Yii::app()->user->checkAccess('deleteUser'))
+		) {
 			// Parse Info / Get Extension
 			$path_parts = pathinfo($fullPath);
 			   
