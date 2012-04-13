@@ -1,7 +1,9 @@
 <?php
 /**
-* Blows up if EventCsv command if not explcitly called.
-*/
+ * This is the command for creation of zip files for a user's downloaded files.
+ * @author Dean Farrell
+ * @license CC0 1.0 Universal {@link http://creativecommons.org/publicdomain/zero/1.0/}
+ */
 Yii::import('application.models.MakCsv');
 Yii::import('application.commands.EventCsvCommand');
 Yii::import('application.models.Utils');

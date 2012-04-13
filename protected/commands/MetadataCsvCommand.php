@@ -1,8 +1,9 @@
 <?php
 /**
-* Blows up command if not explcitly called.  I believe because MakeCsv isn't named MakeCsvCommand
-* Don't want it named that as would show up as a command instead of merely being clase for others to descend from.
-*/
+ * This is the command for creation of metadata csv manifest for a user's downloaded files.
+ * @author Dean Farrell
+ * @license CC0 1.0 Universal {@link http://creativecommons.org/publicdomain/zero/1.0/}
+ */
 Yii::import('application.models.MakeCsv');
 Yii::import('application.models.Utils');
 

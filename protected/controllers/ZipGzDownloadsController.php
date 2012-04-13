@@ -1,5 +1,14 @@
 <?php
-
+/**
+ * This is the model class for table "zip_gz_downloads".
+ *
+ * The followings are the available columns in table 'zip_gz_downloads':
+ * @property integer $id
+ * @property integer $user_id
+ * @property string $path
+ * @property integer $downloaded
+ * @property string $creationdate
+ */
 class ZipGzDownloadsController extends Controller
 {
 	/**
