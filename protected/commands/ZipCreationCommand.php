@@ -52,24 +52,24 @@ class ZipCreationCommand extends CConsoleCommand {
 	
 	/**
 	* Gets all a user's files for which zip files haven't been created.
+	* Yii order clause didn't seem to work here.  So rewrote the query
 	* @param $user_id
 	* @access public
 	* @return object Yii DAO object
 	*/
 	public function getUserFiles($user_id) {
-		$user_files = Yii::app()->db->createCommand()
-			->select('id, temp_file_path, problem_file, user_id')
-			->from($this->file_info)
-			->where(array('and', 
-				':user_id = user_id', 
-				'checksum_run = 1', 
-				'metadata = 1', 
-				'virus_check = 1', 
-				'events_frozen = 0', 
-				'temp_file_path IS NOT NULL',
-				'temp_file_path' != ''))
+		$sql = "SELECT id, temp_file_path, problem_file, user_id
+			FROM file_info
+			WHERE :user_id = user_id
+			AND	checksum_run = 1
+			AND	metadata = 1 
+			AND	virus_check = 1
+			AND temp_file_path IS NOT NULL
+			AND	temp_file_path != ''
+			ORDER BY problem_file DESC";
+			
+		$user_files = Yii::app()->db->createCommand($sql)
 			->bindParam(":user_id", $user_id, PDO::PARAM_INT)
-			->order(array('user_id DESC','problem_file ASC'))
 			->queryAll();
 	
 		return $user_files;
@@ -108,7 +108,7 @@ class ZipCreationCommand extends CConsoleCommand {
 		
 		$type = ($type == 'curl') ? 'curl' : 'ftp';
 
-		return Yii::getPathOfAlias('application.' . $type . '_downloads') . DIRECTORY_SEPARATOR . $user_name[0] . '/downloads_' . date('Y_m_d') . '.zip';
+		return Yii::getPathOfAlias('application.' . $type . '_downloads') . '/' . $user_name[0] . '/' . $user_name[0] . '_downloads_' . date('Y_m_d') . '.zip';
 	}
 	
 	/**
