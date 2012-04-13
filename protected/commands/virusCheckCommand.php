@@ -1,4 +1,9 @@
 <?php
+/**
+* This is the command for detecting viruses and deleting file if a virus is found.
+* @author Dean Farrell
+* @license CC0 1.0 Universal {@link http://creativecommons.org/publicdomain/zero/1.0/}
+*/
 Yii::import('application.models.Utils');
 
 class virusCheckCommand extends CConsoleCommand {

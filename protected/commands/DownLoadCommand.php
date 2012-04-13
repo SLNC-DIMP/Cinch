@@ -1,7 +1,9 @@
 <?php
 /**
-* Blows up checksum command if not explcitly called.
-*/
+ * This is the command for downloading a user's files.
+ * @author Dean Farrell
+ * @license CC0 1.0 Universal {@link http://creativecommons.org/publicdomain/zero/1.0/}
+ */ 
 Yii::import('application.commands.ChecksumCommand');
 Yii::import('application.models.Utils');
 
@@ -76,8 +78,7 @@ class DownloadCommand extends CConsoleCommand {
 	/**
 	* Inserts basic file information for downloaded file
 	* @param $url
-	* @param $curr_path
-	* @param $last_mod
+	* @param $remote_checksum
 	* @param $user_id
 	* @param $upload_file_id
 	* @access public 
@@ -108,6 +109,7 @@ class DownloadCommand extends CConsoleCommand {
 	* Pass in an associative array of field names and values
 	* @TODO refactor this out into its own class or Utils so it can be used everywhere
 	* @param $args array of fields/values to update
+	* @param $file_id
 	* @access public 
 	* @return string last insert id
 	*/
@@ -308,13 +310,11 @@ class DownloadCommand extends CConsoleCommand {
 	/**
 	* Writes Curl/download errors to the db.
 	* Error code 1 is unable to download
-	* @param $url
-	* @param $current_user_id
 	* @param $file_id
-	* @access private
+	* @access protected
 	* @return string
 	*/
-	private function writeCurlError($file_id) {
+	protected function writeCurlError($file_id) {
 		$error_id = 1;
 		Utils::writeError($file_id, $error_id);
 		$this->updateFileInfo(array('problem_file' => $error_id, 'events_frozen' => 1), $file_id);
@@ -343,7 +343,7 @@ class DownloadCommand extends CConsoleCommand {
 	* is added to end of the file name so it won't overwrite previous file.
 	* Event code 1 is file downloaded
 	* Event code 13 Download failed
-	* @param $user
+	* @param $url
 	* @param $current_user_id
 	* @param $file_list_id
 	* @access public
@@ -412,6 +412,7 @@ class DownloadCommand extends CConsoleCommand {
 	* Finds true last modified date and set file back to that if changed during download/move process
 	* Event code 3 is reset last modified time to correct value if possible
 	* @param $file path to file
+	* @param $file_id
 	* @param $last_modified_time Comes from CURL curl_getinfo($ch, CURLINFO_FILETIME). -1 is false.
 	* @access public
 	* @return string
