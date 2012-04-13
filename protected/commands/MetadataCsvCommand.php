@@ -1,12 +1,12 @@
 <?php
+Yii::import('application.models.MakeCsv');
+Yii::import('application.models.Utils');
+
 /**
  * This is the command for creation of metadata csv manifest for a user's downloaded files.
  * @author Dean Farrell
  * @license CC0 1.0 Universal {@link http://creativecommons.org/publicdomain/zero/1.0/}
  */
-Yii::import('application.models.MakeCsv');
-Yii::import('application.models.Utils');
-
 class MetadataCsvCommand extends CConsoleCommand {
 	public $compare = '/(id|id$)/i';
 	public $checksum;

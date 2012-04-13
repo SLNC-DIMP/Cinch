@@ -1,12 +1,12 @@
 <?php
+Yii::import('application.commands.ChecksumCommand');
+Yii::import('application.models.Utils');
+
 /**
  * This is the command for downloading a user's files.
  * @author Dean Farrell
  * @license CC0 1.0 Universal {@link http://creativecommons.org/publicdomain/zero/1.0/}
  */ 
-Yii::import('application.commands.ChecksumCommand');
-Yii::import('application.models.Utils');
-
 class DownloadCommand extends CConsoleCommand {
 	public $download_file_list = 'files_for_download';
 	public $file_info_table = 'file_info';
