@@ -1,5 +1,14 @@
 <?php
 Yii::import('application.models.Utils');
+/**
+* VirusCheckCommand class file
+*
+* This is the command for detecting viruses and deleting file if a virus is found.
+* @catagory Virus Check
+* @package Virus Check
+* @author Dean Farrell
+* @license CC0 1.0 Universal {@link http://creativecommons.org/publicdomain/zero/1.0/}
+*/
 
 /**
 * This is the command for detecting viruses and deleting file if a virus is found.
@@ -157,6 +166,11 @@ class virusCheckCommand extends CConsoleCommand {
 		}
 	}
 	
+	/**
+	* Wrapper method for other class methods.
+	* Checks each file for viruses.
+	* Deletes file if a virus is found.
+	*/
 	public function run() {
 		$files = $this->getFiles();
 		if(empty($files)) { exit; }

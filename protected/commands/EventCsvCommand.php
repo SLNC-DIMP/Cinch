@@ -3,10 +3,19 @@ Yii::import('application.models.MakeCsv');
 Yii::import('application.models.Utils');
 
 /**
- * This is the command for creation of event csv manifest for a user's downloaded files.
- * @author Dean Farrell
- * @license CC0 1.0 Universal {@link http://creativecommons.org/publicdomain/zero/1.0/}
- */
+* EventCsvCommand class file
+* This is the command for creation of event csv manifest for a user's downloaded files.
+* @catagory Event CSV
+* @package Event CSV
+* @author Dean Farrell
+* @license CC0 1.0 Universal {@link http://creativecommons.org/publicdomain/zero/1.0/}
+*/
+
+/**
+* This is the command for creation of event csv manifest for a user's downloaded files.
+* @author Dean Farrell
+* @license CC0 1.0 Universal {@link http://creativecommons.org/publicdomain/zero/1.0/}
+*/
 class EventCsvCommand extends CConsoleCommand {
 	/**
 	* @var $makecsv

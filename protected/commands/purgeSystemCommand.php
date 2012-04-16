@@ -1,5 +1,16 @@
 <?php
 /**
+* purgeSystemCommand class file
+*
+* This is the command for informing users of impending file deletions and deleting user files after they've been on the server for 30 days.
+* @catagory Purge System
+* @package Purge System
+* @author Dean Farrell
+* @license CC0 1.0 Universal {@link http://creativecommons.org/publicdomain/zero/1.0/}
+* @todo update file_info table.  DON'T DELETE record.
+*/
+
+/**
 * This is the command for informing users of impending file deletions and deleting user files after they've been on the server for 30 days.
 * @author Dean Farrell
 * @license CC0 1.0 Universal {@link http://creativecommons.org/publicdomain/zero/1.0/}
@@ -16,6 +27,7 @@ class purgeSystemCommand extends CConsoleCommand {
 	*/
 	public $error_list;
 	/**
+	*
 	* @var $mail_user
 	*/
 	public $mail_user;

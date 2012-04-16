@@ -4,20 +4,33 @@ Yii::import('application.commands.EventCsvCommand');
 Yii::import('application.models.Utils');
 
 /**
- * This is the command for creation of zip files for a user's downloaded files.
- * @author Dean Farrell
- * @license CC0 1.0 Universal {@link http://creativecommons.org/publicdomain/zero/1.0/}
- */
+* ZipCreationCommand class code
+*
+* This is the command for creation of zip files for a user's downloaded files.
+* @catagory ZipCreation
+* @package ZipCreation
+* @author Dean Farrell
+* @license CC0 1.0 Universal {@link http://creativecommons.org/publicdomain/zero/1.0/}
+*/
+
+/**
+* This is the command for creation of zip files for a user's downloaded files.
+* @author Dean Farrell
+* @license CC0 1.0 Universal {@link http://creativecommons.org/publicdomain/zero/1.0/}
+*/
 class ZipCreationCommand extends CConsoleCommand {
 	/**
+	* Implements MakeCsv modal class
 	* @var $make_csv
 	*/
 	public $make_csv;
 	/**
+	* Implements the EventCsv command
 	* @var $event_csv
 	*/
 	public $event_csv;
 	/**
+	* Implements MailUser class
 	* @var $mail_user
 	*/
 	public $mail_user;
@@ -32,11 +45,15 @@ class ZipCreationCommand extends CConsoleCommand {
 	*/
 	const ZIP_FILE_LIMIT = 65500;
 	/**
-	* max zip size = 536870912 bytes 0.5 GB  Otherwise file requires too much memory to download
+	* max zip size = 536870912 bytes 0.5 GB  
+	* Otherwise file requires too much memory to download
 	* @var integer
 	*/
 	const ZIP_SIZE_LIMIT = 536870912;
 	
+	/**
+	* Instantiates MakeCsv, EventCsvCommand and MailUser classes for use in zip creation
+	*/
 	public function __construct() {
 		$this->make_csv = new MakeCsv;
 		$this->event_csv = new EventCsvCommand;
@@ -181,7 +198,7 @@ class ZipCreationCommand extends CConsoleCommand {
 	* See Yeslifer comment at http://us3.php.net/manual/en/function.ziparchive-getnameindex.php
 	* as numFiles appears to be an undocumented method
 	* Using preg_split as explode might not work with Windows in this case
-	* @param $zip object
+	* @param ZipArchive $zip
 	* @param $zip_path
 	* @access protected
 	*/
@@ -212,7 +229,7 @@ class ZipCreationCommand extends CConsoleCommand {
 	/**
 	* Creates zip file manifest
 	* Adds it to the zip file and writes the results to the db
-	* @param $zip_file object
+	* @param ZipArchive $zip_file
 	* @param $user_path
 	* @param $user_id
 	* @access protected
@@ -230,7 +247,7 @@ class ZipCreationCommand extends CConsoleCommand {
 	* Writes metadata and errors_csv files to every zip archive
 	* Events csv file will only show up in the last archive as events haven't ended yet.
 	* Then writes the results to the db
-	* @param $zip_file object
+	* @param ZipArchive $zip_file
 	* @param $user_id
 	* @param $mark_zipped
 	* @access protected
@@ -273,7 +290,7 @@ class ZipCreationCommand extends CConsoleCommand {
 	
 	/**
 	* Add a problem file directory to zip archive.
-	* @param $zip object
+	* @param ZipArchive $zip
 	* @param $zip_path
 	* @access protected
 	*/
@@ -287,7 +304,7 @@ class ZipCreationCommand extends CConsoleCommand {
 	
 	/**
 	* Write a file to a zip archive
-	* @param $zip object
+	* @param ZipArchive $zip
 	* @param $file
 	* @param $problem
 	* @access public
@@ -307,7 +324,7 @@ class ZipCreationCommand extends CConsoleCommand {
 	
 	/**
 	* Close a zip archive
-	* @param $zip object
+	* @param ZipArchive $zip
 	* @param $path
 	* @access public
 	* @return object Zip archive object
@@ -330,7 +347,7 @@ class ZipCreationCommand extends CConsoleCommand {
 	/**
 	* Adds event csv to zip file and updates that it's been zipped.
 	* Event code 9 is Zipped for download
-	* @param $zip_file object
+	* @param ZipArchive $zip_file 
 	* @param $file_path
 	* @param $file_id
 	* @param $problem
@@ -351,6 +368,7 @@ class ZipCreationCommand extends CConsoleCommand {
 	* This won't always hold true since CSV files won't be counted.
 	* Creates a new zip file for user if zip archive will go over 0.5GB with addition of new file or if archive has more than 65500 files
 	* Event code 9 is Zipped for download
+	* @access public
 	*/
 	public function run() {
 		$users = $this->getUserFileCount();

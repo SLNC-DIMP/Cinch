@@ -3,10 +3,20 @@ Yii::import('application.models.MakeCsv');
 Yii::import('application.models.Utils');
 
 /**
- * This is the command for creation of metadata csv manifest for a user's downloaded files.
- * @author Dean Farrell
- * @license CC0 1.0 Universal {@link http://creativecommons.org/publicdomain/zero/1.0/}
- */
+* MetadataCsvCommand class file
+*
+* This is the command for creation of metadata csv manifest for a user's downloaded files.
+* @catagory MetadataCsv
+* @package MetadataCsv
+* @author Dean Farrell
+* @license CC0 1.0 Universal {@link http://creativecommons.org/publicdomain/zero/1.0/}
+*/
+
+/**
+* This is the command for creation of metadata csv manifest for a user's downloaded files.
+* @author Dean Farrell
+* @license CC0 1.0 Universal {@link http://creativecommons.org/publicdomain/zero/1.0/}
+*/
 class MetadataCsvCommand extends CConsoleCommand {
 	/**
 	* regular expression to look for strings with 'id' in them.
@@ -14,15 +24,19 @@ class MetadataCsvCommand extends CConsoleCommand {
 	*/
 	public $compare = '/(id|id$)/i';
 	/**
-	
+	* Implements the Checksum model class
 	* @var $checksum
 	*/
 	public $checksum;
 	/**
+	* Implements the MakeCsv model class
 	* @var $makecsv
 	*/
 	public $makecsv;
 	
+	/**
+	* Instantiates Checksum and MakeCsv classes for use in metadata csv creation
+	*/
 	public function __construct() {
 		$this->checksum = new Checksum;
 		$this->makecsv = new MakeCsv;
@@ -202,6 +216,9 @@ class MetadataCsvCommand extends CConsoleCommand {
 		fclose($fh);
 	}
 	
+	/**
+	* Creates a user's metadata csv file(s)
+	*/
 	public function actionIndex() {
 		$files = $this->getFiles();
 	

@@ -1,11 +1,20 @@
 <?php
 Yii::import('application.models.Utils');
+/**
+* MetadataCommand class file
+*
+* This is the command for extracting metadata from a user's files.
+* @catagory Metadata
+* @package Metadata
+* @author Dean Farrell
+* @license CC0 1.0 Universal {@link http://creativecommons.org/publicdomain/zero/1.0/}
+*/
 
 /**
- * This is the command for extracting metadata from a user's files.
- * @author Dean Farrell
- * @license CC0 1.0 Universal {@link http://creativecommons.org/publicdomain/zero/1.0/}
- */
+* This is the command for extracting metadata from a user's files.
+* @author Dean Farrell
+* @license CC0 1.0 Universal {@link http://creativecommons.org/publicdomain/zero/1.0/}
+*/
 class MetadataCommand extends CConsoleCommand {
 	const PDF = 'application/pdf';
 	const WORD = 'application/msword';
@@ -173,11 +182,14 @@ class MetadataCommand extends CConsoleCommand {
 	/**
 	* Extracts file type from metadata array via Apache Tika making a call to a Java jar file
 	* Array value will be of Content-Type: whatever/whatever
+	* Unsupported file types should only get this far if their extension misreports the true file type.
+	* Hence the double error.
 	* Code 4 Unable to extract metadata
 	* Code 12 Unsupported file type
+	* Code 18 file mime-type doesn't match file extension
 	* @param $metadata (array)
 	* @access public
-	* @return string
+	* @return mixed sring on success, array on error
 	*/
 	public function getTikaFileType($metadata) {
 		$constants = new ReflectionClass('MetadataCommand');
@@ -187,10 +199,10 @@ class MetadataCommand extends CConsoleCommand {
 			$clean_file_type = $metadata['Content-Type'];
 			
 			if(!in_array($clean_file_type, $file_types)) {
-				$clean_file_type = 12;
+				$clean_file_type = array(12, 18);
 			}
 		} else {
-			$clean_file_type = 4;
+			$clean_file_type = array(4);
 		}
 		
 		return $clean_file_type;
@@ -257,7 +269,7 @@ class MetadataCommand extends CConsoleCommand {
 	
 	/**
 	* resets page count to NULL if value is 0
-	* @param $formatted_metadata (array)
+	* @param array $formatted_metadata
 	* @access protected
 	* @return array
 	*/
@@ -273,7 +285,7 @@ class MetadataCommand extends CConsoleCommand {
 	* Clean up extracted text and just return words longer than 3 characters and non-stop words.
 	* Expects a string 
 	* Stop words are a modified list of those found at: List from http://www.textfixer.com/resources/common-english-words.txt
-	* @param $tika_text
+	* @param array $tika_text
 	* @access protected
 	* @return array
 	*/
@@ -353,7 +365,7 @@ class MetadataCommand extends CConsoleCommand {
 			Utils::writeEvent($file['id'], 8);
 		    
 			$file_type = $this->getTikaFileType($metadata);
-			if(!is_numeric($file_type)) { // returns error code on failure
+			if(!is_array($file_type)) { // returns error code on failure
 				$file_type_id  = $this->getFiletypeId($file_type);
 				$self_reported_file_type = $this->getExpectedMimetype($file['temp_file_path']);
 				
@@ -361,11 +373,13 @@ class MetadataCommand extends CConsoleCommand {
 					$this->tikaError($file['id'], 18);	
 				}
 			} else {
-				$file_type_id = $file_type;
+				$file_type_id = '';
 			}
 			
-			if($file_type == 4 || $file_type == 12) {
-				$this->tikaError($file['id'], $file_type);
+			if(is_array($file_type)) {
+				foreach($file_type as $error_type) {
+					$this->tikaError($file['id'], $error_type);
+				}
 				$success = " Failed";
 			} else {
 				

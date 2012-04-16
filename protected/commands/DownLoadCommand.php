@@ -3,10 +3,20 @@ Yii::import('application.commands.ChecksumCommand');
 Yii::import('application.models.Utils');
 
 /**
- * This is the command for downloading a user's files.
- * @author Dean Farrell
- * @license CC0 1.0 Universal {@link http://creativecommons.org/publicdomain/zero/1.0/}
- */ 
+* DownloadCommand class file
+*
+* This is the command for downloading a user's files.
+* @catagory Download
+* @package Download
+* @author Dean Farrell
+* @license CC0 1.0 Universal {@link http://creativecommons.org/publicdomain/zero/1.0/}
+*/
+
+/**
+* This is the command for downloading a user's files.
+* @author Dean Farrell
+* @license CC0 1.0 Universal {@link http://creativecommons.org/publicdomain/zero/1.0/}
+*/ 
 class DownloadCommand extends CConsoleCommand {
 	/**
 	* Files_for_download table
@@ -31,7 +41,8 @@ class DownloadCommand extends CConsoleCommand {
 	*/
 	public $full_path;
 	/**
-	* max file size = 429496730 bytes 0.4 GB  Otherwise file might not fit into specified zip file limit
+	* max file size = 429496730 bytes 0.4 GB  
+	* Otherwise file might not fit into specified zip file limit
 	* @var integer
 	*/
 	const FILE_SIZE_LIMIT = 429496730;
@@ -342,6 +353,7 @@ class DownloadCommand extends CConsoleCommand {
 	/**
 	* Gets current downloading directory of the current file owner
 	* @param $current_user_id
+	* @access private
 	* @return string
 	*/
 	private function findCurUserDir($current_user_id) {

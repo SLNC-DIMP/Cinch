@@ -1,5 +1,15 @@
 <?php
 /**
+* ReadFileCommand class file
+*
+* This is the command for reading the links in a user's uploaded file into the database to be downloaded.
+* @catagory Read File
+* @package Read File
+* @author Dean Farrell
+* @license CC0 1.0 Universal {@link http://creativecommons.org/publicdomain/zero/1.0/}
+*/
+
+/**
 * This is the command for reading the links in a user's uploaded file into the database to be downloaded.
 * @author Dean Farrell
 * @license CC0 1.0 Universal {@link http://creativecommons.org/publicdomain/zero/1.0/}

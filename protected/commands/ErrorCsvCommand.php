@@ -1,17 +1,30 @@
 <?php
 Yii::import('application.models.MakeCsv');
+/**
+* ErrorCsvCommand class file
+*
+* This is the command for creation of error csv manifest for a user's downloaded files.
+* @catagory ErrorCsv
+* @package ErrorCsv
+* @author Dean Farrell
+* @license CC0 1.0 Universal {@link http://creativecommons.org/publicdomain/zero/1.0/}
+*/
 
 /**
- * This is the command for creation of error csv manifest for a user's downloaded files.
- * @author Dean Farrell
- * @license CC0 1.0 Universal {@link http://creativecommons.org/publicdomain/zero/1.0/}
- */
+* This is the command for creation of error csv manifest for a user's downloaded files.
+* @author Dean Farrell
+* @license CC0 1.0 Universal {@link http://creativecommons.org/publicdomain/zero/1.0/}
+*/
 class ErrorCsvCommand extends CConsoleCommand {
 	/**
+	* Implements the MakeCsv model class
 	* @var $makecsv
 	*/
 	public $makecsv;
 	
+	/**
+	* Instantiates MakeCsv class for use in error csv creation
+	*/
 	public function __construct() {
 		$this->makecsv = new MakeCsv;
 	}

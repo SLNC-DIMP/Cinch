@@ -254,19 +254,34 @@ CREATE TABLE IF NOT EXISTS `file_type` (
 -- Dumping data for table `file_type`
 --
 
+--
+-- Table structure for table `file_type`
+--
+
+CREATE TABLE IF NOT EXISTS `file_type` (
+  `id` int(4) NOT NULL auto_increment,
+  `file_type` varchar(125) collate utf8_unicode_ci NOT NULL,
+  `file_type_name` varchar(50) collate utf8_unicode_ci NOT NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=13 ;
+
+--
+-- Dumping data for table `file_type`
+--
+
 INSERT INTO `file_type` (`id`, `file_type`, `file_type_name`) VALUES
 (1, 'application/pdf', 'PDF'),
-(2, 'application/msword', 'MS Word 2003 format'),
-(3, 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'MS Word 2007 format'),
+(2, 'application/msword', 'DOC'),
+(3, 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'DOCX'),
 (4, 'image/tiff', 'TIFF'),
 (5, 'image/jpeg', 'JPEG'),
 (6, 'image/gif', 'GIF'),
-(7, 'text/plain', 'Text File'),
-(8, 'application/vnd.ms-excel', 'MS Excel 2003 format'),
-(9, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'MS Excel 2007 format'),
+(7, 'text/plain', 'TXT'),
+(8, 'application/vnd.ms-excel', 'XLS'),
+(9, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'XLSX'),
 (10, 'image/png', 'PNG'),
-(11, 'application/vnd.ms-powerpoint', 'MS PPT 2003 format'),
-(12, 'application/vnd.openxmlformats-officedocument.presentationml.presentation', 'MS PPT 2007 format');
+(11, 'application/vnd.ms-powerpoint', 'PPT'),
+(12, 'application/vnd.openxmlformats-officedocument.presentationml.presentation', 'PPTX');
 
 --
 -- Table structure for table `file_info`
