@@ -1,4 +1,23 @@
 <?php
+/**
+* MailUser class file
+*
+* Gets user's email address and mails them.
+* @catagory Mail User
+* @package Mail User
+* @author State Library of North Carolina - Digital Information Management Program <digital.info@ncdcr.gov>
+* @author Dean Farrell
+* @version 1.0
+* @license CC0 1.0 Universal {@link http://creativecommons.org/publicdomain/zero/1.0/}
+*/
+
+/**
+* Gets user's email address and mails them.
+* @author State Library of North Carolina - Digital Information Management Program <digital.info@ncdcr.gov>
+* @author Dean Farrell
+* @version 1.0
+* @license CC0 1.0 Universal {@link http://creativecommons.org/publicdomain/zero/1.0/}
+*/
 class MailUser {
 	/**
 	* Gets a users information
@@ -20,6 +39,8 @@ class MailUser {
 	* Mails a user that their files are ready.
 	* Error writes ISO 8601 date, ex. 2004-02-12T15:19:21+00:00, and error to log.
 	* @param $user_id
+	* @param $subject
+	* @param $message
 	* @access public
 	* @return boolean
 	*/

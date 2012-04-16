@@ -7,13 +7,17 @@ Yii::import('application.models.Utils');
 * This is the command for creation of checksums for a user's downloaded files.
 * @catagory Checksum
 * @package Checksum
+* @author State Library of North Carolina - Digital Information Management Program <digital.info@ncdcr.gov>
 * @author Dean Farrell
+* @version 1.0
 * @license CC0 1.0 Universal {@link http://creativecommons.org/publicdomain/zero/1.0/}
 */
 
 /**
 * This is the command for creation of checksums for a user's downloaded files.
+* @author State Library of North Carolina - Digital Information Management Program <digital.info@ncdcr.gov>
 * @author Dean Farrell
+* @version 1.0
 * @license CC0 1.0 Universal {@link http://creativecommons.org/publicdomain/zero/1.0/}
 */
 class ChecksumCommand extends CConsoleCommand {
