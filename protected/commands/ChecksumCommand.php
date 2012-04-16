@@ -75,7 +75,7 @@ class ChecksumCommand extends CConsoleCommand {
 	* Error code 17 - Duplicate filename found
 	* @param $checksum_dup
 	* @param $filename_dup
-	* @param $filename_dup
+	* @param $file_id
 	* @access protected
 	*/
 	protected function errorWrite($checksum_dup, $filename_dup, $file_id) {

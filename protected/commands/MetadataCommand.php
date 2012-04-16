@@ -244,7 +244,7 @@ class MetadataCommand extends CConsoleCommand {
 	* and make the first part the key and the second part the array value.
 	* Time/date values get truncated if using strrchr, while others, notably page count format incorrectly on stristr.
 	* Hence the branching. 
-	* @param $metadata (array)
+	* @param $file
 	* @access public
 	* @return array
 	*/
@@ -308,7 +308,7 @@ class MetadataCommand extends CConsoleCommand {
 	
 	/**
 	* Extract top 5 keywords ie 5 words with the highest frequency count 
-	* @param $tika_text
+	* @param array $tika_text
 	* @access public
 	* @return string
 	*/
@@ -325,7 +325,7 @@ class MetadataCommand extends CConsoleCommand {
 	* Extract possible document title
 	* If opening segments are empty they are skipped until text segment is it.
 	* Then breaks off at next empty segment.
-	* @param $tika_text
+	* @param array $tika_text
 	* @access public
 	* @return string
 	*/

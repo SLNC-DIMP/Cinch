@@ -33,7 +33,7 @@ class ReadFileCommand extends CConsoleCommand {
 	
 	/**
 	* Writes URL listings, user id and list id to files_for_download table
-	* @param $values
+	* @param array $values
 	* @access public
 	* @return object Yii DAO
 	*/

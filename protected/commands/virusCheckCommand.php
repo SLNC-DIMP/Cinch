@@ -97,7 +97,7 @@ class virusCheckCommand extends CConsoleCommand {
 	* [3] is set to total errors on failed scan attempt
 	* Can't get actual error message out of $output 
 	* Hence combination of scan_time and error detected to determine if it's one file or the whole system
-	* @param $output array
+	* @param array $output 
 	* @access private
 	* @return array
 	*/
@@ -128,7 +128,7 @@ class virusCheckCommand extends CConsoleCommand {
 	* 16 Virus check couldn't scan file
 	* return on error and scan_time of 1.  
 	* This means service is down and scan can't take place. Otherwise all files in scan get deleted!!!!
-	* @param $scan_results array
+	* @param array $scan_results 
 	* @access private
 	*/
 	private function writeScan(array $scan_results) {

@@ -23,15 +23,20 @@ class purgeSystemCommand extends CConsoleCommand {
 	*/
 	public $file_info = 'file_info';
 	/**
+	* Gets the the error file path (if there is one) for that day's processing.
 	* @var $error_list
 	*/
 	public $error_list;
 	/**
-	*
+	* Implements the MailUser class
 	* @var $mail_user
 	*/
 	public $mail_user;
 	
+	/**
+	* Gets the the error file path (if there is one) for that day's processing.
+	* Instantiates the MailUser class for use in notifying users of sytems purges
+	*/
 	public function __construct() {
 		$this->error_list = Yii::getPathOfAlias('application.messages') . '/' . 'error_list_' . date('Y-m-d') . '.txt';
 		$this->mail_user = new MailUser;
@@ -262,6 +267,7 @@ class purgeSystemCommand extends CConsoleCommand {
 	/**
 	* Loop through the list of files to delete, remove them
 	* @param $files
+	* @param $table
 	* @access public
 	*/
 	public function fileProcess($files, $table) {
@@ -326,6 +332,9 @@ class purgeSystemCommand extends CConsoleCommand {
 		}
 	}
 	
+	/**
+	* Implments class methods to delete expired files and directories from the system.
+	*/
 	public function actionDelete() {
 		$zip_files = $this->generatedFiles('zip_gz_downloads');
 		$this->fileProcess($zip_files, 'zip_gz_downloads');

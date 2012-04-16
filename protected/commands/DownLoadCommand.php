@@ -29,14 +29,12 @@ class DownloadCommand extends CConsoleCommand {
 	*/
 	public $file_info_table = 'file_info';
 	/**
-	* @var $problem_downloads
-	*/
-	public $problem_downloads = 'problem_downloads';
-	/**
+	* Implements the ChecksumCommand class
 	* @var $remote_checksum
 	*/
 	public $remote_checksum;
 	/**
+	* Implements download directory base path
 	* @var $full_path
 	*/
 	public $full_path;
@@ -47,6 +45,10 @@ class DownloadCommand extends CConsoleCommand {
 	*/
 	const FILE_SIZE_LIMIT = 429496730;
 	
+	/**
+	* Instantiates a new ChecksumCommand class
+	* Gets download directory base path
+	*/
 	public function __construct() {
 		$this->remote_checksum = new ChecksumCommand;
 		$this->full_path = Yii::getPathOfAlias('application.curl_downloads');
@@ -136,7 +138,7 @@ class DownloadCommand extends CConsoleCommand {
 	* Updates arbitrary number of basic file information fields for downloaded file
 	* Pass in an associative array of field names and values
 	* @TODO refactor this out into its own class or Utils so it can be used everywhere
-	* @param $args
+	* @param array $args
 	* @param $file_id
 	* @access public 
 	* @return string
@@ -460,6 +462,9 @@ class DownloadCommand extends CConsoleCommand {
 		return $file_mtime;
 	}
 	
+	/**
+	* Wrapper for downloading user files using the methods in the DownloadCommand class
+	*/
 	public function run() {
         $urls = $this->getUrls();
 		if(empty($urls)) { exit; }

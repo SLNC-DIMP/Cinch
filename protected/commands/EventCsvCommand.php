@@ -18,13 +18,18 @@ Yii::import('application.models.Utils');
 */
 class EventCsvCommand extends CConsoleCommand {
 	/**
+	* Implements MakeCsv model class
 	* @var $makecsv
 	*/
 	public $makecsv;
 	
+	/**
+	* Create new MakeCsv model class
+	*/
 	public function __construct() {
 		$this->makecsv = new MakeCsv;
 	}
+	
 	/**
 	* Gets event listings for a user's files 
 	* @access public
