@@ -197,15 +197,14 @@ INSERT INTO `event_list` (`id`, `event_name`) VALUES
 (2, 'Renamed'),
 (3, 'Download Last Modified time corrected'),
 (4, 'Virus check'),
-(5, 'Checksum creation run'),
-(6, 'File moved'),
+(5, 'Checksum creation'),
 (7, 'Deleted - virus detected'),
 (8, 'Metadata Extraction'),
 (9, 'Zipped for download'),
 (10, 'Deleted - expired'),
 (11, 'File integrity check'),
 (12, 'Full text check'),
-(13, 'Full text check');
+(13, 'Download failed');
 
 
 --
