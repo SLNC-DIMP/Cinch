@@ -95,12 +95,19 @@ class User extends CActiveRecord
 	
 	/**
 	* encrypt password for insertion into db
+	* @access public
 	*/
 	public function afterValidate() {
 		parent::afterValidate();
 		$this->password = $this->md5_encrypt($this->password);
 	}
 	
+	/**
+	* wrapper for the PHP md5() function
+	* @param $password
+	* @access public
+	* @return string
+	*/
 	public function md5_encrypt($password) {
 		return md5($password);
 	}

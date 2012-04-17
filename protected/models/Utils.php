@@ -1,4 +1,23 @@
 <?php
+/**
+* Utils model class file
+*
+* Various database calls to write errors and events.
+* @catagory Utils
+* @package Utils
+* @author State Library of North Carolina - Digital Information Management Program <digital.info@ncdcr.gov>
+* @author Dean Farrell
+* @version 1.0
+* @license CC0 1.0 Universal {@link http://creativecommons.org/publicdomain/zero/1.0/}
+*/
+
+/**
+* Various database calls to write errors and events.
+* @author State Library of North Carolina - Digital Information Management Program <digital.info@ncdcr.gov>
+* @author Dean Farrell
+* @version 1.0
+* @license CC0 1.0 Universal {@link http://creativecommons.org/publicdomain/zero/1.0/}
+*/
 class Utils {
 	/**
 	* Set problem file flag to true in file_info table
@@ -15,8 +34,8 @@ class Utils {
 	
 	/**
 	* On error write file info to problem_downloads table
-	* @param $error_id
 	* @param $file_id
+	* @param $error_id
 	* @static
 	* @access public 
 	* @return object Yii DAO

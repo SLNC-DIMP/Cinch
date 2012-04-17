@@ -1,4 +1,23 @@
 <?php
+/**
+* MakeCsv model class file
+*
+* Various database calls to got get and set csv paths.
+* @catagory MakeCsv
+* @package MakeCsv
+* @author State Library of North Carolina - Digital Information Management Program <digital.info@ncdcr.gov>
+* @author Dean Farrell
+* @version 1.0
+* @license CC0 1.0 Universal {@link http://creativecommons.org/publicdomain/zero/1.0/}
+*/
+
+/**
+* Various database calls to got get and set csv paths.
+* @author State Library of North Carolina - Digital Information Management Program <digital.info@ncdcr.gov>
+* @author Dean Farrell
+* @version 1.0
+* @license CC0 1.0 Universal {@link http://creativecommons.org/publicdomain/zero/1.0/}
+*/
 class MakeCsv {
 	/**
 	* Get user's base download path for csv file creation
@@ -21,8 +40,8 @@ class MakeCsv {
 	
 	/**
 	* Write CSV file path to db and returns last insert id
-	* @param $file_path
 	* @param $user_id
+	* @param $file_path
 	* @access public
 	*/
 	public function addPath($user_id, $file_path) {
