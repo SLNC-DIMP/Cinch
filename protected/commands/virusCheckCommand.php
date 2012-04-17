@@ -161,7 +161,8 @@ class virusCheckCommand extends CConsoleCommand {
 			if(!$delete) {
 				Utils::writeError($scan['file_id'], 14);
 				$virus_message = $message_text . ", but file could not be deleted! -" .  $scan['file_id'] . "\r\n";
-				mail('digital.info@ncdcr.gov', 'File Deletion failed!', $virus_message, '');
+				$to_from = Yii::app()->params['adminEmail'];
+				mail($to_from, 'File Deletion failed!', $virus_message, $to_from);
 				echo $virus_message;
 			} else {
 				echo $message_text . "! File deleted -" . $scan['file_id'] . "\r\n";
