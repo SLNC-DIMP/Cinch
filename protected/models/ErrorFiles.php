@@ -1,9 +1,27 @@
 <?php
+/**
+* ErrorFiles model class file
+*
+* Writes errors to the problem_files table.
+* @catagory ErrorFiles
+* @package ErrorFiles
+* @author State Library of North Carolina - Digital Information Management Program <digital.info@ncdcr.gov>
+* @author Dean Farrell
+* @version 1.0
+* @license CC0 1.0 Universal {@link http://creativecommons.org/publicdomain/zero/1.0/}
+*/
+
+/**
+* Various database calls to select and write checksums.
+* @author State Library of North Carolina - Digital Information Management Program <digital.info@ncdcr.gov>
+* @author Dean Farrell
+* @version 1.0
+* @license CC0 1.0 Universal {@link http://creativecommons.org/publicdomain/zero/1.0/}
+*/
 class ErrorFiles {
 	/**
 	* On error write file info to problem_downloads table
-	* @param $url
-	* @param $error
+	* @param $error_id
 	* @param $list_id
 	* @param $current_user_id
 	* @access public 

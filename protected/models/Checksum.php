@@ -1,5 +1,28 @@
 <?php
+/**
+* Checksum model class file
+*
+* Various database calls to select and write checksums.
+* @catagory Checksum
+* @package Checksum
+* @author State Library of North Carolina - Digital Information Management Program <digital.info@ncdcr.gov>
+* @author Dean Farrell
+* @version 1.0
+* @license CC0 1.0 Universal {@link http://creativecommons.org/publicdomain/zero/1.0/}
+*/
+
+/**
+* Various database calls to select and write checksums.
+* @author State Library of North Carolina - Digital Information Management Program <digital.info@ncdcr.gov>
+* @author Dean Farrell
+* @version 1.0
+* @license CC0 1.0 Universal {@link http://creativecommons.org/publicdomain/zero/1.0/}
+*/
 class Checksum {
+	/**
+	* Variable for file_info table
+	* @var $table
+	*/
 	public $table = 'file_info';
 	
 	/**

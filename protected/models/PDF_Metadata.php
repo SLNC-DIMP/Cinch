@@ -1,8 +1,27 @@
 <?php
+/**
+* PDF_Metadata class file
+*
+* Writes extracted PDF metadata to the database.
+* @catagory PDF_Metadata
+* @package PDF_Metadata
+* @author State Library of North Carolina - Digital Information Management Program <digital.info@ncdcr.gov>
+* @author Dean Farrell
+* @version 1.0
+* @license CC0 1.0 Universal {@link http://creativecommons.org/publicdomain/zero/1.0/}
+*/
+
+/**
+* Writes extracted PDF metadata to the database.
+* @author State Library of North Carolina - Digital Information Management Program <digital.info@ncdcr.gov>
+* @author Dean Farrell
+* @version 1.0
+* @license CC0 1.0 Universal {@link http://creativecommons.org/publicdomain/zero/1.0/}
+*/
 class PDF_Metadata extends FileTypeActiveRecord {
 	/**
 	* Writes extracted PDF metadata to the database
-	* @param $metadata
+	* @param array $metadata
 	* @param $file_id
 	* @param $user_id
 	* @access public
