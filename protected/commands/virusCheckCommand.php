@@ -198,7 +198,7 @@ class virusCheckCommand extends CConsoleCommand {
 		
 		if($virus_messages != '') {
 			$headers = 'From: cinch_admin@nclive.org' . "\r\n";
-			mail('digital.info@ncdcr.gov', 'Undeleted virus files', $virus_messages, $headers);
+			mail(Yii::app()->params['adminEmail'], 'Undeleted virus files', $virus_messages, $headers);
 		}
 	}
 }
