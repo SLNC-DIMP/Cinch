@@ -74,6 +74,16 @@ class ChecksumCommand extends CConsoleCommand {
 	}
 	
 	/**
+	* Checks to see if a file has a duplicate file name.
+	* @param $file_path
+	* @access protected
+	* @return boolean
+	*/
+	protected function dupeFileName($file_path) {
+		return preg_match('/_dupname_[0-9]{1,10}/', $file_path);
+	}
+	
+	/**
 	* Writes appropriate error to db
 	* Error code 3 - Duplicate checksum found
 	* Error code 17 - Duplicate filename found
@@ -146,7 +156,7 @@ class ChecksumCommand extends CConsoleCommand {
 				
 				if($checksum != false) {
 					$is_dup_checksum = $this->checksum->getDupChecksum($checksum, $file_list['user_id']);
-					$is_dup_filename = preg_match('/_dupname_[0-9]{1,10}/', $file_list['temp_file_path']);
+					$is_dup_filename = $this->dupeFileName($file_list['temp_file_path']);
 					
 					if($is_dup_checksum != 0 || $is_dup_filename != 0) {
 						$this->errorWrite($is_dup_checksum, $is_dup_filename, $file_list['id']);
