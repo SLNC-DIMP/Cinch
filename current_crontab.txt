@@ -1,0 +1,11 @@
+MAILTO="your_email@example.com"
+00,02,04,06,08,10,12,14 22 * * * php path/to/Cinch/cron.php readfile
+15 22 * * * php path/to/Cinch/cron.php download
+00 00 * * * freshclam
+00 01 * * * php path/to/Cinch/cron.php viruscheck
+45 01 * * * php path/to/Cinch/cron.php checksum create
+30 02 * * * php path/to/Cinch/cron.php metadata
+30 17 * * * php path/to/Cinch/cron.php metadatacsv
+00 18 * * * php path/to/Cinch/cron.php errorcsv
+30 18 * * * php path/to/Cinch/cron.php zipcreation
+00 21 * * * php path/to/Cinch/cron.php purgesystem delete
