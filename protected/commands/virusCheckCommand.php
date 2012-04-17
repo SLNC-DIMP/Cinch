@@ -59,7 +59,7 @@ class virusCheckCommand extends CConsoleCommand {
 	* @TODO may need sudo privileges
 	* @access private
 	*/
-/*	private function updateDefs() {
+	/*private function updateDefs() {
 		system(escapeshellcmd('freshclam'));
 	} */
 	
@@ -136,6 +136,8 @@ class virusCheckCommand extends CConsoleCommand {
 	* @access private
 	*/
 	private function writeScan(array $scan_results) {
+		$virus_message = '';
+		
 		$scan = $this->scanOutput($scan_results);
 		if((isset($scan['errors']) && $scan['errors'] > 0) && 
 		   (isset($scan['scan_time']) && $scan['scan_time'] == 1)) { 
@@ -158,7 +160,9 @@ class virusCheckCommand extends CConsoleCommand {
 			
 			if(!$delete) {
 				Utils::writeError($scan['file_id'], 14);
-				echo $message_text . ", but file could not be deleted! -" .  $scan['file_id'] . "\r\n";
+				$virus_message = $message_text . ", but file could not be deleted! -" .  $scan['file_id'] . "\r\n";
+				mail('digital.info@ncdcr.gov', 'File Deletion failed!', $virus_message, '');
+				echo $virus_message;
 			} else {
 				echo $message_text . "! File deleted -" . $scan['file_id'] . "\r\n";
 			}
@@ -168,20 +172,33 @@ class virusCheckCommand extends CConsoleCommand {
 			$this->fileUpdate($scan['file_id']);
 			echo "No virus detected -" . $scan['file_id'] . "\r\n";
 		}
+		
+		return $virus_message;
 	}
 	
 	/**
 	* Wrapper method for other class methods.
 	* Checks each file for viruses.
 	* Deletes file if a virus is found.
+	* Mails admin if any virus laden files couldn't be deleted.
 	*/
 	public function run() {
 		$files = $this->getFiles();
 		if(empty($files)) { exit; }
 		
+		$virus_messages = '';
+		
 		foreach($files as $file) {
 			$scan = $this->virusScan($file['temp_file_path'], $file['id']);
-			$this->writeScan($scan);
+			$message = $this->writeScan($scan);
+			if($message != '') {
+				$virus_messages .= $message;
+			}
+		}
+		
+		if($virus_messages != '') {
+			$headers = 'From: cinch_admin@nclive.org' . "\r\n";
+			mail('digital.info@ncdcr.gov', 'Undeleted virus files', $virus_messages, $headers);
 		}
 	}
 }
