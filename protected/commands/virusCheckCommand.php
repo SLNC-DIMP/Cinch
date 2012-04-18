@@ -55,15 +55,6 @@ class virusCheckCommand extends CConsoleCommand {
 	}
 	
 	/**
-	* Update virus definitions for ClamAV
-	* @TODO may need sudo privileges
-	* @access private
-	*/
-	/*private function updateDefs() {
-		system(escapeshellcmd('freshclam'));
-	} */
-	
-	/**
 	* Scan a file for viruses
 	* Wrap path in double quotes or it will probably fail if weird characters in file name.
 	* 4 event code for virus scan run
@@ -86,10 +77,10 @@ class virusCheckCommand extends CConsoleCommand {
 	/**
 	* Strips out scan results from a scan
 	* @param $string
-	* @access private
+	* @access protected
 	* @return string
 	*/
-	private function cleanString($string) {
+	protected function cleanString($string) {
 		return substr_replace(strrchr($string, ':'), '', 0, 2);
 	}
 	
@@ -102,10 +93,10 @@ class virusCheckCommand extends CConsoleCommand {
 	* Can't get actual error message out of $output 
 	* Hence combination of scan_time and error detected to determine if it's one file or the whole system
 	* @param array $output 
-	* @access private
+	* @access protected
 	* @return array
 	*/
-	private function scanOutput(array $output) {
+	protected function scanOutput(array $output) {
 		if(preg_match('/^Total\serrors/i', $output[3])) {
 			$output['errors'] = $this->cleanString($output[3]);
 		} 
@@ -133,9 +124,9 @@ class virusCheckCommand extends CConsoleCommand {
 	* return on error and scan_time of 1.  
 	* This means service is down and scan can't take place. Otherwise all files in scan get deleted!!!!
 	* @param array $scan_results 
-	* @access private
+	* @access protected
 	*/
-	private function writeScan(array $scan_results) {
+	protected function writeScan(array $scan_results) {
 		$virus_message = '';
 		
 		$scan = $this->scanOutput($scan_results);
@@ -161,8 +152,6 @@ class virusCheckCommand extends CConsoleCommand {
 			if(!$delete) {
 				Utils::writeError($scan['file_id'], 14);
 				$virus_message = $message_text . ", but file could not be deleted! -" .  $scan['file_id'] . "\r\n";
-				$to_from = Yii::app()->params['adminEmail'];
-				mail($to_from, 'File Deletion failed!', $virus_message, $to_from);
 				echo $virus_message;
 			} else {
 				echo $message_text . "! File deleted -" . $scan['file_id'] . "\r\n";
@@ -198,8 +187,8 @@ class virusCheckCommand extends CConsoleCommand {
 		}
 		
 		if($virus_messages != '') {
-			$headers = 'From: cinch_admin@nclive.org' . "\r\n";
-			mail(Yii::app()->params['adminEmail'], 'Undeleted virus files', $virus_messages, $headers);
+			$to_from = Yii::app()->params['adminEmail'];
+			mail($to_from, 'Undeleted virus files', $virus_messages, $to_from);
 		}
 	}
 }
