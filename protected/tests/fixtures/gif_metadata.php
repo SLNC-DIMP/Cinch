@@ -26,7 +26,7 @@ return array(
 'file_name'=>'ncdcr.gov_images_DCRLogo2.gif',
 'width'=>'240',
 'file_id'=>'7',
-'user_id'=>'1'),
+'user_id'=>'5'),
 
   'gif_metadata2' => array(
 'black_is_zero'=>'true',
@@ -54,5 +54,5 @@ return array(
 'file_name'=>'ncdcr.gov_images_logo_ncgov.gif',
 'width'=>'112',
 'file_id'=>'8',
-'user_id'=>'1')
+'user_id'=>'5')
 );

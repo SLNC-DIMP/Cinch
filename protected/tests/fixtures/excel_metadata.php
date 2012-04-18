@@ -1,7 +1,6 @@
 <?php
 return array(
-  'excel_metadata1' => array(
-'app_name'=>'Microsoft Macintosh Excel',
+  'excel_metadata1' => array('app_name'=>'Microsoft Macintosh Excel',
 'app_version'=>NULL,
 'author'=>'Dean Farrell',
 'company'=>'State Library-NC Dept of Cultural Resources',
@@ -19,12 +18,11 @@ return array(
 'possible_doc_keywords'=>'http://www.ncga.state.nc.us/EnactedLegislation/SessionLaws/PDF/1991-1992/SL1991-763.pdf,
  http://www.ncga.state.nc.us/EnactedLegislation/SessionLaws/PDF/1991-1992/SL1991-762.pdf,
  http://www.ncga.state.nc.us/EnactedLegislation/SessionLaws/PDF/1991-1992/SL19',
-'file_id'=>'20',
-'user_id'=>'1'),
+'file_id'=>20,
+'user_id'=>5),
 
-  'excel_metadata2' => array(
-'app_name'=>'Microsoft Excel',
-'app_version'=>'12.0000',
+  'excel_metadata2' => array('app_name'=>'Microsoft Excel',
+'app_version'=>12.0000,
 'author'=>'Lisa Gregory',
 'company'=>'',
 'content_type'=>'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
@@ -44,6 +42,6 @@ return array(
  death,
  register,
  North',
-'file_id'=>'21',
-'user_id'=>'1')
+'file_id'=>21,
+'user_id'=>5)
 );
