@@ -37,12 +37,12 @@ class UploadTest extends CDbTestCase {
 		$file_path = $file->path;
 		
 		$this->assertEquals(1, $upload_id);
-		$this->assertEquals(1, $user_id);
-		$this->assertEquals('/uploads/user_1/538f600f9f773c6baecec87e062678e3.txt', $file_path);
+		$this->assertEquals(5, $user_id);
+		$this->assertEquals('/Applications/MAMP/htdocs/cinch/protected/uploads/test/eb06cfdece63b232a8dcf07fbde6601f.txt', $file_path);
 	}
 	
 	public function testDelete() {
-		$file = $this->uploads('upload3');
+		$file = $this->uploads('upload1');
 		$upload_id = $file->id;
 		$this->assertTrue($file->delete());
 		

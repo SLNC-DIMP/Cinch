@@ -12,7 +12,7 @@ class ReadFileCommandTest extends CDbTestCase {
 		 // get lists to process
 		 $lists = count($readfile->getLists());
 		 
-		 $this->assertEquals(3, $lists);
+		 $this->assertEquals(1, $lists);
 		 $this->assertNotEquals(4, $lists);
 		 
 		 //write initial file count

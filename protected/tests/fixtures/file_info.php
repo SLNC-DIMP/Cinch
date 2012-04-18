@@ -567,7 +567,7 @@ return array(
 'checksum_run'=>1,
 'remote_checksum'=>'c784895bdbc3a213a8c016d053320a7e6a4d6493',
 'checksum'=>'c784895bdbc3a213a8c016d053320a7e6a4d6493',
-'virus_check'=>1,
+'virus_check'=>0,
 'fulltext_available'=>1,
 'metadata'=>1,
 'dynamic_file'=>1,
