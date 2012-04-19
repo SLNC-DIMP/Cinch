@@ -147,13 +147,14 @@ class UploadController extends Controller {
 	
 	/**
 	* Converts a file's name into an MD5 hash so users can't easily mess with their own files.
+	* Add random number to the end so files don't overwrite each other.
 	* @param $file
 	* @return string encrypted file name
 	*/
 	public function encryptName($file) {
 		$file_extension = strrchr($file, '.');
 		$file_name = substr($file, 0, -4);
-		$encrypted_name = md5($file_name);
+		$encrypted_name = md5($file_name) . '_' . mt_rand(1,1000);
 		
 		return $encrypted_name . $file_extension;
 	}

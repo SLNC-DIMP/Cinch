@@ -45,7 +45,7 @@ class User extends CActiveRecord
 			array('password_repeat', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, username, password, email', 'safe', 'on'=>'search'),
+			array('id, username, email', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -99,16 +99,29 @@ class User extends CActiveRecord
 	*/
 	public function afterValidate() {
 		parent::afterValidate();
+		$this->mailUser();
 		$this->password = $this->md5_encrypt($this->password);
 	}
 	
 	/**
 	* wrapper for the PHP md5() function
-	* @param $password
 	* @access public
 	* @return string
 	*/
 	public function md5_encrypt($password) {
 		return md5($password);
+	}
+	
+	/**
+	 * Email user their login info.
+	 * @access public
+	 */
+	public function mailUser() {
+		$from = 'From: ' . Yii::app()->params['adminEmail'] . "\r\n" .
+		$message = "Your CINCH Credentials:\r\n";
+		$message .= "Username: " . $this->username . "\r\n";
+		$message .= "Password: " . $this->password;
+		
+		mail($this->email, 'Your CINCH Credentials', $message, $from);
 	}
 }

@@ -19,6 +19,7 @@
 		<?php echo $form->textField($model,'email',array('size'=>25,'maxlength'=>256)); ?>
 		<?php echo $form->error($model,'email'); ?>
 	</div>
+    <?php if($model->isNewRecord): ?>
     <div class="row">
 		<?php echo $form->labelEx($model,'password'); ?>
 		<?php echo $form->passwordField($model,'password',array('size'=>25,'maxlength'=>25)); ?>
@@ -29,7 +30,7 @@
 		<?php echo $form->passwordField($model,'password_repeat',array('size'=>25,'maxlength'=>25)); ?>
 		<?php echo $form->error($model,'password_repeat'); ?>
 	</div>
-
+	<?php endif; ?>
 	<div class="row buttons">
 		<?php echo CHtml::submitButton($model->isNewRecord ? 'Create' : 'Save'); ?>
 	</div>

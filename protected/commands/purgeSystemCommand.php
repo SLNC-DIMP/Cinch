@@ -305,7 +305,7 @@ class purgeSystemCommand extends CConsoleCommand {
 			$message = "The following deletion errors occured:\r\n";
 			$message .= file_get_contents($this->error_list);
 			
-			mail($to_from, $subject, $message, $to_from);
+			mail($to_from, $subject, $message, "From: " . $to_from . "\r\n");
 		} else {
 			return false;
 		}

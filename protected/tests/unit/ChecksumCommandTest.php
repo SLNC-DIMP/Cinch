@@ -28,5 +28,12 @@ class ChecksumCommandTest extends CDbTestCase {
 		 
 		 $this->assertEquals(false, $bogus_file_sha1);
 		 $this->assertEquals(false, $bogus_file_md5);
+		 
+		 $remote_good = $checksum->createRemoteChecksum('http://statelibrarync.org/cinch_test/power1.pptx');
+		 $remote_bad = $checksum->createRemoteChecksum('http://mysite.gov/file1.pdf');
+		 
+		 $this->assertEquals('845af65bee3a295a67793375bebdf97f8c341dca', $remote_good); // very fragile test
+		 $this->assertEquals(false, $remote_bad);
+		 
 	}
 }

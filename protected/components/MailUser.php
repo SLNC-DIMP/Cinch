@@ -47,8 +47,9 @@ class MailUser {
 	public function UserMail($user_id, $subject, $message) {
 		$user = $this->getUser($user_id);
 		$to = $user['email'];
+		$from = "From: " . Yii::app()->params['adminEmail'] . "\r\n";
 		
-		$mail_sent = mail($to, $subject, $message, Yii::app()->params['adminEmail']);
+		$mail_sent = mail($to, $subject, $message, $from);
 		
 		if($mail_sent == false) {
 			$username = $user['username'];

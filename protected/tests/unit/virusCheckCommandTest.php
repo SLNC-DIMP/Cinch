@@ -18,15 +18,17 @@ class virusCheckCommandTest extends CDbTestCase {
 					
 		 $virus = new virusCheckCommand($commandName,$CCRunner);
 		 
-		 $files = $virus->getFiles();
 		 
-		 $this->assertEquals(true, !empty($virus));
+		 $files = $virus->getFiles();
+		 $run = $virus->run();
+		 
+		 $this->assertEquals(true, !empty($files));
 		 
 		 foreach($files as $file) {
 		 	$filenum[] = $file;
 		 }
 		 
 		 $this->assertEquals(1, count($filenum));
-		
+		 $this->assertEquals('', $run);
 	}
 }
