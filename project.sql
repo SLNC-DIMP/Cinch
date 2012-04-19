@@ -175,7 +175,7 @@ INSERT INTO `error_type` (`id`, `error_message`) VALUES
 (15, 'Unable to determine full text status'),
 (16, 'Virus check couldn''t scan file'),
 (17, 'Duplicate Filename'),
-(18, 'file mime-type doesn''t match file extension');
+(18, 'file media-type doesn''t match file extension');
 
 
 --

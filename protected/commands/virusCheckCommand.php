@@ -190,5 +190,7 @@ class virusCheckCommand extends CConsoleCommand {
 			$to_from = Yii::app()->params['adminEmail'];
 			mail($to_from, 'Undeleted virus files', $virus_messages, $to_from);
 		}
+		
+		return $virus_messages;
 	}
 }
