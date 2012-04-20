@@ -242,3 +242,9 @@ font-weight: bold;
 font-weight:bold;
 color:#F00;
 }
+
+div.info {
+font-weight:bold;
+font-size: 14px;
+padding: 7px 0;
+}

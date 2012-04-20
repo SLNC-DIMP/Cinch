@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This is the model class for table "user".
  *
@@ -37,7 +36,7 @@ class User extends CActiveRecord
 		return array(
 			array('username, password, email, password_repeat', 'filter', 'filter' => 'trim'),
 			array('username, email', 'unique'),
-			array('username, password, email', 'required'),
+			array('username, password, password_repeat, email', 'required'),
 			array('username, password', 'length', 'max'=>25),
 			array('email', 'length', 'max'=>256),
 			array('email', 'email'),

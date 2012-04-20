@@ -78,6 +78,30 @@ class UserController extends Controller
 			'model'=>$model,
 		));
 	}
+	
+	public function actionPass($id)
+	{
+		if($id === Yii::app()->user->id) {
+			$model=$this->loadModel($id);
+	
+			// Uncomment the following line if AJAX validation is needed
+			// $this->performAjaxValidation($model);
+	
+			if(isset($_POST['User']))
+			{
+				$model->attributes=$_POST['User'];
+				if($model->save())
+					Yii::app()->user->setFlash('success', "Password successfully updated!");
+					$this->redirect(array('pass','id'=>$model->id));
+			}
+	
+			$this->render('pass',array(
+				'model'=>$model,
+			));
+		} else {
+			throw new CHttpException(403,'You are not allowed to perform this action.');
+		}
+	}
 
 	/**
 	 * Deletes a particular model.
