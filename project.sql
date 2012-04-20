@@ -31,7 +31,7 @@ INSERT INTO `AuthAssignment` (`itemname`, `userid`, `bizrule`, `data`)VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `authitem`
+-- Table structure for table `AuthItem`
 --
 
 CREATE TABLE IF NOT EXISTS `AuthItem` (
@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS `AuthItem` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
--- Dumping data for table `authitem`
+-- Dumping data for table `AuthItem`
 --
 
 INSERT INTO `AuthItem` (`name`, `type`, `description`, `bizrule`, `data`) VALUES
@@ -72,6 +72,7 @@ INSERT INTO `AuthItem` (`name`, `type`, `description`, `bizrule`, `data`) VALUES
 ('User.Create', 0, NULL, NULL, 'N;'),
 ('User.Delete', 0, NULL, NULL, 'N;'),
 ('User.Index', 0, NULL, NULL, 'N;'),
+('User.Pass', 0, NULL, NULL, 'N;'),
 ('User.Update', 0, NULL, NULL, 'N;'),
 ('User.View', 0, NULL, NULL, 'N;'),
 ('ZipGzDownloads.Admin', 0, NULL, NULL, 'N;'),
@@ -95,9 +96,9 @@ CREATE TABLE IF NOT EXISTS `AuthItemChild` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
--- Dumping data for table `authitemchild`
+-- Dumping data for table `AuthItemChild`
 --
---
+
 INSERT INTO `AuthItemChild` (`parent`, `child`) VALUES
 ('Admin.Default.*', 'FileInfo.*'),
 ('Authenticated', 'Guest'),
@@ -118,6 +119,7 @@ INSERT INTO `AuthItemChild` (`parent`, `child`) VALUES
 ('Authenticated', 'Upload.*'),
 ('Authenticated', 'Upload.Index'),
 ('Admin.Default.*', 'User.*'),
+('Authenticated', 'User.Pass'),
 ('Admin.Default.*', 'ZipGzDownloads.Admin'),
 ('Authenticated', 'ZipGzDownloads.Download'),
 ('Authenticated', 'ZipGzDownloads.Index'),
