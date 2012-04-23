@@ -61,7 +61,22 @@ Setting up Cinch on your system:
 You should now be able to login as: admin admin.
 
 If you don't want to run Cinch via cron you can run it from the commandline.  If you navigate to Cinch/protected and run the following: path/to/php yiic.php.  
-You should be presented with a list of available commands.
+You should be presented with a list of available commands.  The general way to run a command is: path/to/php yiic.php command.
+Several commands such as checksum and purgeystem have subcommands, which have to be run like so from the command line: path/to/php yiic.php command sub-command.
+
+You should run the commands in the following order:
+<ol>
+<li>readfile</li>
+<li>download</li>
+<li>viruscheck</li>
+<li>checksum create</li>
+<li>metadata</li>
+<li>metadatacsv</li>
+<li>errorcsv</li>
+<li>zipcreation</li>
+<li>purgesystem check (optional, Notifies users after 20 days that they have files marked for deletion in 10 days.)</li>
+<li>purgesystem delete (optional, deletes user files older than 30 days old.)</li>
+</ol>
 
 If you want to run the unit tests you'll need to have Pear, PHPUnit and vfsStream installed.
 
