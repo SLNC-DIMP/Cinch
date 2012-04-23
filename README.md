@@ -53,12 +53,15 @@ Setting up Cinch on your system:
 <ol>
 <li>Create a new database MySQL database and import the project.sql file into it.</li>
 <li>Open protected/config/main.php</li>
-<li>Scroll down to the db settings (line 68 or so. Set the database name, the username and password for your new Cinch database.</li>
+<li>Scroll down to the db settings (line 68 or so). Set the database name, the username and password for your new Cinch database.</li>
 <li>Go to http://tika.apache.org/download.html and download the Apache Tika jar file.</li>
 <li>Place the Apache Tike jar file at the root of the Cinch/protected directory.</li>
 <li>Configure Cinch cron tasks.  See the sample cron.txt file the root of Cinch for suggestions on how you might want to configure it.
 </ol>
-You should now be good to go!
+You should now be able to login as: admin admin.
+
+If you don't want to run Cinch via cron you can run it from the commandline.  If you navigate to Cinch/protected and run the following: path/to/php yiic.php.  
+You should be presented with a list of available commands.
 
 If you want to run the unit tests you'll need to have Pear, PHPUnit and vfsStream installed.
 

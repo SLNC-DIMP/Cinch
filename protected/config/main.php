@@ -1,5 +1,4 @@
 <?php
-
 // uncomment the following to define a path alias
 // Yii::setPathOfAlias('local','path/to/local-folder');
 
@@ -23,18 +22,17 @@ return array(
 
 	'modules'=>array(
 		// uncomment the following to enable the Gii tool
-		'gii'=>array(
+	 /*	'gii'=>array(
 			'class'=>'system.gii.GiiModule',
 			'password'=>'',
 		 	// If removed, Gii defaults to localhost only. Edit carefully to taste.
 			'ipFilters'=>array('127.0.0.1','::1'),
-		), 
-		// admin module created by Dean Farrell 11-23-11
+		), */
 		'admin',
 		// used by rights module
 		'rights'=>array(
 			//'install'=>true,
-			//'superuserName'=>'cinch_admin'
+			//'superuserName'=>'admin'
 		),
 	),
 
@@ -45,10 +43,9 @@ return array(
 			// enable cookie-based authentication
 			'allowAutoLogin'=>false,
 		),
-		'authManager' => array(
-			'class' => 'RDbAuthManager',
-			'connectionID'=>'db',
-
+		'authManager'=>array(
+			'class'=>'RDbAuthManager',   // provides support for authorization item sorting
+			'defaultRoles'=>array('authenticated', 'guest'),                        
 		),
 		// adding in CSRF protection component
 		'request' => array(
@@ -71,7 +68,7 @@ return array(
 		'db'=>array(
 			'connectionString' => 'mysql:host=localhost;dbname=testdrive',
 			'emulatePrepare' => true,
-			'username' => 'root',
+			'username' => '',
 			'password' => '',
 			'charset' => 'utf8',
 		),
@@ -102,29 +99,12 @@ return array(
 				
 			),
 		),
-		
-		/*** 3rd party extentions ****/
-		// CFile extension verion 0.9
-		'file'=>array(
-        	'class'=>'application.extensions.file.CFile',
-        ),
-        
-        // added amqp support
-        'amqp' => array(
-            'class' => 'application.components.AMQP.CAMQP',
-            'host'  => '127.0.0.1'
-        ),
-		
-		'zip' => array(
-			'class'=>'application.extensions.zip.EZip'
-		),
-		/**** end of 3rd party extentions ****/
 	),
 
 	// application-level parameters that can be accessed
 	// using Yii::app()->params['paramName']
 	'params'=>array(
 		// this is used in contact page
-		'adminEmail'=>'webmaster@example.com',
+		'adminEmail'=>'your_email@email.org'
 	),
 );

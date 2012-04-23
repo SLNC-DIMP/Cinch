@@ -560,12 +560,12 @@ CREATE TABLE IF NOT EXISTS `user` (
   `email` varchar(256) collate utf8_unicode_ci NOT NULL,
   `password` varchar(64) collate utf8_unicode_ci NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=2 ;
 
 --
 -- Dumping data for table `user`
 --
-
+INSERT INTO `user` VALUES(1, 'admin', 'your_email@email.org', 'f6fdffe48c908deb0f4c3bd36c032e72');
 
 -- --------------------------------------------------------
 
