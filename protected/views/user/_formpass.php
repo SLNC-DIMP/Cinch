@@ -10,7 +10,7 @@
     <div class="info">
         <?php echo Yii::app()->user->getFlash('success'); ?>
     </div>
-<?php endif; ?>
+	<?php endif; ?>
 	<div class="row">
 		<?php echo $form->labelEx($model,'password'); ?>
 		<?php echo $form->passwordField($model,'password',array('id'=>'pass', 'size'=>25,'maxlength'=>25)); ?>

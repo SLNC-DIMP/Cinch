@@ -44,8 +44,10 @@ class UserController extends Controller
 		if(isset($_POST['User']))
 		{
 			$model->attributes=$_POST['User'];
-			if($model->save())
+			if($model->save()) {
+				$this->mailUser();
 				$this->redirect(array('view','id'=>$model->id));
+			}
 		}
 
 		$this->render('create',array(
@@ -67,33 +69,37 @@ class UserController extends Controller
 
 		if(isset($_POST['User']))
 		{
-			$_POST['User'] = array_slice($_POST['User'], 0, 2);
+			//$_POST['User'] = array_slice($_POST['User'], 0, 2);
 			$model->attributes=$_POST['User'];
 			
-			if(!$model->isNewRecord && $model->save()) 
-				$this->render('view',array('model'=>$model));
-		}
-
+			if($model->validate(array('username', 'email'), false) && $model->update()) {
+				Yii::app()->user->setFlash('success', "User successfully updated!");
+			}
+		} 
+		
 		$this->render('update',array(
 			'model'=>$model,
 		));
 	}
 	
+	/**
+	 * Updates a user's password.  User must be logged in for this action to happen.
+	 * Also restricts accessing other users' passwords
+	 * @param integer $id the ID of the model to be updated
+	 */
 	public function actionPass($id)
 	{ 
 		if($id === Yii::app()->user->id) {
 			$model=$this->loadModel($id);
 	
-			// Uncomment the following line if AJAX validation is needed
-			// $this->performAjaxValidation($model);
-	
 			if(isset($_POST['User']))
 			{
 				$model->attributes=$_POST['User'];
 				
-				if($model->validate() && $model->update())
+				if($model->validate(array('password', 'password_repeat'), false) && $model->update()) {
+					$this->mailUser();
 					Yii::app()->user->setFlash('success', "Password successfully updated!");
-					//$this->render('pass',array('model'=>$model));
+				}
 			}
 	
 			$this->render('pass',array(
@@ -174,5 +180,18 @@ class UserController extends Controller
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
 		}
+	}
+	
+	/**
+	 * Email user their login info.
+	 * @access public
+	 */
+	public function mailUser() {
+		$from = 'From: ' . Yii::app()->params['adminEmail'] . "\r\n" .
+		$message = "Your CINCH Credentials:\r\n";
+		$message .= "Username: " . $this->username . "\r\n";
+		$message .= "Password: " . $this->password;
+		
+		mail($this->email, 'Your CINCH Credentials', $message, $from);
 	}
 }

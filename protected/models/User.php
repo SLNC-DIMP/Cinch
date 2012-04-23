@@ -99,7 +99,6 @@ class User extends CActiveRecord
 	*/
 	public function afterValidate() {
 		parent::afterValidate();
-		$this->mailUser();
 		$this->password = $this->md5_encrypt($this->username, $this->password);
 	}
 	
@@ -110,18 +109,5 @@ class User extends CActiveRecord
 	*/
 	public function md5_encrypt($username, $password) {
 		return md5($username . $password);
-	}
-	
-	/**
-	 * Email user their login info.
-	 * @access public
-	 */
-	public function mailUser() {
-		$from = 'From: ' . Yii::app()->params['adminEmail'] . "\r\n" .
-		$message = "Your CINCH Credentials:\r\n";
-		$message .= "Username: " . $this->username . "\r\n";
-		$message .= "Password: " . $this->password;
-		
-		mail($this->email, 'Your CINCH Credentials', $message, $from);
 	}
 }
