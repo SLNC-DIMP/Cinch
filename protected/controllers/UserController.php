@@ -106,7 +106,7 @@ class UserController extends Controller
 				'model'=>$model,
 			));
 		} else {
-			throw new CHttpException(403,'You are not allowed to perform this action.');
+			throw new CHttpException(403,'Forbidden request, You are not allowed to perform this action.');
 		}
 	}
 

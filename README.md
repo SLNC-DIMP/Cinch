@@ -43,9 +43,22 @@ Requirements
 
 * Currently Cinch will only run on *nix systems
 * PHP 5.3+ (PHP 5.4+ is recommended)
-* MySQL or SQLite
+* MySQL
+* ClamAV
 
-After download, you may need to run the setup.sh shell file before initially running application.
+After download, you may need to run the setup.sh shell file before initially running application to set file level permissions.
+
+Setting up Cinch on your system:
+
+<ol>
+<li>Create a new database MySQL database and import the project.sql file into it.</li>
+<li>Open protected/config/main.php</li>
+<li>Scroll down to the db settings (line 68 or so. Set the database name, the username and password for your new Cinch database.</li>
+<li>Go to http://tika.apache.org/download.html and download the Apache Tika jar file.</li>
+<li>Place the Apache Tike jar file at the root of the Cinch/protected directory.</li>
+<li>Configure Cinch cron tasks.  See the sample cron.txt file the root of Cinch for suggestions on how you might want to configure it.
+</ol>
+You should now be good to go!
 
 If you want to run the unit tests you'll need to have Pear, PHPUnit and vfsStream installed.
 
