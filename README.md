@@ -54,6 +54,7 @@ Setting up Cinch on your system:
 <li>Create a new database MySQL database and import the project.sql file into it.</li>
 <li>Open protected/config/main.php</li>
 <li>Scroll down to the db settings (line 68 or so). Set the database name, the username and password for your new Cinch database.</li>
+<li>Scroll to the bottome of main.php and set 'adminEmail' email address to your email address.
 <li>Go to http://tika.apache.org/download.html and download the Apache Tika jar file.</li>
 <li>Place the Apache Tike jar file at the root of the Cinch/protected directory.</li>
 <li>Configure Cinch cron tasks.  See the sample cron.txt file the root of Cinch for suggestions on how you might want to configure it.
