@@ -70,8 +70,8 @@ class UserController extends Controller
 			$_POST['User'] = array_slice($_POST['User'], 0, 2);
 			$model->attributes=$_POST['User'];
 			
-			if($model->update())
-				$this->redirect(array('view','id'=>$model->id));
+			if(!$model->isNewRecord && $model->save()) 
+				$this->render('view',array('model'=>$model));
 		}
 
 		$this->render('update',array(
@@ -80,7 +80,7 @@ class UserController extends Controller
 	}
 	
 	public function actionPass($id)
-	{
+	{ 
 		if($id === Yii::app()->user->id) {
 			$model=$this->loadModel($id);
 	
@@ -90,9 +90,10 @@ class UserController extends Controller
 			if(isset($_POST['User']))
 			{
 				$model->attributes=$_POST['User'];
-				if($model->save())
+				
+				if($model->validate() && $model->update())
 					Yii::app()->user->setFlash('success', "Password successfully updated!");
-					$this->redirect(array('pass','id'=>$model->id));
+					//$this->render('pass',array('model'=>$model));
 			}
 	
 			$this->render('pass',array(

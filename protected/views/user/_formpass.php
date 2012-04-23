@@ -1,5 +1,4 @@
 <div class="form">
-
 <?php $form=$this->beginWidget('CActiveForm', array(
 	'id'=>'user-form',
 	'enableAjaxValidation'=>false,
@@ -19,9 +18,11 @@
 	</div>
      <div class="row">
 		<?php echo $form->labelEx($model,'password_repeat'); ?>
-		<?php echo $form->passwordField($model,'password_repeat',array('size'=>25,'maxlength'=>25)); ?>
+		<?php echo $form->passwordField($model,'password_repeat',array('id'=>'pass_repeat', 'size'=>25,'maxlength'=>25)); ?>
 		<?php echo $form->error($model,'password_repeat'); ?>
 	</div>
+    <?php echo $form->hiddenField($model,'username'); ?>
+    <?php echo $form->hiddenField($model,'email'); ?>
 	<div class="row buttons">
 		<?php echo CHtml::submitButton('Update'); ?>
 	</div>

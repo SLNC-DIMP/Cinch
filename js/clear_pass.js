@@ -1,5 +1,8 @@
 (function() {
 	window.onload = function() {
-		document.getElementById('pass').value = '';
+		var fields = ['pass', 'pass_repeat'];
+		for(var i=0; i<fields.length; i++) {
+			document.getElementById(fields[i]).value = '';
+		}
 	}
 })();

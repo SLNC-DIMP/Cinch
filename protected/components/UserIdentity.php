@@ -42,7 +42,7 @@ class UserIdentity extends CUserIdentity
 		
 		if($user === null) {
 			$this->errorCode=self::ERROR_USERNAME_INVALID;
-		} elseif($user->password !== $user->md5_encrypt($this->password)) {
+		} elseif($user->password !== $user->md5_encrypt($this->username, $this->password)) {
 			$this->errorCode=self::ERROR_PASSWORD_INVALID;
 		} else {
 			$this->_id = $user->id;

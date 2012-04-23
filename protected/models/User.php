@@ -37,11 +37,12 @@ class User extends CActiveRecord
 			array('username, password, email, password_repeat', 'filter', 'filter' => 'trim'),
 			array('username, email', 'unique'),
 			array('username, password, password_repeat, email', 'required'),
-			array('username, password', 'length', 'max'=>25),
+			array('username, password, password_repeat', 'length', 'max'=>25),
 			array('email', 'length', 'max'=>256),
 			array('email', 'email'),
 			array('password', 'compare'),
 			array('password_repeat', 'safe'),
+			
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, username, email', 'safe', 'on'=>'search'),
@@ -99,7 +100,7 @@ class User extends CActiveRecord
 	public function afterValidate() {
 		parent::afterValidate();
 		$this->mailUser();
-		$this->password = $this->md5_encrypt($this->password);
+		$this->password = $this->md5_encrypt($this->username, $this->password);
 	}
 	
 	/**
@@ -107,8 +108,8 @@ class User extends CActiveRecord
 	* @access public
 	* @return string
 	*/
-	public function md5_encrypt($password) {
-		return md5($password);
+	public function md5_encrypt($username, $password) {
+		return md5($username . $password);
 	}
 	
 	/**
