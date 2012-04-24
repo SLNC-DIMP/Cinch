@@ -58,7 +58,7 @@ Setting up Cinch on your system:
 <li>Scroll to the bottom of main.php and set 'adminEmail' email address to your email address.
 <li>You'll now need to repeat step four in protected/config/console.php.
 <li>Go to http://tika.apache.org/download.html and download the Apache Tika jar file.</li>
-<li>Place the Apache Tike jar file at the root of the Cinch/protected directory.</li>
+<li>Place the Apache Tika jar file at the root of the Cinch/protected directory.</li>
 <li>Configure Cinch cron tasks.  See the sample cron.txt file the root of Cinch for suggestions on how you might want to configure it.
 </ol>
 You should now be able to login to the web interface as: admin admin.

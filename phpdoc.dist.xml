@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpdoc>
+  <parser>
+    <target>cinch_documentation</target>
+  </parser>
+  <transformer>
+    <target>cinch_documentation</target>
+  </transformer>
+  <files>
+  	<directory>protected/components</directory>
+    <directory>protected/commands</directory>
+	<directory>protected/models</directory>
+	<directory>protected/controllers</directory>
+  </files>
+</phpdoc>

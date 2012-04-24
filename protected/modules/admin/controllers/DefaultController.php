@@ -12,6 +12,9 @@ class DefaultController extends Controller
 		);
 	}
 	
+	/**
+	* Renders admin homepage
+	*/
 	public function actionIndex()
 	{
 		$this->render('index');

@@ -7,6 +7,10 @@
  */
 class UserIdentity extends CUserIdentity
 {
+	/**
+	 * Sets id of current user
+	 * @var integer
+	 */
 	private $_id;
 	
 	/**
@@ -29,6 +33,10 @@ class UserIdentity extends CUserIdentity
 		return !$this->errorCode;
 	}
 	
+	/**
+	 * Getter method for user's id.
+	 * @return integer current user's id.
+	 */
 	public function getId() {
 		return $this->_id;
 	}
