@@ -56,7 +56,7 @@ Setting up Cinch on your system:
 <li>Open protected/config/main.php</li>
 <li>Scroll down to the db settings (line 68 or so). Set the database name, the username and password for your new Cinch database.</li>
 <li>Scroll to the bottom of main.php and set 'adminEmail' email address to your email address.
-<li>You'll now need to repeat the previous two steps in protected/config/console.php.
+<li>You'll now need to repeat step four in protected/config/console.php.
 <li>Go to http://tika.apache.org/download.html and download the Apache Tika jar file.</li>
 <li>Place the Apache Tike jar file at the root of the Cinch/protected directory.</li>
 <li>Configure Cinch cron tasks.  See the sample cron.txt file the root of Cinch for suggestions on how you might want to configure it.
@@ -80,6 +80,11 @@ You should run the commands in the following order:
 <li>purgesystem check (optional, Notifies users after 20 days that they have files marked for deletion in 10 days.)</li>
 <li>purgesystem delete (optional, deletes user files older than 30 days old.  Note this deletes upload lists, and all csv file information from the database, but downloaded files, metdata, errors, and event, information is retained.)</li>
 </ol>
+
+Useful Notes:  
+
+* Uploaded url lists are saved into protected/uploads/"user's username". With the user's directory being created on first upload and being deleted thereafter if it's empty.
+* Downloaded user files are saved  into protected/curl_downloads/"user's username". With the user's directory being created on first upload and being deleted thereafter if it's empty.
 
 If you want to run the unit tests you'll need to have Pear, PHPUnit and vfsStream installed.
 
