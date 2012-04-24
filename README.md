@@ -51,18 +51,20 @@ After download, you may need to run the setup.sh shell file before initially run
 Setting up Cinch on your system:
 
 <ol>
+<li>Place the Cinch files in a web accessible directory</li>
 <li>Create a new database MySQL database and import the project.sql file into it.</li>
 <li>Open protected/config/main.php</li>
 <li>Scroll down to the db settings (line 68 or so). Set the database name, the username and password for your new Cinch database.</li>
-<li>Scroll to the bottome of main.php and set 'adminEmail' email address to your email address.
+<li>Scroll to the bottom of main.php and set 'adminEmail' email address to your email address.
+<li>You'll now need to repeat the previous two steps in protected/config/console.php.
 <li>Go to http://tika.apache.org/download.html and download the Apache Tika jar file.</li>
 <li>Place the Apache Tike jar file at the root of the Cinch/protected directory.</li>
 <li>Configure Cinch cron tasks.  See the sample cron.txt file the root of Cinch for suggestions on how you might want to configure it.
 </ol>
-You should now be able to login as: admin admin.
+You should now be able to login to the web interface as: admin admin.
+You should then go the change password tab and update your password.
 
-If you don't want to run Cinch via cron you can run it from the commandline.  If you navigate to Cinch/protected and run the following: path/to/php yiic.php.  
-You should be presented with a list of available commands.  The general way to run a command is: path/to/php yiic.php command.
+If you don't want to run Cinch via cron you can run it from the command line.  If you navigate to Cinch/protected and run the following: path/to/php yiic.php you should be presented with a list of available commands.  The general way to run a command is: path/to/php yiic.php command.
 Several commands such as checksum and purgeystem have subcommands, which have to be run like so from the command line: path/to/php yiic.php command sub-command.
 
 You should run the commands in the following order:
@@ -76,7 +78,7 @@ You should run the commands in the following order:
 <li>errorcsv</li>
 <li>zipcreation</li>
 <li>purgesystem check (optional, Notifies users after 20 days that they have files marked for deletion in 10 days.)</li>
-<li>purgesystem delete (optional, deletes user files older than 30 days old.)</li>
+<li>purgesystem delete (optional, deletes user files older than 30 days old.  Note this deletes upload lists, and all csv file information from the database, but downloaded files, metdata, errors, and event, information is retained.)</li>
 </ol>
 
 If you want to run the unit tests you'll need to have Pear, PHPUnit and vfsStream installed.
