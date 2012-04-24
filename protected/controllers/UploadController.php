@@ -115,6 +115,10 @@ class UploadController extends Controller {
         }
     }
 	
+	  /**
+     * Loads index page.
+     * Uploads a user's download list to the system.
+     */
 	public function actionIndex() {
 		$user_upload_dir = $this->getUsrUploadDir();
 		$uploaded = false;
