@@ -56,7 +56,8 @@ Setting up Cinch on your system:
 <li>Open protected/config/main.php</li>
 <li>Scroll down to the db settings (line 68 or so). Set the database name, the username and password for your new Cinch database.</li>
 <li>Scroll to the bottom of main.php and set 'adminEmail' email address to your email address.
-<li>You'll now need to repeat step four in protected/config/console.php.
+<li>You'll now need to repeat steps four and five in protected/config/console.php.</li>
+<li>In protected/config/console.php if the setting in date_default_timezone_set() isn't correct you should change it to your timezone setting.  For a complete list of timezone settings see: http://us2.php.net/manual/en/timezones.php.</li>
 <li>Go to http://tika.apache.org/download.html and download the Apache Tika jar file.</li>
 <li>Place the Apache Tika jar file at the root of the Cinch/protected directory.</li>
 <li>Configure Cinch cron tasks.  See the sample cron.txt file the root of Cinch for suggestions on how you might want to configure it.
