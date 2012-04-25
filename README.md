@@ -85,6 +85,7 @@ Useful Notes:
 
 * Uploaded url lists are saved into protected/uploads/"user's username". With the user's directory being created on first upload and being deleted thereafter if it's empty.
 * Downloaded user files are saved  into protected/curl_downloads/"user's username". With the user's directory being created on first file downloaded and being deleted thereafter if it's empty.
+* CINCH API documentation can be viewed at: http://cinch.nclive.org/c_docs/packages/db_Default.html.
 
 If you want to run the unit tests you'll need to have Pear, PHPUnit and vfsStream installed.
 
