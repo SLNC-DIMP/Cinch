@@ -32,6 +32,8 @@ return array(
             ),
         ),
 		
+	
+		
 		/*'db'=>array(
 			'connectionString' => 'sqlite:'.dirname(__FILE__).'/../data/testdrive.db',
 		), */
@@ -43,5 +45,9 @@ return array(
 			'password' => '',
 			'charset' => 'utf8',
 		),
+	),
+	
+	'params'=>array(
+		'adminEmail'=>'webmaster@exmaple.org'
 	),
 );
