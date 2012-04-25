@@ -22,22 +22,7 @@ Learn more at: http://digitalpreservation.ncdcr.gov/cinch/.
 Funding for the CINCH: Capture, Ingest, & Checksum tool is made possible through 
 an IMLS Sparks! Ignition grant.
 
-<p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
-  <a rel="license"
-     href="http://creativecommons.org/publicdomain/zero/1.0/">
-    <img src="http://i.creativecommons.org/p/zero/1.0/80x15.png" style="border-style: none;" alt="CC0" />
-  </a>
-  <br />
-  To the extent possible under law,
-  <span rel="dct:publisher" resource="[_:publisher]">the person who associated CC0</span>
-  with CINCH has waived all copyright and related or neighboring rights to
-  <span property="dct:title">CINCH</span>.
-This work is published from the:
-<span property="vcard:Country" datatype="dct:ISO3166"
-      content="US" about="[_:publisher]">
-  United States</span>.
-</p>
-
+License:  CINCH is released under the Unlicense <http://unlicense.org/>
 -------------------------
 Requirements
 

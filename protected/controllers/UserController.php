@@ -45,7 +45,6 @@ class UserController extends Controller
 		{
 			$model->attributes=$_POST['User'];
 			if($model->save()) {
-				$this->mailUser();
 				$this->redirect(array('view','id'=>$model->id));
 			}
 		}
@@ -97,7 +96,6 @@ class UserController extends Controller
 				$model->attributes=$_POST['User'];
 				
 				if($model->validate(array('password', 'password_repeat'), false) && $model->update()) {
-					$this->mailUser();
 					Yii::app()->user->setFlash('success', "Password successfully updated!");
 				}
 			}
@@ -180,18 +178,5 @@ class UserController extends Controller
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
 		}
-	}
-	
-	/**
-	 * Email user their login info.
-	 * @access public
-	 */
-	public function mailUser() {
-		$from = 'From: ' . Yii::app()->params['adminEmail'] . "\r\n" .
-		$message = "Your CINCH Credentials:\r\n";
-		$message .= "Username: " . $this->username . "\r\n";
-		$message .= "Password: " . $this->password;
-		
-		mail($this->email, 'Your CINCH Credentials', $message, $from);
 	}
 }
