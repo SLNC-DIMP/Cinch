@@ -22,7 +22,7 @@ Learn more at: http://digitalpreservation.ncdcr.gov/cinch/.
 Funding for the CINCH: Capture, Ingest, & Checksum tool is made possible through 
 an IMLS Sparks! Ignition grant.
 
-License:  CINCH is released under the Unlicense <http://unlicense.org/>
+License:  CINCH is released under the Unlicense (http://unlicense.org/)
 -------------------------
 Requirements
 
@@ -72,6 +72,17 @@ Useful Notes:
 * Uploaded url lists are saved into protected/uploads/"user's username". With the user's directory being created on first upload and being deleted thereafter if it's empty.
 * Downloaded user files are saved  into protected/curl_downloads/"user's username". With the user's directory being created on first file downloaded and being deleted thereafter if it's empty.
 * CINCH API documentation can be viewed at: http://cinch.nclive.org/c_docs/packages/db_Default.html.
+
+Adding New Users:
+
+Currently users can't self-register (This fit our own particular needs.)
+
+* Login as user with admin privileges.  The default "admin" user has admin privileges by default.
+* Then go to Admin->User Administration->Create User and add the user. (The user will be sent an email with their username and password.  Users may then login and change their password.)
+* Next go to Admin->User Rights.  Click the user's username and then select the privileges you want them to have.
+* You've now successfully added a user.
+
+If you have problems with setting up users feel free to contact us.  You might want to take a look at the documentation for the Yii Rights extension used in CINCH: http://yii-rights.googlecode.com/files/yii-rights-doc-1.2.0.pdf
 
 If you want to run the unit tests you'll need to have Pear, PHPUnit and vfsStream installed.
 
