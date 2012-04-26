@@ -130,6 +130,7 @@ class UploadController extends Controller {
 			if($model->validate()){
 				if(!is_dir($user_upload_dir)) {
 					mkdir($user_upload_dir);
+					chmod($user_upload_dir, 0777);
 				}
 				
 				$mod_name = $this->encryptName($file->getName());
