@@ -6,7 +6,7 @@ $this->breadcrumbs=array(
 	<h2>Select a file to upload to Cinch</h2>
     <p>Files must be .txt or .cvs files.  Please make sure each URL listed is on its own line in your file, and limit your list to a maximum of 10,000 urls.</p>
 	<?php if($uploaded):?>
-        <p>Your file was successfully uploaded. We'll send you an email when your files are ready for download (Typically 24 hours).</p>
+        <p>Your file was successfully uploaded. We'll send you an email with download instructions after we've retrieved and processed the files in your list (Typically 24 hours).</p>
         <br />
     <?php endif ?>
     
