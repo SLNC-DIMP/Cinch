@@ -289,7 +289,7 @@ class ZipCreationCommand extends CConsoleCommand {
 			$this->addZipDir($zip, $zip_path);
 		}
 
-		return $zip; // update `file_info` SET zipped= 0, events_frozen=0
+		return $zip;
 	}
 	
 	/**

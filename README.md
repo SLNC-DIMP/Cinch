@@ -27,7 +27,7 @@ License:  CINCH is released under the Unlicense (http://unlicense.org/)
 Requirements
 
 * Currently Cinch will only run on *nix systems
-* PHP 5.3+ (PHP 5.4+ is recommended)
+* PHP 5.3+ compiled with --enable-cli flag.  This is probably already setup in your package manager (PHP 5.4+ is recommended).
 * MySQL
 * ClamAV
 
