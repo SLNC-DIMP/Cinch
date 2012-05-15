@@ -10,7 +10,7 @@ $this->breadcrumbs=array(
 <h3>How can I use CINCH?</h3>
 <p>We're currently in alpha testing with a small group of users.  When CINCH is released live if your institution is a library or other cultural entity in the state of North Carolina you can take advantage of our hosted service.
 Please send an email to the CINCH administrative team (<a href="mailto:cinch_admin@cinch.nclive.org">CINCH Admin</a>) and we'll set you up with an account.  If your are not a North Carolina based cultural institution or would prefer to host a CINCH
-instance yourself please see our <a href="https://github.com/lfarrell/Cinch">GitHub page</a> for instructions on installing CINCH.</p>
+instance yourself please see our <a href="http://slnc-dimp.github.com/Cinch/">GitHub page</a> for instructions on installing CINCH.</p>
 
 <h3>How do I create an upload list?</h3>
 <p>Simply create a file with a .txt or .csv extension placing the full url for each file to download on its own line like so:</p>
