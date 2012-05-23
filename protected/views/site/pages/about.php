@@ -21,4 +21,6 @@ A project to develop a bulk download service to a central repository that will m
     <li>Text files (e.g. files with .txt or .csv extensions)</li>
 </ul>
 
+<p>Learn more at <a href="http://digitalpreservation.ncdcr.gov/cinch/">http://digitalpreservation.ncdcr.gov/cinch/</a>.</p>
+
 <p>Funding for the CINCH: Capture, Ingest, &amp; Checksum tool is made possible through an IMLS Sparks! Ignition grant.</p>

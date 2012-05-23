@@ -13,6 +13,8 @@ The CINCH project will develop a tool that allows users to bulk download files t
 </ol>
 
 <p>The tool will maintain original file timestamps; rename files with a unique, intelligent identifier; run virus scans; extract file-level metadata; create file checksums; validate checksums for file integrity; and track all actions in an audit trail document. With repeated uses, the CINCH tool will track file duplicates.<p>
+
+<p><a href="<?php echo Yii::app()->request->baseUrl; ?>/CINCHdocumentation.pdf" target="_blank">Step-by-step instructions and documentation</a> (last updated May 16, 2012)</p>
  
 <p>Funding for the CINCH: Capture, Ingest, &amp; Checksum tool is made possible through an IMLS Sparks! Ignition grant.</p>
 </div>

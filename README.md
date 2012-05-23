@@ -86,23 +86,6 @@ Currently users can't self-register (This fit our own particular needs.)
 
 If you have problems with setting up users feel free to contact us.  You might want to take a look at the documentation for the Yii Rights extension used in CINCH: http://yii-rights.googlecode.com/files/yii-rights-doc-1.2.0.pdf
 
-If you want to run the unit tests you'll need to have Pear, PHPUnit and vfsStream installed.
-
-Adding PHPUnit:
-<ol>
-	<li>pear config-set auto_discover 1</li>
-	<li>pear install pear.phpunit.de/PHPUnit</li>
-	<li>pear install phpunit/DbUnit</li>
-</ol>
-
-Adding vfsStream:
-<ol>
-	<li>pear channel-discover pear.php-tools.net</li>
-	<li>pear install pat/vfsStream-beta</li>
-</ol>
-
-Then navigate to Cinch/protected/test and run the following command:  phpunit unit 
-
 -------------------------
 
 Parts of Cinch include:
