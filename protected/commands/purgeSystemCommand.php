@@ -78,7 +78,7 @@ class purgeSystemCommand extends CConsoleCommand {
 	* @access private
 	* @return string
 	*/
-	private function getMetataTable($file_type_id) {
+	private function getMetaTable($file_type_id) {
 		switch($file_type_id) {
 			case 1:
 				return 'PDF_Metadata';
@@ -101,6 +101,8 @@ class purgeSystemCommand extends CConsoleCommand {
 			case 11:
 			case 12:
 				return 'PPT_Metadata';
+			default:
+				return false;
 		}
 		
 	}
@@ -214,6 +216,7 @@ class purgeSystemCommand extends CConsoleCommand {
 	*/
 	private function updateGenerated($table, $file_id) {
 		$sql = "DELETE FROM $table WHERE id = ?";
+		
 		Yii::app()->db->createCommand($sql)
 			->execute(array($file_id));
 	}
@@ -354,8 +357,11 @@ class purgeSystemCommand extends CConsoleCommand {
 		if(is_array($downloaded_files) && !empty($downloaded_files)) {
 			foreach($downloaded_files as $downloaded_file) {
 				$this->removeFile($downloaded_file['temp_file_path'], $downloaded_file['id']);
-				$table = $this->getMetataTable($downloaded_file['file_type_id']);
-				$this->updateGenerated($table, $downloaded_file['id']);
+				$table = $this->getMetaTable($downloaded_file['file_type_id']);
+			
+				if($table) {
+					$this->updateGenerated($table, $downloaded_file['id']);
+				}
 			}
 		} 
 		
