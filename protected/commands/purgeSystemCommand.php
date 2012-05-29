@@ -73,41 +73,6 @@ class purgeSystemCommand extends CConsoleCommand {
 	}
 	
 	/**
-	* Gets correct table to write metadata to.
-	* @param $file_type_id
-	* @access private
-	* @return string
-	*/
-	private function getMetaTable($file_type_id) {
-		switch($file_type_id) {
-			case 1:
-				return 'PDF_Metadata';
-			case 2:
-			case 3:
-				return 'Word_Metadata';
-		//	case 4:
-		//		return 'Tiff_Metadata';
-			case 5:
-				return 'Jpg_Metadata';
-			case 6:
-				return 'Gif_Metadata';
-			case 7:
-				return 'Text_Metadata';
-			case 8:
-			case 9:
-				return 'Excel_Metadata';
-			case 10:
-				return 'PNG_Metadata';
-			case 11:
-			case 12:
-				return 'PPT_Metadata';
-			default:
-				return false;
-		}
-		
-	}
-	
-	/**
 	* Get generated csv and zip files to delete
 	* creationdate is used with csv and zip files
 	* Get user upload lists
@@ -216,7 +181,6 @@ class purgeSystemCommand extends CConsoleCommand {
 	*/
 	private function updateGenerated($table, $file_id) {
 		$sql = "DELETE FROM $table WHERE id = ?";
-		
 		Yii::app()->db->createCommand($sql)
 			->execute(array($file_id));
 	}
@@ -315,6 +279,31 @@ class purgeSystemCommand extends CConsoleCommand {
 	}
 	
 	/**
+	* Clears generated file from zip_gz_downloads, csv_meta_paths, and upload tables from the filesystem.
+	* Updates appropriate tables accordingly.
+	*/
+	public function clearGenerated() {
+		$tables =  array('zip_gz_downloads', 'csv_meta_paths', 'upload');
+		
+		foreach($tables as $table) {
+			$files = $this->generatedFiles($table);
+			$this->fileProcess($files, $table);
+		}
+	}
+	
+	/**
+	* Clears processed downloads from files_for_download and upload tables.
+	* Bit of a hack for upload table.  Left in as a bug wasn't deleting upload db enteries properly.
+	* This way the database will be cleaned up appropriately.
+	*/
+	public function clearProcessed() {
+		$tables = array('files_for_download'); // upload
+		foreach($tables as $table) {
+			$this->clearLists($table);
+		}
+	}
+	
+	/**
 	* Mails user a reminder that they have files what will be deleted in 10 days.
 	* @access public
 	*/
@@ -342,26 +331,13 @@ class purgeSystemCommand extends CConsoleCommand {
 	* Implments class methods to delete expired files and directories from the system.
 	*/
 	public function actionDelete() {
-		$zip_files = $this->generatedFiles('zip_gz_downloads');
-		$this->fileProcess($zip_files, 'zip_gz_downloads');
-		
-		$csv_files = $this->generatedFiles('csv_meta_paths');
-		$this->fileProcess($csv_files, 'csv_meta_paths');
-		
-		$this->clearLists('files_for_download'); 
-		
-		$upload_lists = $this->generatedFiles('upload'); 
-		$this->fileProcess($upload_lists, 'upload');
+		$this->clearGenerated();
+		$this->clearProcessed(); 
 		
 		$downloaded_files = $this->filesToDelete();
 		if(is_array($downloaded_files) && !empty($downloaded_files)) {
 			foreach($downloaded_files as $downloaded_file) {
 				$this->removeFile($downloaded_file['temp_file_path'], $downloaded_file['id']);
-				$table = $this->getMetaTable($downloaded_file['file_type_id']);
-			
-				if($table) {
-					$this->updateGenerated($table, $downloaded_file['id']);
-				}
 			}
 		} 
 		
