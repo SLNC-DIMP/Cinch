@@ -115,6 +115,13 @@ class UploadController extends Controller {
         }
     }
 	
+	/**
+	* Make sure file permissions allow for Apache to delete it.
+	*/
+	public function changePerms($path) {
+		chmod($path, 0777);
+	}
+	
 	  /**
      * Loads index page.
      * Uploads a user's download list to the system.
@@ -130,12 +137,13 @@ class UploadController extends Controller {
 			if($model->validate()){
 				if(!is_dir($user_upload_dir)) {
 					mkdir($user_upload_dir);
-					chmod($user_upload_dir, 0777);
+					$this->changePerms($user_upload_dir);
 				}
 				
 				$mod_name = $this->encryptName($file->getName());
 				$user_id = Yii::app()->user->id;
 				$upload_path = $user_upload_dir . '/' . $mod_name;
+				$this->changePerms($upload_path);
 				$model->attributes = array('user_id' => $user_id, 'path' => $upload_path);
 				$uploaded = $file->saveAs($upload_path);
 				
