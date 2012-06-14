@@ -378,6 +378,7 @@ class DownloadCommand extends CConsoleCommand {
 	* is added to end of the file name so it won't overwrite previous file.
 	* Event code 1 is file downloaded
 	* Event code 13 Download failed
+	* Event code 15 Remote checksum creation
 	* @param $url
 	* @param $current_user_id
 	* @param $file_list_id
@@ -388,6 +389,7 @@ class DownloadCommand extends CConsoleCommand {
 	public function CurlProcessing($url, $current_user_id, $file_list_id) {
 		$remote_checksum = $this->remote_checksum->createRemoteChecksum($url);
 		$db_file_id = $this->setFileInfo($url, $remote_checksum, $current_user_id, $file_list_id);
+		Utils::writeEvent($db_file_id, 15);
 		
 		if($remote_checksum) {
 			$dup_file = $this->sameName($url, $current_user_id);

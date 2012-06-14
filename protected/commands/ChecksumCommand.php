@@ -109,6 +109,24 @@ class ChecksumCommand extends CConsoleCommand {
 	}
 	
 	/**
+	* Determines if a file's local and remote checksums are the same.
+	* Error code 5 - Checksum mismatch found
+	* 11 is event code for checksum file integrity check
+	* @param $file_id
+	* @access protected
+	*/
+	protected function compareLocalRemote($file_id) {
+		$remote = $this->checksum->getOneFileChecksum($file_id, true);
+		$local = $this->checksum->getOneFileChecksum($file_id);
+		
+		if($remote != $local) {
+			Utils::writeError($file_id, 5);
+			Utils::setProblemFile($file_id);
+		}
+		Utils::writeEvent($file_id, 11);
+	}
+	
+	/**
 	* Calculates a checksum for each file and compares it to the file's initial checksum
 	* Write error to DB if mismatch detected.
 	* 2 is error code for "Could not create checksum"
@@ -146,7 +164,7 @@ class ChecksumCommand extends CConsoleCommand {
 	* 2 is error code for "Could not create checksum"
 	* Event type 5 is checksum created.
 	*/
-	public function actionCreate() {  // bug with errors not being reported to db.
+	public function actionCreate() { 
 		$file_lists = $this->checksum->getFileList();
 		
 		if(count($file_lists) > 0) {
@@ -170,6 +188,7 @@ class ChecksumCommand extends CConsoleCommand {
 				}	
 				
 				$this->checksum->writeSuccess($checksum, $file_list['id']);
+				$this->compareLocalRemote($file_list['id']);
 			}
 		}
 	}

@@ -143,11 +143,13 @@ class UploadController extends Controller {
 				$mod_name = $this->encryptName($file->getName());
 				$user_id = Yii::app()->user->id;
 				$upload_path = $user_upload_dir . '/' . $mod_name;
-				$this->changePerms($upload_path);
 				$model->attributes = array('user_id' => $user_id, 'path' => $upload_path);
 				$uploaded = $file->saveAs($upload_path);
 				
-				if($uploaded) { $model->save(); }
+				if($uploaded) { 
+					$model->save(); 
+					$this->changePerms($upload_path);
+				}
 			}
 		}
 		

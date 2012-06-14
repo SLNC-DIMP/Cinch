@@ -84,12 +84,15 @@ class Checksum {
 	/**
 	* Retrieves a checksum for an individual file. 
 	* @param $file_id
+	* @param $remote
 	* @access public 
 	* @return string
 	*/
-	public function getOneFileChecksum($file_id) {
+	public function getOneFileChecksum($file_id, $remote = false) {
+		$which_check = ($remote == false) ? 'checksum' : 'remote_checksum';
+		
 		$checksum = Yii::app()->db->createCommand()
-		->select('checksum')
+		->select($which_check)
 		->from($this->table)
 		->where("id = :file_id", array(":file_id" => $file_id))
 		->queryColumn();

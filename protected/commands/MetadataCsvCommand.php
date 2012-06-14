@@ -175,7 +175,8 @@ class MetadataCsvCommand extends CConsoleCommand {
 				$columns[] = $col_name;
 			}
 		}
-		$columns[] = 'Checksum';
+		$columns[] = 'Remote Checksum';
+		$columns[] = 'Local Checksum';
 		$columns[] = 'Fulltext';
 		
 		return $columns;
@@ -205,6 +206,7 @@ class MetadataCsvCommand extends CConsoleCommand {
 		}
 		
 		foreach($metadata as $row) {
+			$row['remote_checksum'] = $this->checksum->getOneFileChecksum($row['file_id'], true);
 			$row['checksum'] = $this->checksum->getOneFileChecksum($row['file_id']);
 			$row['fulltext'] = $this->getFulltext($row['file_id']);
 			

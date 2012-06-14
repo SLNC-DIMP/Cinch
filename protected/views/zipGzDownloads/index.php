@@ -11,7 +11,7 @@ if(Yii::app()->user->checkAccess('deleteUser')) {
 ?>
 
 <h1>Your Available Downloads</h1>
-<h5>Note: the contents of each file should be unique</h5>
+<h5>Note: the contents of each zip file should be unique</h5>
 <?php $this->widget('zii.widgets.CListView', array(
 	'dataProvider'=>$dataProvider,
 	'itemView'=>'_view',

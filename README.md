@@ -66,11 +66,12 @@ You should run the commands in the following order:
 <li>errorcsv</li>
 <li>zipcreation</li>
 <li>purgesystem check (optional, Notifies users after 20 days that they have files marked for deletion in 10 days.)</li>
-<li>purgesystem delete (optional, deletes user files older than 30 days old.  Note this deletes upload lists, and all csv file information from the database, but downloaded files, metdata, errors, and event, information is retained.)</li>
+<li>purgesystem delete (optional, deletes user files older than 30 days old.  Note this deletes upload lists, and all csv file information from the database, but downloaded files, metadata, errors, and event, information is retained in the database.)</li>
 </ol>
 
 Useful Notes:  
 
+* You should only run the zipcreation command once a day otherwise it will cause conflicts in file processing.
 * Uploaded url lists are saved into protected/uploads/"user's username". With the user's directory being created on first upload and being deleted thereafter if it's empty.
 * Downloaded user files are saved  into protected/curl_downloads/"user's username". With the user's directory being created on first file downloaded and being deleted thereafter if it's empty.
 * CINCH API documentation can be viewed at: http://cinch.nclive.org/c_docs/packages/db_Default.html.
