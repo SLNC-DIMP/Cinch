@@ -7,7 +7,9 @@ MAILTO="your_email@example.com"
 30 17 * * * php path/to/Cinch/cron.php metadatacsv
 00 18 * * * php path/to/Cinch/cron.php errorcsv
 30 18 * * * php path/to/Cinch/cron.php zipcreation
+55 20 * * * php path/to/Cinch/cron.php purgesystem check
 00 21 * * * php path/to/Cinch/cron.php purgesystem delete
 
-You'll also want the freshclam command below to run before you virus check filels.  However it will need to run as root or sudo with a no password exception.
+
+You'll also want the freshclam command below to run before you virus check files.  However it will need to run as root or sudo with a no password exception.
 00 00 * * * freshclam

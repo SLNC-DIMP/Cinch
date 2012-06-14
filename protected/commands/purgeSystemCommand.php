@@ -309,7 +309,7 @@ class purgeSystemCommand extends CConsoleCommand {
 	*/
 	public function actionCheck() {
 		$users = $this->getUserReminders();
-		if(empty($users)) { exit; }
+		if(empty($users)) { echo "No users need reminding"; exit; }
 		
 		$subject = 'You have files on CINCH! marked for deletion';
 			
