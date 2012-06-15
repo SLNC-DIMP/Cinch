@@ -141,18 +141,19 @@ class ChecksumCommand extends CConsoleCommand {
 			$file_list = $this->checksum->getFileChecksums($file_count);
 			
 			foreach($file_list as $file) {
-				$current_checksum = $this->checksum->createChecksum($file['temp_file_path']);
+				$current_checksum = $this->createChecksum($file['temp_file_path']);
+				Utils::writeEvent($file['id'], 11);
 				
 				if($current_checksum == false) {
 					Utils::writeError($file['id'], 2);
-					echo 'comparison checksum could not created for: ' . $file['temp_file_path'] . "\r\n";
-				}elseif($current_checksum != $file['checksum']) {
+					echo 'comparison checksum could not created for: ' . $file['id'] . "\r\n";
+				} elseif($current_checksum != $file['checksum']) {
 					Utils::writeError($file['id'], 5);
-					echo 'checksum not ok for: ' . $file['temp_file_path'] . "\r\n";
+					Utils::setProblemFile($file['id']);
+					echo 'checksum not ok for: ' . $file['id'] . "\r\n";
 				} else {
-					echo 'checksum ok for: ' . $file['temp_file_path'] . "\r\n";
+					echo 'checksum ok for: ' . $file['id'] . "\r\n";
 				}
-				Utils::writeEvent($file['id'], 11);
 			}
 		}
 	}
@@ -180,11 +181,12 @@ class ChecksumCommand extends CConsoleCommand {
 						$this->errorWrite($is_dup_checksum, $is_dup_filename, $file_list['id']);
 					}
 					
-					echo "checksum for:" . $file_list['temp_file_path'] . " is " . $checksum . "\r\n";
+					echo "checksum for:" . $file_list['id'] . " is " . $checksum . "\r\n";
 				} else {
 					$checksum = NULL;
 					Utils::writeError($file_list['id'], 2);
-					echo "Checksum not created. for: " . $file_list['temp_file_path'] . "\r\n";
+					Utils::setProblemFile($file_list['id']);
+					echo "Checksum not created. for: " . $file_list['id'] . "\r\n";
 				}	
 				
 				$this->checksum->writeSuccess($checksum, $file_list['id']);

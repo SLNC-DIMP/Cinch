@@ -75,6 +75,7 @@ class Checksum {
 		$get_file_checksums = Yii::app()->db->createCommand()
 			->select('id, temp_file_path, checksum, user_id')
 			->from($this->table)
+			->where('temp_file_path IS NOT NULL or temp_file_path !=""')
 			->limit($limit, $offset)
 			->queryAll();
 			

@@ -69,6 +69,8 @@ You should run the commands in the following order:
 <li>purgesystem delete (optional, deletes user files older than 30 days old.  Note this deletes upload lists, and all csv file information from the database, but downloaded files, metadata, errors, and event, information is retained in the database.)</li>
 </ol>
 
+You can run checksum check command anytime in the process you like after the initial checksum create command is run.  This command will randomly check 5000 files to see if their checksums are still valid.  If your system currently has less than 5000 files all files will be checked.  Any problems will be noted in the errors.csv file.  Also an event action will be generated in the event_list.csv file for each file checked.
+
 Useful Notes:  
 
 * You should only run the zipcreation command once a day otherwise it will cause conflicts in file processing.
