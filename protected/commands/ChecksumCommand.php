@@ -146,7 +146,7 @@ class ChecksumCommand extends CConsoleCommand {
 				
 				if($current_checksum == false) {
 					Utils::writeError($file['id'], 2);
-					echo 'comparison checksum could not created for: ' . $file['id'] . "\r\n";
+					echo 'comparison checksum could not be created for: ' . $file['id'] . "\r\n";
 				} elseif($current_checksum != $file['checksum']) {
 					Utils::writeError($file['id'], 5);
 					Utils::setProblemFile($file['id']);
