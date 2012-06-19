@@ -63,13 +63,12 @@ You should run the commands in the following order:
 <li>checksum create</li>
 <li>metadata</li>
 <li>metadatacsv</li>
+<li>checksum check (optional, recalculates checksum to see if anything has changed between download and current time.)</li>
 <li>errorcsv</li>
 <li>zipcreation</li>
 <li>purgesystem check (optional, Notifies users after 20 days that they have files marked for deletion in 10 days.)</li>
 <li>purgesystem delete (optional, deletes user files older than 30 days old.  Note this deletes upload lists, and all csv file information from the database, but downloaded files, metadata, errors, and event, information is retained in the database.)</li>
 </ol>
-
-You can run checksum check command anytime in the process you like after the initial checksum create command is run.  This command will randomly check 5000 files to see if their checksums are still valid.  If your system currently has less than 5000 files all files will be checked.  Any problems will be noted in the errors.csv file.  Also an event action will be generated in the event_list.csv file for each file checked.
 
 Useful Notes:  
 

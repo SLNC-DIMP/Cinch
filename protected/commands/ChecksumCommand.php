@@ -135,25 +135,22 @@ class ChecksumCommand extends CConsoleCommand {
 	* @access public 
 	*/
 	public function actionCheck() {
-		$file_count = $this->checksum->getCheckedFileCount();
-	
-		if($file_count > 0) {
-			$file_list = $this->checksum->getFileChecksums($file_count);
+		$file_list = $this->checksum->getFileChecksums();
+		if(empty($file_list)) { echo "Nothing to check\n"; exit; }
 			
-			foreach($file_list as $file) {
-				$current_checksum = $this->createChecksum($file['temp_file_path']);
-				Utils::writeEvent($file['id'], 11);
+		foreach($file_list as $file) {
+			$current_checksum = $this->createChecksum($file['temp_file_path']);
+			Utils::writeEvent($file['id'], 11);
 				
-				if($current_checksum == false) {
-					Utils::writeError($file['id'], 2);
-					echo 'comparison checksum could not be created for: ' . $file['id'] . "\r\n";
-				} elseif($current_checksum != $file['checksum']) {
-					Utils::writeError($file['id'], 5);
-					Utils::setProblemFile($file['id']);
-					echo 'checksum not ok for: ' . $file['id'] . "\r\n";
-				} else {
-					echo 'checksum ok for: ' . $file['id'] . "\r\n";
-				}
+			if($current_checksum == false) {
+				Utils::writeError($file['id'], 2);
+				echo 'comparison checksum could not be created for: ' . $file['id'] . "\r\n";
+			} elseif($current_checksum != $file['checksum']) {
+				Utils::writeError($file['id'], 5);
+				Utils::setProblemFile($file['id']);
+				echo 'checksum not ok for: ' . $file['id'] . "\r\n";
+			} else {
+				echo 'checksum ok for: ' . $file['id'] . "\r\n";
 			}
 		}
 	}

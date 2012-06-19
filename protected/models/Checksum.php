@@ -41,43 +41,16 @@ class Checksum {
 	}
 	
 	/**
-	* Get count of files in file info table
-	* @access public
-	* @return integer
-	*/
-	public function getCheckedFileCount() {
-		$get_file_count = Yii::app()->db->createCommand()
-			->select("COUNT(*)")
-			->from($this->table)
-			->where("checksum IS NOT NULL")
-			->queryColumn();
-		
-		return $get_file_count[0];
-		
-	}
-	
-	/**
-	* Retrieves a list of checksums for files.  If more than 5000 files to check 
-	* it starts from a random point of less than or equal to 5000 files from the total # of files.
-	* @param $count
+	* Retrieves a list of checksums for files.
 	* @access public 
 	* @return object Yii DAO
 	*/
-	public function getFileChecksums($count) {
-		if($count <= 5000) {
-			$offset = 0;
-			$limit = $count;
-		} else {
-			$offset = mt_rand(0, ($count - 5000));
-			$limit = 5000;
-		}
-		
+	public function getFileChecksums() {
 		$get_file_checksums = Yii::app()->db->createCommand()
 			->select('id, temp_file_path, checksum, user_id, expired_deleted')
 			->from($this->table)
-			->where(array('and', 'expired_deleted=0', 
+			->where(array('and', 'expired_deleted=0', 'zipped != 1',
 			        array('or', 'temp_file_path IS NOT NULL', 'temp_file_path !=""')))
-			->limit($limit, $offset)
 			->queryAll();
 			
 		return $get_file_checksums;
