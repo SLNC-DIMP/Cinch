@@ -9,7 +9,7 @@ MAILTO="your_email@example.com"
 30 18 * * * php path/to/Cinch/cron.php zipcreation
 55 20 * * * php path/to/Cinch/cron.php purgesystem check
 00 21 * * * php path/to/Cinch/cron.php purgesystem delete
-00 23 * * * php path/to/Cinch/cron.php checksum check
+30 21 * * * php path/to/Cinch/cron.php checksum check
 
 
 You'll also want the freshclam command below to run before you virus check files.  However it will need to run as root or sudo with a no password exception.
