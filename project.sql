@@ -566,7 +566,7 @@ CREATE TABLE IF NOT EXISTS `user` (
 --
 -- Dumping data for table `user`
 --
-INSERT INTO `user` VALUES(1, 'admin', 'your_email@email.org', 'f6fdffe48c908deb0f4c3bd36c032e72');
+INSERT INTO `user` VALUES(1, 'admin', 'your_email@email.org', '$2a$08$M4LR2i3zWzmHKxtaH9kB5.SNDNaJjZr4F2.L2cEAhxsMJ4Pcxlo2G');
 
 -- --------------------------------------------------------
 
