@@ -17,9 +17,9 @@ Currently supported file types:
  * GIF
  * Text (e.g. files with .txt, .csv extensions, etc.)
 
-<a href="http://cinch.nclive.org/Cinch/CINCHdocumentation.pdf">Full end user instructions</a>
+<a href="http://digitalpreservation.ncdcr.gov/cinch/" target="_blank">Learn more about CINCH</a>.
 
-Learn more at: http://digitalpreservation.ncdcr.gov/cinch/.
+<a href="http://cinch.nclive.org/Cinch/CINCHdocumentation.pdf">Full end user instructions</a>
 
 Funding for the CINCH: Capture, Ingest, & Checksum tool is made possible through 
 an IMLS Sparks! Ignition grant.

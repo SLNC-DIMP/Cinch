@@ -105,11 +105,19 @@ class User extends CActiveRecord
 	
 	/**
 	* wrapper for the PHP md5() function
+	* Doesn't really use md5 anymore.  Changed to use Blowfish encryption.
+	* Returned string should always be at least 13 characters.
+	* See http://us.php.net/crypt for details.
 	* @access public
 	* @return string
 	*/
 	public function md5_encrypt($username, $password) {
-		return md5($username . $password);
+		$encrypted = crypt($password, '$2a$08$' . Yii::app()->params['passwordSalt']);
+		if($encrypted >= strlen(13)) {
+			return $encrypted;
+		} else {
+			throw new Exception('Unable to encrypt user password.', 500);
+		}	
 	}
 	
 	/**
