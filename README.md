@@ -33,9 +33,9 @@ Requirements
 * MySQL
 * ClamAV
 
-After download, you may need to run the setup.sh shell file before initially running application to set file level permissions.
+NOTE: If you've previously installed Cinch (before July 17th 2012 for those not interested in the ways of git) the current master branch and tagged versions 1.2 on break backwards compatibility with any previously downloaded version.  This was needed to greatly increase the security of encrypted passwords.  If you REALLY need a previous version please grab the version tagged 1.1, though you're strongly encouraged to install a newer version.  Please feel free to contact us if you have a problem.
 
-NOTE: If you've previously installed Cinch (before July 17th 2012 for those not interested in the ways of git) the current master branch and tagged versions 1.2 on break backwards compatibility with any previously downloaded version.  This was needed to greatly increase the security of encrypted passwords.  If you REALLY need a previous version please grab the version tagged 1.1, though your strongly encouraged to install a newer version.  Please feel free to contact us if you have a problem.
+After download, you may need to run the setup.sh shell file before initially running application to set file level permissions.
 
 Setting up Cinch on your system:
 
