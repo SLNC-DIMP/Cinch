@@ -1,4 +1,5 @@
 <?php
+Yii::import('application.lib.PasswordHash');
 /**
  * This is the model class for table "user".
  *
@@ -94,31 +95,38 @@ class User extends CActiveRecord
 	}
 	
 	/**
-	* encrypt password for insertion into db
+	* mail user their user info
 	* @access public
 	*/
 	public function afterValidate() {
 		parent::afterValidate();
 		$this->mailUser();
-		$this->password = $this->md5_encrypt($this->username, $this->password);
 	}
 	
 	/**
-	* wrapper for the PHP md5() function
-	* Doesn't really use md5 anymore.  Changed to use Blowfish encryption.
-	* Returned string should always be at least 13 characters.
-	* See http://us.php.net/crypt for details.
+	* Encrypt user's password using Blowfish algorithm and bcrypt
+	* @param $password
 	* @access public
-	* @return string
+	* @return boolean
 	*/
-	public function md5_encrypt($username, $password) {
-		$encrypted = crypt($password, '$2a$08$' . Yii::app()->params['passwordSalt']);
-		if($encrypted >= strlen(13)) {
-			return $encrypted;
-		} else {
-			throw new Exception('Unable to encrypt user password.', 500);
-		}	
-	}
+	public function validatePassword($password, $db_pass) {
+        $check_pass = new PasswordHash(8, false);
+        
+		return $check_pass->checkPassword($password, $db_pass);
+    }
+ 	
+	 /**
+	 * Replace the raw password with the hashed one
+	 * @access public
+	 * @return boolean
+	 */
+    public function beforeSave() {
+        if (isset($this->password)) {
+            $new_pass = new PasswordHash(8, false);
+            $this->password = $new_pass->HashPassword($this->password);
+        }
+        return parent::beforeSave();
+    }
 	
 	/**
 	 * Email user their login info.

@@ -105,9 +105,6 @@ return array(
 	// using Yii::app()->params['paramName']
 	'params'=>array(
 		// this is used in contact page
-		'adminEmail'=>'your_email@email.org',
-		// this MUST be 22 characters using the following characters: ./0-9A-Za-z
-		// for example Ax27.t4kLz938g1Nvm5.qu
-		'passwordSalt'=>''
+		'adminEmail'=>'cinch_admin@nclive.org',
 	),
 );
