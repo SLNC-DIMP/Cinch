@@ -35,7 +35,9 @@ Requirements
 
 NOTE: If you've previously installed Cinch (before July 17th 2012 for those not interested in the ways of git) the current master branch and tagged versions 1.2 on break backwards compatibility with any previously downloaded version.  This was needed to greatly increase the security of encrypted passwords.  If you REALLY need a previous version please grab the version tagged 1.1, though you're strongly encouraged to install a newer version.  If you installed version 1.2 or earlier you'll need to login to your CINCH db and run the following:
 
+<pre><code>
 ALTER TABLE `file_info` ADD `events_frozen` INT( 1 ) NOT NULL DEFAULT '0' COMMENT 'File events have ended due to error or file zipped and processing complete.' AFTER `problem_file` 
+</code></pre>
 
 Please feel free to contact us if you have a problem.
 
