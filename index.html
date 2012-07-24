@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=640" />
+
+    <link rel="stylesheet" href="stylesheets/core.css" media="screen"/>
+    <link rel="stylesheet" href="stylesheets/mobile.css" media="handheld, only screen and (max-device-width:640px)"/>
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css"/>
+
+    <script type="text/javascript" src="javascripts/modernizr.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script type="text/javascript" src="javascripts/headsmart.min.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function () {
+        $('#main_content').headsmart()
+      })
+    </script>
+    <title>Cinch by SLNC-DIMP</title>
+  </head>
+
+  <body>
+    <a id="forkme_banner" href="https://github.com/SLNC-DIMP/Cinch">View on GitHub</a>
+    <div class="shell">
+
+      <header>
+        <span class="ribbon-outer">
+          <span class="ribbon-inner">
+            <h1>Cinch</h1>
+            <h2>A project to develop a bulk download service to a central repository that will maintain original file timestamps, virus check, extract file level metadata, create file checksums and periodically validate checksums for continued file integrity. Users merely need to upload a list of URLs to download and when the process completes they can download the requested files and file metadata to their local environment.  Funding for the CINCH: Capture, Ingest, &amp; Checksum tool is made possible through an IMLS Sparks! Ignition grant.</h2>
+          </span>
+          <span class="left-tail"></span>
+          <span class="right-tail"></span>
+        </span>
+      </header>
+
+      <section id="downloads">
+        <span class="inner">
+          <a href="https://github.com/SLNC-DIMP/Cinch/zipball/master" class="zip"><em>download</em> .ZIP</a><a href="https://github.com/SLNC-DIMP/Cinch/tarball/master" class="tgz"><em>download</em> .TGZ</a>
+        </span>
+      </section>
+
+
+      <span class="banner-fix"></span>
+
+
+      <section id="main_content">
+        <p>A project to develop a bulk download service to a central repository 
+that will maintain original file timestamps, extract file level metadata, 
+create file checksums and periodically validate checksums for continued file integrity. </p>
+
+<p>Users merely need to upload a list of URLs to download and 
+when the process completes they can download the requested files and file metadata 
+to their local environment.</p>
+
+<p>Currently supported file types:</p>
+
+<ul>
+<li>PDF</li>
+<li>Microsoft Word</li>
+<li>Microsoft Excel</li>
+<li>Microsoft PowerPoint</li>
+<li>Jpeg</li>
+<li>PNG</li>
+<li>GIF</li>
+<li>Text (e.g. files with .txt, .csv extensions, etc.)</li>
+</ul><p><a href="http://digitalpreservation.ncdcr.gov/cinch/" target="_blank">Learn more about CINCH</a>.</p>
+
+<p><a href="http://cinch.nclive.org/Cinch/CINCHdocumentation.pdf">Full end user instructions</a></p>
+
+<p>Funding for the CINCH: Capture, Ingest, &amp; Checksum tool is made possible through 
+an IMLS Sparks! Ignition grant.</p>
+
+<h2>License:  CINCH is released under the Unlicense (<a href="http://unlicense.org/">http://unlicense.org/</a>)</h2>
+
+<p>Requirements</p>
+
+<ul>
+<li>Currently Cinch will only run on *nix systems</li>
+<li>PHP 5.3+ compiled with --enable-cli flag and curl module.  This is probably already setup in your package manager (PHP 5.4+ is recommended).</li>
+<li>MySQL</li>
+<li>ClamAV</li>
+</ul><p>NOTE: If you've previously installed Cinch (before July 17th 2012 for those not interested in the ways of git) the current master branch and tagged versions 1.2 on break backwards compatibility with any previously downloaded version.  This was needed to greatly increase the security of encrypted passwords.  If you REALLY need a previous version please grab the version tagged 1.1, though you're strongly encouraged to install a newer version.  If you installed version 1.2 or earlier you'll need to login to your CINCH db and run the following:</p>
+
+<pre><code>
+ALTER TABLE `file_info` ADD `events_frozen` INT( 1 ) NOT NULL DEFAULT '0' COMMENT 'File events have ended due to error or file zipped and processing complete.' AFTER `problem_file` 
+</code></pre>
+
+<p>Please feel free to contact us if you have a problem.</p>
+
+<p>After download, you may need to run the setup.sh shell file before initially running application to set file level permissions.</p>
+
+<p>Setting up Cinch on your system:</p>
+
+<ol>
+<li>Place the Cinch files in a web accessible directory</li>
+<li>Create a new database MySQL database and import the project.sql file into it.</li>
+<li>Open protected/config/main.php</li>
+<li>Scroll down to the db settings (line 68 or so). Set the database name, the username and password for your new Cinch database.</li>
+<li>Scroll to the bottom of main.php and set 'adminEmail' email address to your email address.
+</li>
+<li>You'll now need to repeat steps four and five in protected/config/console.php.</li>
+<li>In protected/config/console.php if the setting in date_default_timezone_set() isn't correct you should change it to your timezone setting.  For a complete list of timezone settings see: http://us2.php.net/manual/en/timezones.php.</li>
+<li>Go to http://tika.apache.org/download.html and download the Apache Tika jar file.</li>
+<li>Place the Apache Tika jar file at the root of the Cinch/protected directory.</li>
+<li>Configure Cinch cron tasks.  See the sample cron.txt file the root of Cinch for suggestions on how you might want to configure it.
+</li>
+</ol><p>You should now be able to login to the web interface as: admin admin.
+You should then go the change password tab and update your password.</p>
+
+<p>If you don't want to run Cinch via cron you can run it from the command line.  If you navigate to Cinch/protected and run the following: path/to/php yiic.php you should be presented with a list of available commands.  The general way to run a command is: path/to/php yiic.php command.
+Several commands such as checksum and purgeystem have subcommands, which have to be run like so from the command line: path/to/php yiic.php command sub-command.</p>
+
+<p>You should run the commands in the following order:</p>
+
+<ol>
+<li>readfile</li>
+<li>download</li>
+<li>viruscheck</li>
+<li>checksum create</li>
+<li>metadata</li>
+<li>metadatacsv</li>
+<li>checksum check (optional, recalculates checksum to see if anything has changed between download and current time.)</li>
+<li>errorcsv</li>
+<li>zipcreation</li>
+<li>purgesystem check (optional, Notifies users after 20 days that they have files marked for deletion in 10 days.)</li>
+<li>purgesystem delete (optional, deletes user files older than 30 days old.  Note this deletes upload lists, and all csv file information from the database, but downloaded files, metadata, errors, and event, information is retained in the database.)</li>
+</ol><p>Useful Notes:  </p>
+
+<ul>
+<li>You should only run the zipcreation command once a day otherwise it will cause conflicts in file processing.</li>
+<li>Uploaded url lists are saved into protected/uploads/"user's username". With the user's directory being created on first upload and being deleted thereafter if it's empty.</li>
+<li>Downloaded user files are saved  into protected/curl_downloads/"user's username". With the user's directory being created on first file downloaded and being deleted thereafter if it's empty.</li>
+<li>CINCH API documentation can be viewed at: <a href="http://cinch.nclive.org/c_docs/packages/db_Default.html">http://cinch.nclive.org/c_docs/packages/db_Default.html</a>.</li>
+</ul><p>Adding New Users:</p>
+
+<p>Currently users can't self-register (This fit our own particular needs.)</p>
+
+<ul>
+<li>Login as user with admin privileges.  The default "admin" user has admin privileges by default.</li>
+<li>Then go to Admin-&gt;User Administration-&gt;Create User and add the user. (The user will be sent an email with their username and password.  Users may then login and change their password.)</li>
+<li>Next go to Admin-&gt;User Rights.  Click the user's username and then select the privileges you want them to have.</li>
+<li>You've now successfully added a user.</li>
+</ul><p>If you have problems with setting up users feel free to contact us.  You might want to take a look at the documentation for the Yii Rights extension used in CINCH: <a href="http://yii-rights.googlecode.com/files/yii-rights-doc-1.2.0.pdf">http://yii-rights.googlecode.com/files/yii-rights-doc-1.2.0.pdf</a></p>
+
+<hr><p>Parts of Cinch include:</p>
+
+<ul>
+<li>Yii Framework <a href="http://www.yiiframework.com">http://www.yiiframework.com</a>
+</li>
+<li>jQuery <a href="http://jquery.com">http://jquery.com</a>
+</li>
+<li>jQuery UI <a href="http://jqueryui.com">http://jqueryui.com</a>
+</li>
+<li>Apache Tika <a href="http://tika.apache.org">http://tika.apache.org</a>
+</li>
+<li>ClamAV <a href="http://www.clamav.net">http://www.clamav.net</a>
+</li>
+</ul>
+      </section>
+
+      <footer>
+        <span class="ribbon-outer">
+          <span class="ribbon-inner">
+            <p>this project by <a href="https://github.com/SLNC-DIMP">SLNC-DIMP</a> can be found on <a href="https://github.com/SLNC-DIMP/Cinch">GitHub</a></p>
+          </span>
+          <span class="left-tail"></span>
+          <span class="right-tail"></span>
+        </span>
+        <p>Generated with <a href="http://pages.github.com">GitHub Pages</a> using Merlot</p>
+        <span class="octocat"></span>
+      </footer>
+
+    </div>
+
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-1152148-29");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+  </body>
+</html>
