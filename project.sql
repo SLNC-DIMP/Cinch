@@ -140,10 +140,6 @@ CREATE TABLE IF NOT EXISTS `csv_meta_paths` (
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
---
--- Dumping data for table `csv_meta_paths`
---
-
 
 --
 -- Table structure for table `error_type`
