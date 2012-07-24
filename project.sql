@@ -241,22 +241,6 @@ CREATE TABLE IF NOT EXISTS `Excel_Metadata` (
 -- Dumping data for table `excel_metadata`
 --
 
-
---
--- Table structure for table `file_type`
---
-
-CREATE TABLE IF NOT EXISTS `file_type` (
-  `id` int(4) NOT NULL auto_increment,
-  `file_type` varchar(125) collate utf8_unicode_ci NOT NULL,
-  `file_type_name` varchar(50) collate utf8_unicode_ci NOT NULL,
-  PRIMARY KEY  (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=13 ;
-
---
--- Dumping data for table `file_type`
---
-
 --
 -- Table structure for table `file_type`
 --
@@ -295,8 +279,8 @@ CREATE TABLE IF NOT EXISTS `file_info` (
   `org_file_path` varchar(2084) collate utf8_unicode_ci default NULL,
   `temp_file_path` varchar(1000) collate utf8_unicode_ci default NULL COMMENT 'orginial file path.  2083 character URL appears to be IE limit',
   `file_type_id` int(1) NOT NULL default '0' COMMENT 'current file path on the server',
-  `checksum_run` int(1) NOT NULL DEFAULT '0',
-  `remote_checksum` varchar(40) character set utf8 collate utf8_unicode_ci default NULL COMMENT 'remote checksum of a file',
+  `checksum_run` int(1) NOT NULL default '0',
+  `remote_checksum` varchar(40) collate utf8_unicode_ci default NULL COMMENT 'remote checksum of a file',
   `checksum` varchar(40) collate utf8_unicode_ci default NULL COMMENT 'file check sum sha1 or md5. sha1 is the default',
   `virus_check` int(1) NOT NULL default '0' COMMENT 'has file had virus check',
   `fulltext_available` int(1) NOT NULL default '0' COMMENT 'Whether text can be extracted.',
@@ -305,10 +289,11 @@ CREATE TABLE IF NOT EXISTS `file_info` (
   `last_modified` varchar(15) collate utf8_unicode_ci default NULL COMMENT 'file last modified timestamp',
   `zipped` int(1) NOT NULL default '0' COMMENT 'Yes/No added to a Zip Archive',
   `problem_file` int(1) NOT NULL default '0',
-  `expired_deleted` int(1) NOT NULL DEFAULT '0' COMMENT 'set to 1 for expired files that have been deleted.',
-  `user_id` int(6) NOT NULL default '0' COMMENT "CONSTRAINT FOREIGN KEY (user_id) REFERENCES user(id)",
-  `upload_file_id` int(6) NOT NULL default '0' COMMENT "CONSTRAINT FOREIGN KEY (upload_file_id) REFERENCES user_uploads(id)",
-  `download_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `events_frozen` int(1) NOT NULL default '0' COMMENT 'File events have ended due to error or file zipped and processing complete.',
+  `expired_deleted` int(1) NOT NULL default '0' COMMENT 'set to 1 for expired files that have been deleted.',
+  `user_id` int(6) NOT NULL default '0' COMMENT 'CONSTRAINT FOREIGN KEY (user_id) REFERENCES user(id)',
+  `upload_file_id` int(6) NOT NULL default '0' COMMENT 'CONSTRAINT FOREIGN KEY (upload_file_id) REFERENCES user_uploads(id)',
+  `download_time` timestamp NOT NULL default CURRENT_TIMESTAMP,
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='downloaded file information' AUTO_INCREMENT=1 ;
 

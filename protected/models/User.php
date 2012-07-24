@@ -106,6 +106,7 @@ class User extends CActiveRecord
 	/**
 	* Encrypt user's password using Blowfish algorithm and bcrypt
 	* @param $password
+	* @param $db_pass
 	* @access public
 	* @return boolean
 	*/
