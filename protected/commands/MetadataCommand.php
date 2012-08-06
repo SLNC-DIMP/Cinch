@@ -168,7 +168,7 @@ class MetadataCommand extends CConsoleCommand {
 	* @return array
 	*/
 	protected function scrapeMetadata($file, $extract = 'metadata') {
-		$tika_path = Yii::getPathOfAlias('application') . '/tika-app-1.1.jar';
+		$tika_path = Yii::getPathOfAlias('application') . '/tika-app-1.2.jar';
 		
 		system('java -jar ' . $tika_path . ' --server');
 		
