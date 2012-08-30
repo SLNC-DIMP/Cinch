@@ -248,3 +248,10 @@ font-weight:bold;
 font-size: 14px;
 padding: 7px 0;
 }
+
+#cinch_image {
+	float: right;
+    padding-left: 15px;
+    position: relative;	
+	
+}

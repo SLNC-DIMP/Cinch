@@ -38,7 +38,7 @@ class Word_Metadata extends FileTypeActiveRecord {
 			'Creation-Date' => 'creationdate',
 			'Keywords' => 'keywords',
 			'Last-Author' => 'last_author',
-			'Last-Save-Date' => 'last_modified',
+			//'Last-Save-Date' => 'last_modified',
 			'Last-Modified' => 'last_modified', 
 			'Page-Count' => 'pages',
 			'Revision-Number' => 'revision_number',

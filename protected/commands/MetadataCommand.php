@@ -20,6 +20,7 @@ Yii::import('application.models.Utils');
 * @license Unlicense {@link http://unlicense.org/}
 */
 class MetadataCommand extends CConsoleCommand {
+	private $tika_path;
 	const PDF = 'application/pdf';
 	const WORD = 'application/msword';
 	const WORD2007 = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
@@ -31,6 +32,10 @@ class MetadataCommand extends CConsoleCommand {
 	const PNG = 'image/png';
 	const GIF = 'image/gif';
 	const TEXT = 'text/plain';
+	
+	public function __construct() {
+		$this->tika_path = Yii::getPathOfAlias('application') . '/tika-app-1.2.jar';
+	}
 	
 	/**
 	* Retrieves a list of uploaded files that need to have their metadata extracted
@@ -168,12 +173,8 @@ class MetadataCommand extends CConsoleCommand {
 	* @return array
 	*/
 	protected function scrapeMetadata($file, $extract = 'metadata') {
-		$tika_path = Yii::getPathOfAlias('application') . '/tika-app-1.2.jar';
-		
-		system('java -jar ' . $tika_path . ' --server');
-		
 		$output = array();
-		$command = 'java -jar ' . $tika_path . ' --' . $extract . ' ' . "$file";
+		$command = 'java -jar ' . $this->tika_path . ' --' . $extract . ' ' . "$file";
 		
 		exec(escapeshellcmd($command), $output);
 		
@@ -360,6 +361,8 @@ class MetadataCommand extends CConsoleCommand {
 	public function run() {
 		$files = $this->getFileList();
 		if(empty($files)) { exit; }
+		
+		system('java -jar ' . $this->tika_path . ' --server');
 		
 		foreach($files as $file) {
 			$metadata = $this->getMetadata($file['temp_file_path']);
