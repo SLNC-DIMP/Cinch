@@ -236,8 +236,7 @@ class MetadataCommand extends CConsoleCommand {
 			$file_type_id = 5;
 		} 
 		
-		return $file_type_id;
-		
+		return $file_type_id;	
 	}
 	
 	/**

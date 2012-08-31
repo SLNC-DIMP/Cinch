@@ -1,26 +1,22 @@
 <?php
-$this->pageTitle=Yii::app()->name . ' - About';
+$this->pageTitle=Yii::app()->name . ' - About the Tool';
 $this->breadcrumbs=array(
-	'About',
+	'About the Tool',
 );
 ?>
-<h1>About CINCH</h1>
-
-<p>
-A project to develop a bulk download service to a central repository that will maintain original file timestamps, extract file level metadata, create file checksums and periodically validate checksums for continued file integrity. Users merely need to upload a list of URLs to download and when the process completes they can download the requested files and file metadata to their local environment.</p>
-
+<h2>CINCH Tool</h2>
+<div id="cinch_image"><a href="http://cinch.nclive.org/Cinch/CINCH_workflow.pdf"><?php echo CHtml::image(Yii::app()->request->baseUrl.'/images/CINCH_workflow.png'); ?></a></div>
+<p>CINCH is a web-based, open source, lightweight tool that was designed to help   libraries, archives, and agencies with similar mandates  to collect   and authenticate digital content that is freely available on the web.</p>
 <p>CINCH currently works with the following file types:</p>
 <ul>
-	<li>PDF</li>
-    <li>Microsoft Word</li>
-    <li>Microsoft Excel</li>
-    <li>Microsoft PowerPoint</li>
-    <li>Jpeg</li>
-    <li>PNG</li>
-    <li>Gif</li>
-    <li>Text files (e.g. files with .txt or .csv extensions)</li>
+  <li>PDF</li>
+  <li>Microsoft Word</li>
+  <li>Microsoft Excel</li>
+  <li>Microsoft PowerPoint</li>
+  <li>Jpeg</li>
+  <li>PNG</li>
+  <li>Gif</li>
+  <li>Text files (e.g. files with .txt or .csv extensions)</li>
 </ul>
-
-<p>Learn more at <a href="http://digitalpreservation.ncdcr.gov/cinch/">http://digitalpreservation.ncdcr.gov/cinch/</a>.</p>
-
-<p>Funding for the CINCH: Capture, Ingest, &amp; Checksum tool is made possible through an IMLS Sparks! Ignition grant.</p>
+<p>CINCH <a href="<?php echo Yii::app()->request->baseUrl; ?>/CINCHdocumentation.pdf" target="_blank">documentation</a> and an <a href="<?php echo Yii::app()->request->baseUrl; ?>/site/page?view=faq">FAQ</a> give more details about how CINCH works.</p>
+<p>Anyone can install CINCH using the files available through <a href="http://slnc-dimp.github.com/Cinch/">GitHub</a>. North Carolina Institutions can use a <a href="<?php echo Yii::app()->request->baseUrl; ?>/site/login">hosted version</a>. <a href="<?php echo Yii::app()->request->baseUrl; ?>/site/contact">Contact us</a> for more details.</p>
