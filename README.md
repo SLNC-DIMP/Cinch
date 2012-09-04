@@ -33,14 +33,6 @@ Requirements
 * MySQL
 * ClamAV
 
-NOTE: If you've previously installed Cinch (before July 17th 2012 for those not interested in the ways of git) the current master branch and tagged versions 1.2 on break backwards compatibility with any previously downloaded version.  This was needed to greatly increase the security of encrypted passwords.  If you REALLY need a previous version please grab the version tagged 1.1, though you're strongly encouraged to install a newer version.  If you installed version 1.2 or earlier you'll need to login to your CINCH db and run the following:
-
-<pre><code>
-ALTER TABLE `file_info` ADD `events_frozen` INT( 1 ) NOT NULL DEFAULT '0' COMMENT 'File events have ended due to error or file zipped and processing complete.' AFTER `problem_file` 
-</code></pre>
-
-Please feel free to contact us if you have a problem.
-
 After download, you may need to run the setup.sh shell file before initially running application to set file level permissions.
 
 Setting up Cinch on your system:
@@ -75,7 +67,7 @@ You should run the commands in the following order:
 <li>errorcsv</li>
 <li>zipcreation</li>
 <li>purgesystem check (optional, Notifies users after 20 days that they have files marked for deletion in 10 days.)</li>
-<li>purgesystem delete (optional, deletes user files older than 30 days old.  Note this deletes upload lists, and all csv file information from the database, but downloaded files, metadata, errors, and event, information is retained in the database.)</li>
+<li>purgesystem delete (optional, deletes user files older than 30 days old.  Note this deletes upload lists, and all csv file information from the database, but downloaded file, metadata, errors, and event information is retained in the database.)</li>
 </ol>
 
 Useful Notes:  
@@ -89,7 +81,7 @@ Adding New Users:
 
 Currently users can't self-register (This fit our own particular needs.)
 
-* Login as user with admin privileges.  The default "admin" user has admin privileges by default.
+* Login as user with admin privileges.  The default "admin" user has admin privileges already setup.
 * Then go to Admin->User Administration->Create User and add the user. (The user will be sent an email with their username and password.  Users may then login and change their password.)
 * Next go to Admin->User Rights.  Click the user's username and then select the privileges you want them to have.
 * You've now successfully added a user.
