@@ -1,4 +1,14 @@
-A project to develop a bulk download service to a central repository 
+Cinch2 looks to build on the foundations of Cinch. It looks to add web crawling capabilities so that instead of generating their own 
+download lists user can merely enter a url to crawl and generate a report of Cinch supported file types they might download from a site, 
+which they can then selectively edit for download. User no longer need to generate their own list of files to download, though they still have that option if they so desire.
+
+Cinch2 will also attempt to incorporate natural language processing tools to create richer metadata than can be extracted by merely looking at file level metadata.
+
+Users will have the option to normalize PDF files to the PDF/A format, and normalize images to the JPEG2000 format.
+
+It will also add distributed and parallel task processing to increase scalability.
+
+Cinch is a project to develop a bulk download service to a central repository 
 that will maintain original file timestamps, extract file level metadata, 
 create file checksums and periodically validate checksums for continued file integrity. 
 
@@ -91,10 +101,16 @@ If you have problems with setting up users feel free to contact us.  You might w
 
 -------------------------
 
-Parts of Cinch include:
+Parts of Cinch with their respective licenses include:
 
-- Yii Framework <http://www.yiiframework.com>
-- jQuery <http://jquery.com>
-- jQuery UI <http://jqueryui.com>
-- Apache Tika <http://tika.apache.org>
-- ClamAV <http://www.clamav.net>
+- Yii Framework <http://www.yiiframework.com> [Yii framework license, http://www.yiiframework.com/license/]
+- jQuery <http://jquery.com> [MIT license, https://github.com/jquery/jquery/blob/master/MIT-LICENSE.txt]
+- jQuery UI <http://jqueryui.com> [MIT license, https://github.com/jquery/jquery/blob/master/MIT-LICENSE.txt]
+- Apache Tika <http://tika.apache.org> [Apache 2.0 license, http://www.apache.org/licenses/LICENSE-2.0]
+- ClamAV <http://www.clamav.net> [GPL license, http://www.gnu.org/licenses/gpl-2.0.html]
+
+Optional Components:
+
+- RabbitMQ <http://www.rabbitmq.com>  [Mozilla public license, http://www.rabbitmq.com/mpl.html]
+- ImageMagick <http://www.imagemagick.org> [Apache 2.0 license, http://www.imagemagick.org/script/license.php]
+- GhostScript <http://www.ghostscript.com> [GPL license, http://www.gnu.org/licenses/gpl-2.0.html]
