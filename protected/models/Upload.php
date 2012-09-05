@@ -2,10 +2,15 @@
 /**
  * This is the model class for table "user_uploads".
  *
- * The followings are the available columns in table 'user_uploads':
+ * The followings are the available columns in table 'upload':
  * @property integer $id
  * @property integer $user_id
  * @property string  $path
+ * @property string  $urls_in_list
+ * @property integer $jp2
+ * @property integer $pdfa
+ * @property integer $checksum_type
+ * @property integer $download_type
  * @property integer $processed
  *
  * The followings are the available model relations:
@@ -14,6 +19,10 @@
 class Upload extends CActiveRecord {
 	public $path;
 	public $files_in_list;
+	public $jp2;
+	public $pdfa;
+	public $checksum_type;
+	public $download_type;
 	const MAX_URLS = 10000;
 	
 	/**
