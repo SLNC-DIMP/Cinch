@@ -15,30 +15,21 @@ $this->breadcrumbs=array(
     <?php echo CHtml::error($model, 'urls_in_list'); ?>
     <br />
     <?php echo CHtml::activeFileField($model, 'path'); ?>
-    <br /><br />
-    <h5>Select if images and/or pdfs should be converted to preservation formats (optional)</h5>
-    <?php echo CHtml::activeLabel($model, 'JPEG2000:'); ?>
+  	<br /><br />
+    <h5>Select whether images and pdfs should be converted to preservation formats (optional): </h5>
+    <?php echo CHtml::activeLabel($model, 'JPEG2000'); ?>
     <?php echo CHtml::activeCheckbox($model, 'jp2'); ?>
     
-    <?php echo CHtml::activeLabel($model, 'PDFA:'); ?>
+    <?php echo CHtml::activeLabel($model, 'PDFA'); ?>
     <?php echo CHtml::activeCheckbox($model, 'pdfa'); ?>
     <br /><br />
-    <h5>Select file checksum type:</h5>
-    <?php echo CHtml::activeLabel($model, 'SHA1:'); ?>
-    <?php echo CHtml::activeRadioButton($model, 'sha_1'); ?>
-    
-	<?php echo CHtml::activeLabel($model, 'MD5:'); ?>
-    <?php echo CHtml::activeRadiobutton($model, 'md_5'); ?>
+    <h5>Select file checksum type: </h5>
+    <?php echo CHtml::activeRadiobuttonList($model, 'checksum_type', array(1=>'SHA1', 2=>'MD5'), array('separator'=> '')); ?>
     <br /><br />
-    <h5>Select file download type:</h5>
-    <?php echo CHtml::activeLabel($model, 'Zip Format:'); ?>
-    <?php echo CHtml::activeRadiobutton($model, 'zip'); ?>
-    
-    <?php echo CHtml::activeLabel($model, 'Bagit Format:'); ?>
-    <?php echo CHtml::activeRadioButton($model, 'bagit'); ?>
-    
+    <h5>Select file download type: </h5>
+    <?php echo CHtml::activeRadiobuttonList($model, 'download_type', array(1=>'Zip', 2=>'Bagit'), array('separator'=> '')); ?>
     <br /><br />
     <?php echo CHtml::submitButton('Upload'); ?>
     <?php echo CHtml::endForm(); ?>
-    </div>
+   </div>
 </div>

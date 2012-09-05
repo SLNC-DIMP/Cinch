@@ -40,7 +40,7 @@ class Upload extends CActiveRecord {
 		return array(
 			array('urls_in_list', 'maxUrls', CUploadedFile::getInstance(self::model(),'path')),
 			array('path', 'file', 'types'=>'txt, csv'),
-			array('jp2, pdfa, user_id, processed', 'safe')
+			array('jp2, pdfa, checksum_type, download_type, user_id, processed', 'safe')
 		);
 	}
 	
