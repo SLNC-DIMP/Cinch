@@ -15,7 +15,9 @@ $this->breadcrumbs=array(
     <?php echo CHtml::error($model, 'urls_in_list'); ?>
     <br />
     <?php echo CHtml::activeFileField($model, 'path'); ?>
+  
     <br /><br />
     <?php echo CHtml::submitButton('Upload'); ?>
     <?php echo CHtml::endForm(); ?>
+   
 </div>
