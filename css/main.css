@@ -234,6 +234,10 @@ padding: 25px;
 text-align:center;
 }
 
+#upload_form h5 {
+margin-bottom: .5em;
+}
+
 #upload_form p + p {
 font-weight: bold;
 }

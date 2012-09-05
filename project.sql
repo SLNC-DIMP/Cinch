@@ -574,14 +574,18 @@ CREATE TABLE IF NOT EXISTS `user_session_info` (
 
 CREATE TABLE `upload` (
   `id` int(7) NOT NULL AUTO_INCREMENT,
-  `user_id` int(6) NOT NULL COMMENT "CONSTRAINT FOREIGN KEY (user_id) REFERENCES user(id)",
+  `user_id` int(6) NOT NULL COMMENT 'CONSTRAINT FOREIGN KEY (user_id) REFERENCES user(id)',
   `path` varchar(250) COLLATE utf8_unicode_ci NOT NULL,
   `urls_in_list` int(7) NOT NULL DEFAULT '0' COMMENT 'number of urls listed in the file',
-  `last_url_processed` int(15) NOT NULL DEFAULT '1' COMMENT 'last url in the list added to the database for download',
+  `jp2` tinyint(1) NOT NULL DEFAULT '0',
+  `pdfa` tinyint(1) NOT NULL DEFAULT '0',
+  `checksum_type` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1- SHA1, 2-MD5',
+  `download_type` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1-Zip, 2-Bagit',
+  `last_url_processed` int(15) NOT NULL DEFAULT '0' COMMENT 'last url in the list added to the database for download',
   `processed` int(1) NOT NULL DEFAULT '0' COMMENT 'Y/N complete upload list processed',
   `process_time` timestamp NULL DEFAULT NULL COMMENT 'time list finished processing',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `upload`

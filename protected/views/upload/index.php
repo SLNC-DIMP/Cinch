@@ -16,7 +16,7 @@ $this->breadcrumbs=array(
     <br />
     <?php echo CHtml::activeFileField($model, 'path'); ?>
   	<br /><br />
-    <h5>Select whether images and pdfs should be converted to preservation formats (optional): </h5>
+    <h5>Select whether images and/or pdfs should be converted to preservation formats (optional): </h5>
     <?php echo CHtml::activeLabel($model, 'JPEG2000'); ?>
     <?php echo CHtml::activeCheckbox($model, 'jp2'); ?>
     
