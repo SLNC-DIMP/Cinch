@@ -27,7 +27,7 @@ $this->breadcrumbs=array(
     <?php echo CHtml::activeRadiobuttonList($model, 'checksum_type', array(1=>'SHA1', 2=>'MD5'), array('separator'=> '')); ?>
     <br /><br />
     <h5>Select file download type: </h5>
-    <?php echo CHtml::activeRadiobuttonList($model, 'download_type', array(1=>'Zip', 2=>'Bagit'), array('separator'=> '')); ?>
+    <?php echo CHtml::activeRadiobuttonList($model, 'download_type', array(1=>'Zip', 2=>'Bagit (tar.gz compression)'), array('separator'=> '')); ?>
     <br /><br />
     <?php echo CHtml::submitButton('Upload'); ?>
     <?php echo CHtml::endForm(); ?>
