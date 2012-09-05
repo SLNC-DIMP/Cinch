@@ -238,6 +238,12 @@ text-align:center;
 font-weight: bold;
 }
 
+.pull-left {
+text-align:left; 
+width: 450px; 
+margin-left: 32%;
+}
+
 .errorMessage {
 font-weight:bold;
 color:#F00;
@@ -250,8 +256,7 @@ padding: 7px 0;
 }
 
 #cinch_image {
-	float: right;
-    padding-left: 15px;
-    position: relative;	
-	
+float: right;
+padding-left: 15px;
+position: relative;		
 }

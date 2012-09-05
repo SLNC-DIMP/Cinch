@@ -25,6 +25,7 @@ Funding for the CINCH: Capture, Ingest, & Checksum tool is made possible through
 an IMLS Sparks! Ignition grant.
 
 License:  CINCH is released under the Unlicense (http://unlicense.org/)
+
 -------------------------
 Requirements
 

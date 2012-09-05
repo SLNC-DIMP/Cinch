@@ -9,13 +9,36 @@ $this->breadcrumbs=array(
         <p>Your file was successfully uploaded.  Feel free to to logoff now. We'll send you an email with download instructions after we've retrieved and processed the files in your list (Typically 24 hours).</p>
         <br />
     <?php endif ?>
-    
+    <div class="pull-left">
     <?php echo CHtml::beginForm('', 'post', array('enctype'=>'multipart/form-data')); ?>
     <?php echo CHtml::error($model, 'path'); ?>
     <?php echo CHtml::error($model, 'urls_in_list'); ?>
     <br />
     <?php echo CHtml::activeFileField($model, 'path'); ?>
     <br /><br />
+    <h5>Select if images and/or pdfs should be converted to preservation formats (optional)</h5>
+    <?php echo CHtml::activeLabel($model, 'JPEG2000:'); ?>
+    <?php echo CHtml::activeCheckbox($model, 'jp2'); ?>
+    
+    <?php echo CHtml::activeLabel($model, 'PDFA:'); ?>
+    <?php echo CHtml::activeCheckbox($model, 'pdfa'); ?>
+    <br /><br />
+    <h5>Select file checksum type:</h5>
+    <?php echo CHtml::activeLabel($model, 'SHA1:'); ?>
+    <?php echo CHtml::activeRadioButton($model, 'sha_1'); ?>
+    
+	<?php echo CHtml::activeLabel($model, 'MD5:'); ?>
+    <?php echo CHtml::activeRadiobutton($model, 'md_5'); ?>
+    <br /><br />
+    <h5>Select file download type:</h5>
+    <?php echo CHtml::activeLabel($model, 'Zip Format:'); ?>
+    <?php echo CHtml::activeRadiobutton($model, 'zip'); ?>
+    
+    <?php echo CHtml::activeLabel($model, 'Bagit Format:'); ?>
+    <?php echo CHtml::activeRadioButton($model, 'bagit'); ?>
+    
+    <br /><br />
     <?php echo CHtml::submitButton('Upload'); ?>
     <?php echo CHtml::endForm(); ?>
+    </div>
 </div>
