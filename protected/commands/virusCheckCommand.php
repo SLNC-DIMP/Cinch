@@ -118,6 +118,7 @@ class virusCheckCommand extends CConsoleCommand {
 	
 	/**
 	* Write scan results
+	* 7 is event code for virus detected
 	* 11 is error code for Virus detected
 	* 14 error for unable to delete file
 	* 16 Virus check couldn't scan file
@@ -130,22 +131,21 @@ class virusCheckCommand extends CConsoleCommand {
 		$virus_message = '';
 		
 		$scan = $this->scanOutput($scan_results);
-		if((isset($scan['errors']) && $scan['errors'] > 0) && 
-		   (isset($scan['scan_time']) && $scan['scan_time'] == 1)) { 
-		   	echo "skipped, service down\n"; 
-			return;
+		
+		if(((isset($scan['errors']) && $scan['errors'] > 0) && 
+		   (isset($scan['scan_time']) && $scan['scan_time'] == 1)) ||
+		   !isset($scan['infected'])) { 
+			Utils::writeError($scan['file_id'], 16);
+			$message_text = "Scan failed for " . $scan['file_id'] . "\r\n";
+			
+			return $virus_message;
 		}
 		
-		if(!isset($scan['infected']) || $scan['infected'] > 0) {
-			if(!isset($scan['infected'])) {
-				$error_id = 16;
-				$message_text = "Scan failed";
-			} else {
-				$error_id = 11;
-				$message_text = "Virus detected";
-			}
+		if($scan['infected'] > 0) {
+			$message_text = "Virus detected";
 			
-			Utils::writeError($scan['file_id'], $error_id);
+			Utils::writeEvent($scan['file_id'], 7);
+			Utils::writeError($scan['file_id'], 11);
 			
 			$delete = @unlink("{$scan['path']}");
 			
