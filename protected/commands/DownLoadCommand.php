@@ -351,7 +351,9 @@ class DownloadCommand extends CConsoleCommand {
 	protected function writeCurlError($file_id) {
 		$error_id = 1;
 		Utils::writeError($file_id, $error_id);
-		$this->updateFileInfo(array('problem_file' => $error_id, 'events_frozen' => 1), $file_id);
+		$this->updateFileInfo(array('temp_file_path' => NULL,
+            'problem_file' => $error_id,
+            'events_frozen' => 1), $file_id);
 		
 		return $error_id;
 	}

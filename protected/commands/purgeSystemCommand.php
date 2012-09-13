@@ -39,7 +39,7 @@ class purgeSystemCommand extends CConsoleCommand {
 	
 	/**
 	* Gets the the error file path (if there is one) for that day's processing.
-	* Instantiates the MailUser class for use in notifying users of sytems purges
+	* Instantiates the MailUser class for use in notifying users of system purges
 	*/
 	public function __construct() {
 		$this->error_list = Yii::getPathOfAlias('application.messages') . '/' . 'error_list_' . date('Y-m-d') . '.txt';
@@ -167,7 +167,7 @@ class purgeSystemCommand extends CConsoleCommand {
 	* @return object Yii DAO object
 	*/
 	private function updateFileInfo($file_id) {
-		$sql = "UPDATE file_info SET temp_file_path = '', expired_deleted = 1 WHERE id = ?";
+		$sql = "UPDATE file_info SET temp_file_path = NULL, expired_deleted = 1 WHERE id = ?";
 		Yii::app()->db->createCommand($sql)
 			->execute(array($file_id));
 	}

@@ -47,7 +47,9 @@ class virusCheckCommand extends CConsoleCommand {
 		$sql = "UPDATE file_info SET virus_check = 1, problem_file = ? WHERE id = ?";
 		
 		if($problem > 0) {
-			$sql = "UPDATE file_info SET temp_file_path = '', virus_check = 1, problem_file = ? WHERE id = ?";
+			$sql = "UPDATE file_info
+			SET temp_file_path = NULL, virus_check = 1, events_frozen = 1, problem_file = ?
+			WHERE id = ?";
 		}
 		
 		$virus = Yii::app()->db->createCommand($sql);
