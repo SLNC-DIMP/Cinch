@@ -1,4 +1,6 @@
 <?php
+Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl."/js/upload_form.js", CClientScript::POS_HEAD);
+
 $this->breadcrumbs=array(
 	'Uploads',
 ); ?>
@@ -22,6 +24,11 @@ $this->breadcrumbs=array(
     
     <?php echo CHtml::activeLabel($model, 'PDFA'); ?>
     <?php echo CHtml::activeCheckbox($model, 'pdfa'); ?>
+    <br /><br />
+    <div id="pdfa_select" class='hide'>
+    <h5>Force PDF/a conversion: </h5>
+    <?php echo CHtml::activeRadiobuttonList($model, 'pdfa_convert', array(1=>'Yes', 0=>'No'), array('separator'=> '')); ?>
+    </div>
     <br /><br />
     <h5>Select file checksum type: </h5>
     <?php echo CHtml::activeRadiobuttonList($model, 'checksum_type', array(1=>'SHA1', 2=>'MD5'), array('separator'=> '')); ?>

@@ -133,6 +133,7 @@ class UploadController extends Controller {
 		// sets default field values for form display
 		$model->checksum_type = 1;
 		$model->download_type = 1;
+        $model->pdfa_convert = 0;
 		
 		if(isset($_POST['Upload'])) {
 			$model->attributes = $_POST['Upload'];

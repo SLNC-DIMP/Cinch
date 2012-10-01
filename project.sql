@@ -579,6 +579,7 @@ CREATE TABLE `upload` (
   `urls_in_list` int(7) NOT NULL DEFAULT '0' COMMENT 'number of urls listed in the file',
   `jp2` tinyint(1) NOT NULL DEFAULT '0',
   `pdfa` tinyint(1) NOT NULL DEFAULT '0',
+  `pdfa_convert` tinyint(1) NOT NULL DEFAULT '0',
   `checksum_type` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1- SHA1, 2-MD5',
   `download_type` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1-Zip, 2-Bagit',
   `last_url_processed` int(15) NOT NULL DEFAULT '0' COMMENT 'last url in the list added to the database for download',
