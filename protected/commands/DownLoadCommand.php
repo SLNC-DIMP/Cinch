@@ -230,7 +230,14 @@ class DownloadCommand extends CConsoleCommand {
 	* @return string
 	*/
 	public function initFileType($file) {
-		$supported_extensions = array('pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'png', 'gif', 'jpg', 'jpeg', 'txt', 'csv');
+		$supported_extensions = array(
+            'pdf', 'doc', 'docx',
+            'xls','xlsx', 'ppt',
+            'pptx','png','gif',
+            'jpg','jpeg', 'txt',
+            'csv', 'mp3', 'mp4',
+            'ogg', 'mov'
+        );
 		$pdf_extensions = array('asp', 'aspx', 'php', 'jsp', 'cfm', 'cfml');
 		$file_info = strtolower(@pathinfo($file, PATHINFO_EXTENSION));
 		

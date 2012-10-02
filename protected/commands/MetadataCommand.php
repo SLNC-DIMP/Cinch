@@ -21,6 +21,7 @@ Yii::import('application.models.Utils');
 */
 class MetadataCommand extends CConsoleCommand {
 	private $tika_path;
+
 	const PDF = 'application/pdf';
 	const WORD = 'application/msword';
 	const WORD2007 = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
@@ -32,6 +33,9 @@ class MetadataCommand extends CConsoleCommand {
 	const PNG = 'image/png';
 	const GIF = 'image/gif';
 	const TEXT = 'text/plain';
+    const MP3 = 'audio/mp3';
+    const MP4 = 'video/mp4';
+    const MOV = 'video/quicktime';
 	
 	public function __construct() {
 		$this->tika_path = Yii::getPathOfAlias('application') . '/tika-app-1.2.jar';
@@ -93,6 +97,13 @@ class MetadataCommand extends CConsoleCommand {
 			case self::TEXT:
 				$write = new Text_Metadata;
 				break;
+            case self::MP3:
+                $write = new Mp3_Metadata;
+                break;
+            case self::MP4:
+            case self::MOV:
+                $write = new Mp4_Metadata;
+                break;
 		}
 		
 		$write->writeMetadata($metadata, $file_id, $user_id);
@@ -115,8 +126,7 @@ class MetadataCommand extends CConsoleCommand {
 			$values = array($file_id);
 		}
 		
-		$metadata_processed = Yii::app()->db->createCommand($sql);
-		$metadata_processed->execute($values);	
+		Yii::app()->db->createCommand($sql)->execute($values);
 	}
 	
 	/**

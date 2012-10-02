@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(function() {
     $('#Upload_pdfa').bind('click', function() {
         var hide = $('#pdfa_select');
 

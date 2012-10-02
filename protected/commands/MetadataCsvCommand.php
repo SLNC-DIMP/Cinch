@@ -122,6 +122,14 @@ class MetadataCsvCommand extends CConsoleCommand {
 			case 12:
 				$table = 'PPT_Metadata';
 				break;
+            case 13:
+                $table = 'Mp3_Metdata';
+                break;
+            case 18:
+            case 19:
+                $table = 'Mp4_Metadata';
+                break;
+
 			default:
 				$table = false;
 				break;
