@@ -123,7 +123,7 @@ class MetadataCsvCommand extends CConsoleCommand {
 				$table = 'PPT_Metadata';
 				break;
             case 13:
-                $table = 'Mp3_Metdata';
+                $table = 'Mp3_Metadata';
                 break;
             case 18:
             case 19:

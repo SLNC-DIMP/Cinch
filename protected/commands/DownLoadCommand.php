@@ -222,8 +222,8 @@ class DownloadCommand extends CConsoleCommand {
 	}
 	
 	/**
+     * Checks for allowed file types extensions
 	* Returns self reporting file extension.  Defaults to PDF if no extension given.
-	* Checks for allowed file types extensions
 	* Certain extensions default to .pdf, so they may misreport real file type
 	* @param $file
 	* @access public
@@ -231,12 +231,12 @@ class DownloadCommand extends CConsoleCommand {
 	*/
 	public function initFileType($file) {
 		$supported_extensions = array(
-            'pdf', 'doc', 'docx',
-            'xls','xlsx', 'ppt',
+            'pdf', 'doc','docx',
+            'xls','xlsx','ppt',
             'pptx','png','gif',
-            'jpg','jpeg', 'txt',
-            'csv', 'mp3', 'mp4',
-            'ogg', 'mov'
+            'jpg','jpeg','txt',
+            'csv','mp3','mp4',
+            'mov'
         );
 		$pdf_extensions = array('asp', 'aspx', 'php', 'jsp', 'cfm', 'cfml');
 		$file_info = strtolower(@pathinfo($file, PATHINFO_EXTENSION));
