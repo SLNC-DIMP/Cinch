@@ -42,10 +42,10 @@ class ReadFileCommand extends CConsoleCommand {
 	* @return object Yii DAO
 	*/
 	public function addUrls(array $values) {
-		$num_inserts = count($values) / 3;
-		$sql = "INSERT INTO files_for_download(url, user_uploads_id, user_id) VALUES ";
+		$num_inserts = count($values) / 8; // 8 is number of fields to insert
+		$sql = "INSERT INTO files_for_download(url, jp2, pdfa, pdfa_convert, checksum_type, download_type, user_uploads_id, user_id) VALUES ";
 		for($i=0; $i<$num_inserts; $i++) {
-			$sql .= "(?, ?, ?),";
+			$sql .= "(?, ?, ?, ?, ?, ?, ?, ?),";
 		}
 		$sql = preg_replace('/,$/', '', $sql);
 		
@@ -65,8 +65,7 @@ class ReadFileCommand extends CConsoleCommand {
 		Yii::app()->db->createCommand($sql)
 			->execute(array($num_files, $list_id));
 	}
-	
-	
+
 	/**
 	* Update file list as processed
 	* Doesn't use MySQL specific time function
@@ -106,13 +105,19 @@ class ReadFileCommand extends CConsoleCommand {
 					$file_num_in_list++;
 					continue;
 				}
-				
+
 				$file_num_in_list++;  
-				$values[] = trim($url);
+
+                $values[] = trim($url);
+                $values[] = $file_list['jp2'];
+                $values[] = $file_list['pdfa'];
+                $values[] = $file_list['pdfa_convert'];
+                $values[] = $file_list['checksum_type'];
+                $values[] = $file_list['download_type'];
 				$values[] = $file_list['id'];
 				$values[] = $file_list['user_id'];
 			}
-		
+
 			$this->addUrls($values);
 			
 			if($file_num_in_list == $files_in_list) {
