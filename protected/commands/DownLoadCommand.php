@@ -118,17 +118,19 @@ class DownloadCommand extends CConsoleCommand {
 	* @access public 
 	* @return string
 	*/
-	public function setFileInfo($url, $remote_checksum, $user_id, $upload_file_id) {
+	public function setFileInfo($url, $short_filename, $remote_checksum, $user_id, $upload_file_id) {
 		$dynamic_file = (is_numeric($this->initFileType($url))) ? 0 : 1;
-		$sql = "INSERT INTO file_info(org_file_path, 
+		$sql = "INSERT INTO file_info(org_file_path,
+                short_filename,
 				remote_checksum,
 				dynamic_file, 
 				user_id, 
 				upload_file_id) 
-			VALUES(:url, :remote_checksum, :dynamic_file, :user_id, :upload_file_id)";
+			VALUES(:url, :short_filename, :remote_checksum, :dynamic_file, :user_id, :upload_file_id)";
 			
 			$write_files = Yii::app()->db->createCommand($sql);
 			$write_files->bindParam(":url", $url, PDO::PARAM_STR);
+            $write_files->bindParam(":short_filename", $short_filename, PDO::PARAM_STR);
 			$write_files->bindParam(":remote_checksum", $remote_checksum, PDO::PARAM_STR);
 			$write_files->bindParam(":dynamic_file", $dynamic_file, PDO::PARAM_INT);
 			$write_files->bindParam(":user_id", $user_id, PDO::PARAM_INT);
@@ -220,6 +222,29 @@ class DownloadCommand extends CConsoleCommand {
 		
 		return $file_name; 
 	}
+
+    /**
+     * Returns the actual filename minus the path and adding .pdf if necessary.
+     * @param $file
+     * @access public
+     * @return string
+     */
+    public function getShortFilename($file) {
+        $short_filename = substr_replace(strrchr($file, '/'), '', 0, 1);
+
+        if(!is_numeric($this->initFileType($file))) {
+            $file_info = @pathinfo($file, PATHINFO_EXTENSION);
+            if(empty($file_info) || is_null($file_info)) {
+                $short_filename .= '.pdf';
+            } else {
+                $name_pieces = explode('.', $short_filename);
+                array_pop($name_pieces);
+                $short_filename = implode('', $name_pieces) . '.pdf';
+            }
+        }
+
+        return $short_filename;
+    }
 	
 	/**
 	* Returns self reporting file extension.  Defaults to PDF if no extension given.
@@ -390,7 +415,8 @@ class DownloadCommand extends CConsoleCommand {
 	*/
 	public function CurlProcessing($url, $current_user_id, $file_list_id) {
 		$remote_checksum = $this->remote_checksum->createRemoteChecksum($url);
-		$db_file_id = $this->setFileInfo($url, $remote_checksum, $current_user_id, $file_list_id);
+        $short_file_name = $this->getShortFilename($url);
+		$db_file_id = $this->setFileInfo($url, $short_file_name, $remote_checksum, $current_user_id, $file_list_id);
 		Utils::writeEvent($db_file_id, 15);
 		
 		if($remote_checksum) {
