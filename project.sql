@@ -273,7 +273,7 @@ INSERT INTO `file_type` (`id`, `file_type`, `file_type_name`) VALUES
 CREATE TABLE IF NOT EXISTS `file_info` (
   `id` int(10) NOT NULL auto_increment,
   `org_file_path` varchar(2084) collate utf8_unicode_ci default NULL,
-  `temp_file_path` varchar(1000) collate utf8_unicode_ci default NULL COMMENT 'orginial file path.  2083 character URL appears to be IE limit',
+  `temp_file_path` varchar(1000) collate utf8_unicode_ci default NULL COMMENT 'original file path.  2083 character URL appears to be IE limit',
   `short_filename` varchar(275) collate utf8_unicode_ci default NULL,
   `file_type_id` int(1) NOT NULL default '0' COMMENT 'current file path on the server',
   `checksum_run` int(1) NOT NULL default '0',
@@ -323,9 +323,6 @@ CREATE TABLE IF NOT EXISTS `files_for_download` (
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
---
--- Dumping data for table `files_for_download`
---
 
 --
 -- Table structure for table `Gif_Metadata`
