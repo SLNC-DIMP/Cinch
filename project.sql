@@ -270,27 +270,34 @@ INSERT INTO `file_type` (`id`, `file_type`, `file_type_name`) VALUES
 -- Table structure for table `file_info`
 --
 
-CREATE TABLE IF NOT EXISTS `file_info` (
-  `id` int(10) NOT NULL auto_increment,
-  `org_file_path` varchar(2084) collate utf8_unicode_ci default NULL,
-  `temp_file_path` varchar(1000) collate utf8_unicode_ci default NULL COMMENT 'orginial file path.  2083 character URL appears to be IE limit',
-  `file_type_id` int(1) NOT NULL default '0' COMMENT 'current file path on the server',
-  `checksum_run` int(1) NOT NULL default '0',
-  `remote_checksum` varchar(40) collate utf8_unicode_ci default NULL COMMENT 'remote checksum of a file',
-  `checksum` varchar(40) collate utf8_unicode_ci default NULL COMMENT 'file check sum sha1 or md5. sha1 is the default',
-  `virus_check` int(1) NOT NULL default '0' COMMENT 'has file had virus check',
-  `fulltext_available` int(1) NOT NULL default '0' COMMENT 'Whether text can be extracted.',
-  `metadata` int(1) NOT NULL default '0' COMMENT 'Whether metadata extraction has been run',
-  `dynamic_file` int(1) NOT NULL default '0' COMMENT 'is the file dynamically generated from orginal URL',
-  `last_modified` varchar(15) collate utf8_unicode_ci default NULL COMMENT 'file last modified timestamp',
-  `zipped` int(1) NOT NULL default '0' COMMENT 'Yes/No added to a Zip Archive',
-  `problem_file` int(1) NOT NULL default '0',
-  `events_frozen` int(1) NOT NULL default '0' COMMENT 'File events have ended due to error or file zipped and processing complete.',
-  `expired_deleted` int(1) NOT NULL default '0' COMMENT 'set to 1 for expired files that have been deleted.',
-  `user_id` int(6) NOT NULL default '0' COMMENT 'CONSTRAINT FOREIGN KEY (user_id) REFERENCES user(id)',
-  `upload_file_id` int(6) NOT NULL default '0' COMMENT 'CONSTRAINT FOREIGN KEY (upload_file_id) REFERENCES user_uploads(id)',
-  `download_time` timestamp NOT NULL default CURRENT_TIMESTAMP,
-  PRIMARY KEY  (`id`)
+CREATE TABLE `file_info` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `org_file_path` varchar(2084) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'orginial file path.  2083 character URL appears to be IE limit',
+  `temp_file_path` varchar(1000) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `short_filename` varchar(275) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `pdfa` tinyint(1) NOT NULL DEFAULT '0',
+  `force_pdfa` tinyint(1) NOT NULL DEFAULT '0',
+  `pdfa_run` tinyint(1) NOT NULL DEFAULT '0',
+  `jp2` tinyint(1) NOT NULL DEFAULT '0',
+  `jp2_run` tinyint(1) NOT NULL DEFAULT '0',
+  `file_type_id` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'current file path on the server',
+  `checksum_run` tinyint(1) NOT NULL DEFAULT '0',
+  `remote_checksum` varchar(40) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'remote checksum of a file',
+  `checksum` varchar(40) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'file check sum sha1 or md5. sha1 is the default',
+  `virus_check` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'has file had virus check',
+  `fulltext_available` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Whether text can be extracted.',
+  `metadata` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Whether metadata extraction has been run',
+  `dynamic_file` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'is the file dynamically generated from orginal URL',
+  `last_modified` varchar(15) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'file last modified timestamp',
+  `zip_or_bagit` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'whether file should use zip or bagit for compression',
+  `zipped` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Yes/No added to a Zip or Bagit Archive',
+  `problem_file` tinyint(1) NOT NULL DEFAULT '0',
+  `events_frozen` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'File events have ended due to error or file zipped and processing complete.',
+  `expired_deleted` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'set to true for expired files that have been deleted.',
+  `user_id` int(6) NOT NULL DEFAULT '0' COMMENT 'CONSTRAINT FOREIGN KEY (user_id) REFERENCES user(id)',
+  `upload_file_id` int(6) NOT NULL DEFAULT '0' COMMENT 'CONSTRAINT FOREIGN KEY (upload_file_id) REFERENCES user_uploads(id)',
+  `download_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='downloaded file information' AUTO_INCREMENT=1 ;
 
 --

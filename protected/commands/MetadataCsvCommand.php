@@ -69,6 +69,11 @@ class MetadataCsvCommand extends CConsoleCommand {
 		return $user_files;
 	}
 
+    /**
+     * Gets a files original filename, minus its path.
+     * @param $file_id
+     * @return mixed
+     */
     public function getShortName($file_id) {
         $short_name = Yii::app()->db->createCommand()
             ->select('short_filename')
@@ -77,7 +82,6 @@ class MetadataCsvCommand extends CConsoleCommand {
             ->QueryColumn();
 
         return $short_name[0];
-
     }
 
 	/**
