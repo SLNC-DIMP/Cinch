@@ -6,7 +6,7 @@ Yii::import('application.models.Utils');
 * DownloadCommand class file
 *
 * This is the command for downloading a user's files.
-* @catagory Download
+* @category Download
 * @package Download
 * @author State Library of North Carolina - Digital Information Management Program <digital.info@ncdcr.gov>
 * @author Dean Farrell
@@ -112,6 +112,7 @@ class DownloadCommand extends CConsoleCommand {
 	/**
 	* Inserts basic file information for downloaded file
 	* @param $url
+    * @param $short_filename
 	* @param $remote_checksum
 	* @param $user_id
 	* @param $upload_file_id

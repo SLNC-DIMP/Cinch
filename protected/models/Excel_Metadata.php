@@ -3,7 +3,7 @@
 * Excel_Metadata class file
 *
 * Writes extracted MS Excel metadata to the database.
-* @catagory Excel_Metadata
+* @category Excel_Metadata
 * @package Excel_Metadata
 * @author State Library of North Carolina - Digital Information Management Program <digital.info@ncdcr.gov>
 * @author Dean Farrell

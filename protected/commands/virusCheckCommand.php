@@ -4,7 +4,7 @@ Yii::import('application.models.Utils');
 * VirusCheckCommand class file
 *
 * This is the command for detecting viruses and deleting file if a virus is found.
-* @catagory Virus Check
+* @category Virus Check
 * @package Virus Check
 * @author State Library of North Carolina - Digital Information Management Program <digital.info@ncdcr.gov>
 * @author Dean Farrell

@@ -5,7 +5,7 @@ Yii::import('application.models.Utils');
 * ChecksumCommand class file
 *
 * This is the command for creation of checksums for a user's downloaded files.
-* @catagory Checksum
+* @category Checksum
 * @package Checksum
 * @author State Library of North Carolina - Digital Information Management Program <digital.info@ncdcr.gov>
 * @author Dean Farrell

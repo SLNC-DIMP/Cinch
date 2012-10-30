@@ -6,7 +6,7 @@ Yii::import('application.models.Utils');
 * MetadataCsvCommand class file
 *
 * This is the command for creation of metadata csv manifest for a user's downloaded files.
-* @catagory MetadataCsv
+* @category MetadataCsv
 * @package MetadataCsv
 * @author State Library of North Carolina - Digital Information Management Program <digital.info@ncdcr.gov>
 * @author Dean Farrell

@@ -3,7 +3,7 @@
 * Text_Metadata class file
 *
 * Writes extracted Text file metadata to the database.
-* @catagory Text_Metadata
+* @category Text_Metadata
 * @package Text_Metadata
 * @author State Library of North Carolina - Digital Information Management Program <digital.info@ncdcr.gov>
 * @author Dean Farrell

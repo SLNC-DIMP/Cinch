@@ -3,7 +3,7 @@
 * Jpg_Metadata class file
 *
 * Writes extracted jpeg image metadata to the database.
-* @catagory Jpg_Metadata
+* @category Jpg_Metadata
 * @package Jpg_Metadata
 * @author State Library of North Carolina - Digital Information Management Program <digital.info@ncdcr.gov>
 * @author Dean Farrell

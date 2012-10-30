@@ -3,7 +3,7 @@
 * PPT_Metadata class file
 *
 * Writes extracted PPT image metadata to the database.
-* @catagory PPT_Metadata
+* @category PPT_Metadata
 * @package PPT_Metadata
 * @author State Library of North Carolina - Digital Information Management Program <digital.info@ncdcr.gov>
 * @author Dean Farrell

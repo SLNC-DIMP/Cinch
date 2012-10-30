@@ -3,7 +3,7 @@
 * ErrorFiles model class file
 *
 * Writes errors to the problem_files table.
-* @catagory ErrorFiles
+* @category ErrorFiles
 * @package ErrorFiles
 * @author State Library of North Carolina - Digital Information Management Program <digital.info@ncdcr.gov>
 * @author Dean Farrell

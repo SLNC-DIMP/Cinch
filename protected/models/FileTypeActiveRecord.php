@@ -1,4 +1,23 @@
 <?php
+/**
+ * Base model class for file metadata insertion
+ *
+ * Builds queries and writes them to the database.
+ * @category Metadata Queries
+ * @package Metadata Queries
+ * @author State Library of North Carolina - Digital Information Management Program <digital.info@ncdcr.gov>
+ * @author Dean Farrell
+ * @version 1.0
+ * @license Unlicense {@link http://unlicense.org/}
+ */
+
+/**
+ * Builds queries and writes them to the database.
+ * @author State Library of North Carolina - Digital Information Management Program <digital.info@ncdcr.gov>
+ * @author Dean Farrell
+ * @version 1.0
+ * @license Unlicense {@link http://unlicense.org/}
+ */
 abstract class FileTypeActiveRecord extends CActiveRecord {
 	/**
 	* Should be an abstract write method, but Yii doesn't seem to care for abstract methods

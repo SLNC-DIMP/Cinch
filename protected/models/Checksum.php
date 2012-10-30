@@ -3,7 +3,7 @@
 * Checksum model class file
 *
 * Various database calls to select and write checksums.
-* @catagory Checksum
+* @category Checksum
 * @package Checksum
 * @author State Library of North Carolina - Digital Information Management Program <digital.info@ncdcr.gov>
 * @author Dean Farrell
@@ -77,7 +77,8 @@ class Checksum {
 	
 	/**
 	* Determines if a file has been previously downloaded by a user
-	* @param $file_id
+	* @param $checksum
+    * @param $user_id
 	* @access public 
 	* @return integer
 	*/

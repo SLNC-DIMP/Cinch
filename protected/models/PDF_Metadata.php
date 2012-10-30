@@ -3,7 +3,7 @@
 * PDF_Metadata class file
 *
 * Writes extracted PDF metadata to the database.
-* @catagory PDF_Metadata
+* @category PDF_Metadata
 * @package PDF_Metadata
 * @author State Library of North Carolina - Digital Information Management Program <digital.info@ncdcr.gov>
 * @author Dean Farrell

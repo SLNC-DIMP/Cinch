@@ -4,7 +4,7 @@ Yii::import('application.models.MakeCsv');
 * ErrorCsvCommand class file
 *
 * This is the command for creation of error csv manifest for a user's downloaded files.
-* @catagory ErrorCsv
+* @category ErrorCsv
 * @package ErrorCsv
 * @author State Library of North Carolina - Digital Information Management Program <digital.info@ncdcr.gov>
 * @author Dean Farrell
