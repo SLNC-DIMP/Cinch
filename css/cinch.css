@@ -29,3 +29,7 @@ body {
 #no_bullets  {
 	list-style-type:none;
 }
+
+.hide {
+    display: none;
+}

@@ -241,56 +241,66 @@ CREATE TABLE IF NOT EXISTS `Excel_Metadata` (
 -- Table structure for table `file_type`
 --
 
-CREATE TABLE IF NOT EXISTS `file_type` (
-  `id` int(4) NOT NULL auto_increment,
-  `file_type` varchar(125) collate utf8_unicode_ci NOT NULL,
-  `file_type_name` varchar(50) collate utf8_unicode_ci NOT NULL,
-  PRIMARY KEY  (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=13 ;
+CREATE TABLE `file_type` (
+  `id` int(4) NOT NULL AUTO_INCREMENT,
+  `file_type` varchar(125) COLLATE utf8_unicode_ci NOT NULL,
+  `file_type_name` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=20 ;
 
 --
 -- Dumping data for table `file_type`
 --
 
-INSERT INTO `file_type` (`id`, `file_type`, `file_type_name`) VALUES
-(1, 'application/pdf', 'PDF'),
-(2, 'application/msword', 'DOC'),
-(3, 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'DOCX'),
-(4, 'image/tiff', 'TIFF'),
-(5, 'image/jpeg', 'JPEG'),
-(6, 'image/gif', 'GIF'),
-(7, 'text/plain', 'TXT'),
-(8, 'application/vnd.ms-excel', 'XLS'),
-(9, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'XLSX'),
-(10, 'image/png', 'PNG'),
-(11, 'application/vnd.ms-powerpoint', 'PPT'),
-(12, 'application/vnd.openxmlformats-officedocument.presentationml.presentation', 'PPTX');
-
+INSERT INTO `file_type` VALUES(1, 'application/pdf', 'PDF');
+INSERT INTO `file_type` VALUES(2, 'application/msword', 'DOC');
+INSERT INTO `file_type` VALUES(3, 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'DOCX');
+INSERT INTO `file_type` VALUES(4, 'image/tiff', 'TIFF');
+INSERT INTO `file_type` VALUES(5, 'image/jpeg', 'JPEG');
+INSERT INTO `file_type` VALUES(6, 'image/gif', 'GIF');
+INSERT INTO `file_type` VALUES(7, 'text/plain', 'TXT');
+INSERT INTO `file_type` VALUES(8, 'application/vnd.ms-excel', 'XLS');
+INSERT INTO `file_type` VALUES(9, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'XLSX');
+INSERT INTO `file_type` VALUES(10, 'image/png', 'PNG');
+INSERT INTO `file_type` VALUES(11, 'application/vnd.ms-powerpoint', 'PPT');
+INSERT INTO `file_type` VALUES(12, 'application/vnd.openxmlformats-officedocument.presentationml.presentation', 'PPTX');
+INSERT INTO `file_type` VALUES(13, 'audio/mpeg', 'MP3');
+INSERT INTO `file_type` VALUES(14, 'audio/vorbis', 'OGG');
+INSERT INTO `file_type` VALUES(15, 'audio/ogg', 'OGG');
+INSERT INTO `file_type` VALUES(16, 'video/ogg', 'OGG');
+INSERT INTO `file_type` VALUES(17, 'application/ogg', 'OGG');
+INSERT INTO `file_type` VALUES(18, 'video/mp4', 'MP4');
+INSERT INTO `file_type` VALUES(19, 'video/quicktime', 'MOV');
 --
 -- Table structure for table `file_info`
 --
 
-CREATE TABLE IF NOT EXISTS `file_info` (
-  `id` int(10) NOT NULL auto_increment,
-  `org_file_path` varchar(2084) collate utf8_unicode_ci default NULL,
-  `temp_file_path` varchar(1000) collate utf8_unicode_ci default NULL COMMENT 'orginial file path.  2083 character URL appears to be IE limit',
-  `file_type_id` int(1) NOT NULL default '0' COMMENT 'current file path on the server',
-  `checksum_run` int(1) NOT NULL default '0',
-  `remote_checksum` varchar(40) collate utf8_unicode_ci default NULL COMMENT 'remote checksum of a file',
-  `checksum` varchar(40) collate utf8_unicode_ci default NULL COMMENT 'file check sum sha1 or md5. sha1 is the default',
-  `virus_check` int(1) NOT NULL default '0' COMMENT 'has file had virus check',
-  `fulltext_available` int(1) NOT NULL default '0' COMMENT 'Whether text can be extracted.',
-  `metadata` int(1) NOT NULL default '0' COMMENT 'Whether metadata extraction has been run',
-  `dynamic_file` int(1) NOT NULL default '0' COMMENT 'is the file dynamically generated from orginal URL',
-  `last_modified` varchar(15) collate utf8_unicode_ci default NULL COMMENT 'file last modified timestamp',
-  `zipped` int(1) NOT NULL default '0' COMMENT 'Yes/No added to a Zip Archive',
-  `problem_file` int(1) NOT NULL default '0',
-  `events_frozen` int(1) NOT NULL default '0' COMMENT 'File events have ended due to error or file zipped and processing complete.',
-  `expired_deleted` int(1) NOT NULL default '0' COMMENT 'set to 1 for expired files that have been deleted.',
-  `user_id` int(6) NOT NULL default '0' COMMENT 'CONSTRAINT FOREIGN KEY (user_id) REFERENCES user(id)',
-  `upload_file_id` int(6) NOT NULL default '0' COMMENT 'CONSTRAINT FOREIGN KEY (upload_file_id) REFERENCES user_uploads(id)',
-  `download_time` timestamp NOT NULL default CURRENT_TIMESTAMP,
-  PRIMARY KEY  (`id`)
+CREATE TABLE `file_info` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `org_file_path` varchar(2084) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `temp_file_path` varchar(1000) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'orginial file path.  2083 character URL appears to be IE limit',
+  `pdfa` tinyint(1) NOT NULL DEFAULT '0',
+  `pdfa_run` tinyint(1) NOT NULL DEFAULT '0',
+  `jpeg2000` tinyint(1) NOT NULL DEFAULT '0',
+  `jpeg2000_run` tinyint(1) NOT NULL DEFAULT '0',
+  `file_type_id` int(1) NOT NULL DEFAULT '0' COMMENT 'current file path on the server',
+  `checksum_run` int(1) NOT NULL DEFAULT '0',
+  `remote_checksum` varchar(40) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'remote checksum of a file',
+  `checksum` varchar(40) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'file check sum sha1 or md5. sha1 is the default',
+  `virus_check` int(1) NOT NULL DEFAULT '0' COMMENT 'has file had virus check',
+  `fulltext_available` int(1) NOT NULL DEFAULT '0' COMMENT 'Whether text can be extracted.',
+  `metadata` int(1) NOT NULL DEFAULT '0' COMMENT 'Whether metadata extraction has been run',
+  `dynamic_file` int(1) NOT NULL DEFAULT '0' COMMENT 'is the file dynamically generated from orginal URL',
+  `last_modified` varchar(15) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'file last modified timestamp',
+  `bagit` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'whether file should use bagit for compression',
+  `zipped` int(1) NOT NULL DEFAULT '0' COMMENT 'Yes/No added to a Zip Archive',
+  `problem_file` int(1) NOT NULL DEFAULT '0',
+  `events_frozen` int(1) NOT NULL DEFAULT '0' COMMENT 'File events have ended due to error or file zipped and processing complete.',
+  `expired_deleted` int(1) NOT NULL DEFAULT '0' COMMENT 'set to true for expired files that have been deleted.',
+  `user_id` int(6) NOT NULL DEFAULT '0' COMMENT 'CONSTRAINT FOREIGN KEY (user_id) REFERENCES user(id)',
+  `upload_file_id` int(6) NOT NULL DEFAULT '0' COMMENT 'CONSTRAINT FOREIGN KEY (upload_file_id) REFERENCES user_uploads(id)',
+  `download_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='downloaded file information' AUTO_INCREMENT=1 ;
 
 --
@@ -313,14 +323,19 @@ CREATE TABLE IF NOT EXISTS `file_event_history` (
 -- Table structure for table `files_for_download`
 --
 
-CREATE TABLE IF NOT EXISTS `files_for_download` (
-  `id` int(10) NOT NULL auto_increment,
-  `url` varchar(500) collate utf8_unicode_ci NOT NULL,
-  `user_uploads_id` int(7) NOT NULL COMMENT "CONSTRAINT FOREIGN KEY (user_uploads_id) REFERENCES user_uploads(id)",
-  `user_id` int(6) NOT NULL COMMENT "CONSTRAINT FOREIGN KEY (user_id) REFERENCES user(id)",
-  `processed` tinyint(1) NOT NULL default '0',
-  PRIMARY KEY  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+CREATE TABLE `files_for_download` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `url` varchar(1024) COLLATE utf8_unicode_ci NOT NULL,
+  `jp2` tinyint(1) NOT NULL DEFAULT '0',
+  `pdfa` tinyint(1) NOT NULL DEFAULT '0',
+  `pdfa_convert` tinyint(1) NOT NULL DEFAULT '0',
+  `checksum_type` tinyint(1) NOT NULL DEFAULT '0',
+  `download_type` tinyint(1) NOT NULL DEFAULT '0',
+  `user_uploads_id` int(7) NOT NULL COMMENT 'CONSTRAINT FOREIGN KEY (user_uploads_id) REFERENCES user_uploads(id)',
+  `user_id` int(6) NOT NULL COMMENT 'CONSTRAINT FOREIGN KEY (user_id) REFERENCES user(id)',
+  `processed` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `files_for_download`
@@ -381,6 +396,83 @@ CREATE TABLE IF NOT EXISTS `Jpg_Metadata` (
   `file_id` int(12) NOT NULL,
   `user_id` int(7) NOT NULL,
   PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+
+--
+-- Table structure for table `Mp3_Metadata`
+--
+
+CREATE TABLE `Mp3_Metadata` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `author` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `content_length` int(11) DEFAULT NULL,
+  `content_type` varchar(15) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `channels` tinyint(2) DEFAULT NULL,
+  `creator` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `resource_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `sample_rate` int(7) DEFAULT NULL,
+  `title` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `version` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `album` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `artist` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `audio_channel_type` varchar(25) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `audio_compressor` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `audio_sample_rate` int(7) DEFAULT NULL,
+  `composer` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `genre` varchar(125) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `release_date` varchar(75) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `file_id` int(11) NOT NULL,
+  `user_id` int(7) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+--
+-- Table structure for table `Mp4_Metadata`
+--
+
+CREATE TABLE `Mp4_Metadata` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `content_length` int(11) DEFAULT NULL,
+  `content_type` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `creation_date` varchar(25) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `last_modified` varchar(25) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `last_save_date` varchar(25) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `resource_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `tiff_image_length` varchar(7) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `tiff_image_width` varchar(7) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `audio_channel_type` varchar(2) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `audio_sample_rate` varchar(2) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `file_id` int(11) NOT NULL,
+  `user_id` int(7) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+
+--
+-- Table structure for table `Ogg_Metadata`
+--
+
+CREATE TABLE `Ogg_Metadata` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `author` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `content_length` int(10) DEFAULT NULL,
+  `content_type` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `resource_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `title` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `vendor` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `version` varchar(25) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `album` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `artist` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `audio_channel_type` varchar(25) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `audio_compressor` varchar(25) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `audio_sample_rate` int(10) DEFAULT NULL,
+  `genre` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `comment` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `release_date` varchar(25) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `file_id` varchar(11) COLLATE utf8_unicode_ci NOT NULL,
+  `user_id` varchar(7) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 
@@ -579,6 +671,7 @@ CREATE TABLE `upload` (
   `urls_in_list` int(7) NOT NULL DEFAULT '0' COMMENT 'number of urls listed in the file',
   `jp2` tinyint(1) NOT NULL DEFAULT '0',
   `pdfa` tinyint(1) NOT NULL DEFAULT '0',
+  `pdfa_convert` tinyint(1) NOT NULL DEFAULT '0',
   `checksum_type` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1- SHA1, 2-MD5',
   `download_type` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1-Zip, 2-Bagit',
   `last_url_processed` int(15) NOT NULL DEFAULT '0' COMMENT 'last url in the list added to the database for download',

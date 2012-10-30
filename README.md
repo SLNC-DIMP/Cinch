@@ -37,12 +37,22 @@ an IMLS Sparks! Ignition grant.
 License:  CINCH is released under the Unlicense (http://unlicense.org/)
 
 -------------------------
-Requirements
+Requirements:
 
 * Currently Cinch will only run on *nix systems
 * PHP 5.3+ compiled with --enable-cli flag and curl module.  This is probably already setup in your package manager (PHP 5.4+ is recommended).
 * MySQL
 * ClamAV
+
+Optional Requirements:
+
+* Erlang
+* RabbitMQ
+* ImageMagick 
+* GhostScript
+
+See http://www.rabbitmq.com/download.html for instructions on Linux/Mac OS X setup of Erlang and RabbitMQ
+ClamAV, ImageMagick, and GhostScript are also available in most Linux package managers.  Or via MacPorts or HomeBrew on Mac OS X
 
 After download, you may need to run the setup.sh shell file before initially running application to set file level permissions.
 

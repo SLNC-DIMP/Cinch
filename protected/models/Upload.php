@@ -9,6 +9,7 @@
  * @property string  $urls_in_list
  * @property integer $jp2
  * @property integer $pdfa
+ * * @property integer $pdfa_convert
  * @property integer $checksum_type
  * @property integer $download_type
  * @property integer $processed
@@ -21,6 +22,7 @@ class Upload extends CActiveRecord {
 	public $files_in_list;
 	public $jp2;
 	public $pdfa;
+    public $pdfa_convert;
 	public $checksum_type;
 	public $download_type;
 	const MAX_URLS = 10000;
@@ -49,7 +51,7 @@ class Upload extends CActiveRecord {
 		return array(
 			array('urls_in_list', 'maxUrls', CUploadedFile::getInstance(self::model(),'path')),
 			array('path', 'file', 'types'=>'txt, csv'),
-			array('jp2, pdfa, checksum_type, download_type, user_id, processed', 'safe')
+			array('jp2, pdfa, pdfa_convert, checksum_type, download_type, user_id, processed', 'safe')
 		);
 	}
 	
@@ -70,8 +72,8 @@ class Upload extends CActiveRecord {
 				$this->addError('urls_in_list', 'Your list appears to have more than 10,000 urls listed. Please limit your list to 10,000 urls.');
 			} 
 		}
-	} 
-	
+	}
+
 	/**
 	 * @return array relational rules.
 	 */
@@ -97,6 +99,9 @@ class Upload extends CActiveRecord {
 
 		$criteria->compare('id',$this->id);
 		$criteria->compare('user_id',$this->user_id);
+        $criteria->compare('jp2',$this->jp2, true);
+        $criteria->compare('pdfa',$this->pdfa, true);
+        $criteria->compare('pdfa_convert',$this->pdfa_convert, true);
 		$criteria->compare('path',$this->path,true);
 		$criteria->compare('processed',$this->processed);
 
