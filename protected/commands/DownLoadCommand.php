@@ -6,7 +6,7 @@ Yii::import('application.models.Utils');
 * DownloadCommand class file
 *
 * This is the command for downloading a user's files.
-* @catagory Download
+* @category Download
 * @package Download
 * @author State Library of North Carolina - Digital Information Management Program <digital.info@ncdcr.gov>
 * @author Dean Farrell
@@ -43,8 +43,8 @@ class DownloadCommand extends CConsoleCommand {
 	*/
 	public $full_path;
 	/**
-	* max file size = 429496730 bytes 0.4 GB  
-	* Otherwise file might not fit into specified zip file limit
+	* max file size = 429496730 bytes 0.4 GB.
+	* Otherwise file might not fit into specified zip file limit.
 	* @var integer
 	*/
 	const FILE_SIZE_LIMIT = 429496730;
@@ -118,17 +118,19 @@ class DownloadCommand extends CConsoleCommand {
 	* @access public 
 	* @return string
 	*/
-	public function setFileInfo($url, $remote_checksum, $user_id, $upload_file_id) {
+	public function setFileInfo($url, $short_filename, $remote_checksum, $user_id, $upload_file_id) {
 		$dynamic_file = (is_numeric($this->initFileType($url))) ? 0 : 1;
-		$sql = "INSERT INTO file_info(org_file_path, 
+		$sql = "INSERT INTO file_info(org_file_path,
+                short_filename,
 				remote_checksum,
 				dynamic_file, 
 				user_id, 
 				upload_file_id) 
-			VALUES(:url, :remote_checksum, :dynamic_file, :user_id, :upload_file_id)";
+			VALUES(:url, :short_filename, :remote_checksum, :dynamic_file, :user_id, :upload_file_id)";
 			
 			$write_files = Yii::app()->db->createCommand($sql);
 			$write_files->bindParam(":url", $url, PDO::PARAM_STR);
+            $write_files->bindParam(":short_filename", $short_filename, PDO::PARAM_STR);
 			$write_files->bindParam(":remote_checksum", $remote_checksum, PDO::PARAM_STR);
 			$write_files->bindParam(":dynamic_file", $dynamic_file, PDO::PARAM_INT);
 			$write_files->bindParam(":user_id", $user_id, PDO::PARAM_INT);
@@ -251,6 +253,8 @@ class DownloadCommand extends CConsoleCommand {
 		
 		return $file_type;
 	}
+
+    
 	
 	/**
 	* Finds first directory files should be added to under a given user's main directory

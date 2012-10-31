@@ -3,7 +3,7 @@
 * purgeSystemCommand class file
 *
 * This is the command for informing users of impending file deletions and deleting user files after they've been on the server for 30 days.
-* @catagory Purge System
+* @category Purge System
 * @package Purge System
 * @author State Library of North Carolina - Digital Information Management Program <digital.info@ncdcr.gov>
 * @author Dean Farrell

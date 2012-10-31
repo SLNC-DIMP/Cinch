@@ -7,7 +7,7 @@ Yii::import('application.models.Utils');
 * ZipCreationCommand class code
 *
 * This is the command for creation of zip files for a user's downloaded files.
-* @catagory ZipCreation
+* @category ZipCreation
 * @package ZipCreation
 * @author State Library of North Carolina - Digital Information Management Program <digital.info@ncdcr.gov>
 * @author Dean Farrell

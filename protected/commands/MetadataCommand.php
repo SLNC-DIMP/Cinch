@@ -4,7 +4,7 @@ Yii::import('application.models.Utils');
 * MetadataCommand class file
 *
 * This is the command for extracting metadata from a user's files.
-* @catagory Metadata
+* @category Metadata
 * @package Metadata
 * @author State Library of North Carolina - Digital Information Management Program <digital.info@ncdcr.gov>
 * @author Dean Farrell
@@ -20,6 +20,10 @@ Yii::import('application.models.Utils');
 * @license Unlicense {@link http://unlicense.org/}
 */
 class MetadataCommand extends CConsoleCommand {
+    /**
+     * Path to Tika jar file to perform metadata extraction.
+     * @var $tika_path
+     */
 	private $tika_path;
 
 	const PDF = 'application/pdf';

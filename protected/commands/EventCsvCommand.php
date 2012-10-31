@@ -5,7 +5,7 @@ Yii::import('application.models.Utils');
 /**
 * EventCsvCommand class file
 * This is the command for creation of event csv manifest for a user's downloaded files.
-* @catagory Event CSV
+* @category Event CSV
 * @package Event CSV
 * @author State Library of North Carolina - Digital Information Management Program <digital.info@ncdcr.gov>
 * @author Dean Farrell
