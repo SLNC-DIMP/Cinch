@@ -20,7 +20,12 @@ Yii::import('application.models.Utils');
 * @license Unlicense {@link http://unlicense.org/}
 */
 class MetadataCommand extends CConsoleCommand {
-	private $tika_path;
+    /**
+     * Path to Tika jar file to perform metadata extraction.
+     * @var $tika_path
+     */
+    private $tika_path;
+
 	const PDF = 'application/pdf';
 	const WORD = 'application/msword';
 	const WORD2007 = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';

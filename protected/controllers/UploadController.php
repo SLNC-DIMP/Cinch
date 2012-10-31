@@ -117,6 +117,7 @@ class UploadController extends Controller {
 	
 	/**
 	* Make sure file permissions allow for Apache to delete it.
+    * @param $path
 	*/
 	public function changePerms($path) {
 		chmod($path, 0777);
