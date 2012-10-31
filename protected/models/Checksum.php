@@ -3,7 +3,7 @@
 * Checksum model class file
 *
 * Various database calls to select and write checksums.
-* @catagory Checksum
+* @category Checksum
 * @package Checksum
 * @author State Library of North Carolina - Digital Information Management Program <digital.info@ncdcr.gov>
 * @author Dean Farrell
@@ -49,7 +49,7 @@ class Checksum {
 		$get_file_checksums = Yii::app()->db->createCommand()
 			->select('id, temp_file_path, checksum, user_id, expired_deleted')
 			->from($this->table)
-			->where(array('and', 'expired_deleted=0', 'zipped != 1',
+			->where(array('and', 'expired_deleted=0', 'zipped != 1', 'checksum_run = 1',
 			        array('or', 'temp_file_path IS NOT NULL', 'temp_file_path !=""')))
 			->queryAll();
 			
@@ -77,7 +77,8 @@ class Checksum {
 	
 	/**
 	* Determines if a file has been previously downloaded by a user
-	* @param $file_id
+	* @param $checksum
+    * @param $user_id
 	* @access public 
 	* @return integer
 	*/

@@ -25,6 +25,7 @@ $this->breadcrumbs=array(
 </ul>
 <h3>Publications &amp; Presentations</h3>
 <h5>2012</h5>
+<p><a href="http://youtu.be/zTqLPRwNuYg" target="_blank">Introduction to CINCH video tutorial</a>. YouTube. July 2012</p>
 <p>Digital preservation ingest can be a &quot;CINCH.&quot; <em>Library Hi-Tech</em>. Forthcoming, July 2012</p>
 <p><a href="http://blogs.loc.gov/digitalpreservation/2012/06/digital-preservation-is-a-cinch/">Digital preservation is a CINCH</a>. June 2012. The Signal blog.</p>
 <p><a href="http://digitalpreservation.ncdcr.gov/asgii/presentations/ala2012.pdf">Collecting  born-digital materials from the web: It's a CINCH!</a> (.pdf) Digital Preservation Interest Group, American Library Association Annual Meeting. June 2012. Anaheim, CA.</p>

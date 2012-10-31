@@ -1,4 +1,23 @@
 <?php
+/**
+ * Base model class for file metadata insertion
+ *
+ * Builds queries and writes them to the database.
+ * @category Metadata Queries
+ * @package Metadata Queries
+ * @author State Library of North Carolina - Digital Information Management Program <digital.info@ncdcr.gov>
+ * @author Dean Farrell
+ * @version 1.0
+ * @license Unlicense {@link http://unlicense.org/}
+ */
+
+/**
+ * Builds queries and writes them to the database.
+ * @author State Library of North Carolina - Digital Information Management Program <digital.info@ncdcr.gov>
+ * @author Dean Farrell
+ * @version 1.0
+ * @license Unlicense {@link http://unlicense.org/}
+ */
 abstract class FileTypeActiveRecord extends CActiveRecord {
 	/**
 	* Should be an abstract write method, but Yii doesn't seem to care for abstract methods
@@ -9,7 +28,7 @@ abstract class FileTypeActiveRecord extends CActiveRecord {
 	
 	/**
 	* Returned metadata fields vary by document, not just doc type.
-	* This finds the intersection of returned metadata with file type table fields.
+	* This finds the interection of returned metadata with file type table fields.
 	* @param array $possible_query_fields
 	* @param array $metadata
 	* @access public
@@ -22,7 +41,7 @@ abstract class FileTypeActiveRecord extends CActiveRecord {
 	/**
 	* Flattens table fields into a string for query building.
 	* Adds : if creating prepared statement bindings.
-	* @param  array $fields
+	* @param array $fields
 	* @param $prepare
 	* @access public
 	* @return string

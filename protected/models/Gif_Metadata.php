@@ -3,7 +3,7 @@
 * Gif_Metadata class file
 *
 * Writes extracted Gif image metadata to the database.
-* @catagory Gif_Metadata
+* @category Gif_Metadata
 * @package Gif_Metadata
 * @author State Library of North Carolina - Digital Information Management Program <digital.info@ncdcr.gov>
 * @author Dean Farrell

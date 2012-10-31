@@ -18,5 +18,10 @@ $this->breadcrumbs=array(
   <li>Gif</li>
   <li>Text files (e.g. files with .txt or .csv extensions)</li>
 </ul>
-<p>CINCH <a href="<?php echo Yii::app()->request->baseUrl; ?>/CINCHdocumentation.pdf" target="_blank">documentation</a> and an <a href="<?php echo Yii::app()->request->baseUrl; ?>/site/page?view=faq">FAQ</a> give more details about how CINCH works.</p>
-<p>Anyone can install CINCH using the files available through <a href="http://slnc-dimp.github.com/Cinch/">GitHub</a>. North Carolina Institutions can use a <a href="<?php echo Yii::app()->request->baseUrl; ?>/site/login">hosted version</a>. <a href="<?php echo Yii::app()->request->baseUrl; ?>/site/contact">Contact us</a> for more details.</p>
+<p>CINCH <a href="<?php echo Yii::app()->request->baseUrl; ?>/CINCHdocumentation.pdf" target="_blank">documentation</a> and
+    an <a href="<?php echo Yii::app()->request->baseUrl; ?>/site/page?view=faq">FAQ</a> give more details about how CINCH works. You can also
+    view the <a href="http://youtu.be/zTqLPRwNuYg" target="_blank">video tutorial</a>.  For developers, CINCH API documentation
+    can be found <a href="http://cinch.nclive.org/c_docs/packages/db_Default.html">here</a>.</p>
+<p>Anyone can install CINCH using the files available through <a href="http://slnc-dimp.github.com/Cinch/">GitHub</a>. North Carolina
+    institutions can use a <a href="<?php echo Yii::app()->request->baseUrl; ?>/site/login">hosted
+        version</a>. <a href="<?php echo Yii::app()->request->baseUrl; ?>/site/contact">Contact us</a> for more details.</p>

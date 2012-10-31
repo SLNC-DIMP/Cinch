@@ -3,7 +3,7 @@
 * MakeCsv model class file
 *
 * Various database calls to got get and set csv paths.
-* @catagory MakeCsv
+* @category MakeCsv
 * @package MakeCsv
 * @author State Library of North Carolina - Digital Information Management Program <digital.info@ncdcr.gov>
 * @author Dean Farrell

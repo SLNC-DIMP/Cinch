@@ -3,7 +3,7 @@
 * Word_Metadata class file
 *
 * Writes extracted MS Word metadata to the database.
-* @catagory Word_Metadata
+* @category Word_Metadata
 * @package Word_Metadata
 * @author State Library of North Carolina - Digital Information Management Program <digital.info@ncdcr.gov>
 * @author Dean Farrell

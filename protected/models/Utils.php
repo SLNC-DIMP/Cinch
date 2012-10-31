@@ -3,7 +3,7 @@
 * Utils model class file
 *
 * Various database calls to write errors and events.
-* @catagory Utils
+* @category Utils
 * @package Utils
 * @author State Library of North Carolina - Digital Information Management Program <digital.info@ncdcr.gov>
 * @author Dean Farrell

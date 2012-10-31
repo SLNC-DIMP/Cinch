@@ -39,5 +39,5 @@ $this->breadcrumbs=array(
 
     <?php echo CHtml::submitButton('Upload'); ?>
     <?php echo CHtml::endForm(); ?>
-   </div>
+   
 </div>

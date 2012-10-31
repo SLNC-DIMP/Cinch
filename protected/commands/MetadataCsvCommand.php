@@ -55,7 +55,7 @@ class MetadataCsvCommand extends CConsoleCommand {
 	* @return object Yii DAO object
 	*/
 	public function getFiles() {
-		$sql = "SELECT id, checksum, file_type_id, user_id 
+		$sql = "SELECT id, checksum, file_type_id, user_id
 		FROM file_info 
 		WHERE (temp_file_path IS NOT NULL OR temp_file_path != '')
 		AND virus_check = 1
@@ -68,7 +68,22 @@ class MetadataCsvCommand extends CConsoleCommand {
 	
 		return $user_files;
 	}
-	
+
+    /**
+     * Gets a files original filename, minus its path.
+     * @param $file_id
+     * @return mixed
+     */
+    public function getShortName($file_id) {
+        $short_name = Yii::app()->db->createCommand()
+            ->select('short_filename')
+            ->from('file_info')
+            ->where('id = :id', array(':id' => $file_id))
+            ->QueryColumn();
+
+        return $short_name[0];
+    }
+
 	/**
 	* Gets fulltext status for file.
 	* @param $file_id
@@ -88,7 +103,7 @@ class MetadataCsvCommand extends CConsoleCommand {
 	}
 	
 	/**
-	* Returns correct table for the metadate being retrieved.
+	* Returns correct table for the metadata being retrieved.
 	* @param $meta_type
 	* @access public
 	* @return string
@@ -176,13 +191,16 @@ class MetadataCsvCommand extends CConsoleCommand {
 			->queryAll(PDO::FETCH_COLUMN);
 		
 		$columns = array();
-		
+
+
 		foreach($fields as $field) {
 			$col_name = $field['Field'];
 			if(!preg_match($this->compare, $col_name)) {
 				$columns[] = $col_name;
 			}
 		}
+
+        $columns[] = 'Short Filename';
 		$columns[] = 'Remote Checksum';
 		$columns[] = 'Local Checksum';
 		$columns[] = 'Fulltext';
@@ -214,10 +232,11 @@ class MetadataCsvCommand extends CConsoleCommand {
 		}
 		
 		foreach($metadata as $row) {
+            $row['short_filename'] = $this->getShortName($row['file_id']);
 			$row['remote_checksum'] = $this->checksum->getOneFileChecksum($row['file_id'], true);
 			$row['checksum'] = $this->checksum->getOneFileChecksum($row['file_id']);
 			$row['fulltext'] = $this->getFulltext($row['file_id']);
-			
+
 			foreach($row as $key => $value) {
 				if(preg_match($this->compare, $key)) {
 					unset($row[$key]);
@@ -226,7 +245,7 @@ class MetadataCsvCommand extends CConsoleCommand {
 			
 			fputcsv($fh, $row);
 		}
-		
+
 		fclose($fh);
 	}
 	

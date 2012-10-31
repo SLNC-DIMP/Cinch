@@ -3,7 +3,7 @@
 * MailUser class file
 *
 * Gets user's email address and mails them.
-* @catagory Mail User
+* @category Mail User
 * @package Mail User
 * @author State Library of North Carolina - Digital Information Management Program <digital.info@ncdcr.gov>
 * @author Dean Farrell

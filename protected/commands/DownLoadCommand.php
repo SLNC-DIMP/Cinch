@@ -112,6 +112,7 @@ class DownloadCommand extends CConsoleCommand {
 	/**
 	* Inserts basic file information for downloaded file
 	* @param $url
+    * @param $short_filename
 	* @param $remote_checksum
 	* @param $user_id
 	* @param $upload_file_id
@@ -222,6 +223,29 @@ class DownloadCommand extends CConsoleCommand {
 		
 		return $file_name; 
 	}
+
+    /**
+     * Returns the actual filename minus the path and adding .pdf if necessary.
+     * @param $file
+     * @access public
+     * @return string
+     */
+    public function getShortFilename($file) {
+        $short_filename = substr_replace(strrchr($file, '/'), '', 0, 1);
+
+        if(!is_numeric($this->initFileType($file))) {
+            $file_info = @pathinfo($file, PATHINFO_EXTENSION);
+            if(empty($file_info) || is_null($file_info)) {
+                $short_filename .= '.pdf';
+            } else {
+                $name_pieces = explode('.', $short_filename);
+                array_pop($name_pieces);
+                $short_filename = implode('', $name_pieces) . '.pdf';
+            }
+        }
+
+        return $short_filename;
+    }
 	
 	/**
      * Checks for allowed file types extensions
@@ -362,7 +386,9 @@ class DownloadCommand extends CConsoleCommand {
 	protected function writeCurlError($file_id) {
 		$error_id = 1;
 		Utils::writeError($file_id, $error_id);
-		$this->updateFileInfo(array('problem_file' => $error_id, 'events_frozen' => 1), $file_id);
+		$this->updateFileInfo(array('temp_file_path' => NULL,
+            'problem_file' => $error_id,
+            'events_frozen' => 1), $file_id);
 		
 		return $error_id;
 	}
@@ -399,7 +425,8 @@ class DownloadCommand extends CConsoleCommand {
 	*/
 	public function CurlProcessing($url, $current_user_id, $file_list_id) {
 		$remote_checksum = $this->remote_checksum->createRemoteChecksum($url);
-		$db_file_id = $this->setFileInfo($url, $remote_checksum, $current_user_id, $file_list_id);
+        $short_file_name = $this->getShortFilename($url);
+		$db_file_id = $this->setFileInfo($url, $short_file_name, $remote_checksum, $current_user_id, $file_list_id);
 		Utils::writeEvent($db_file_id, 15);
 		
 		if($remote_checksum) {
