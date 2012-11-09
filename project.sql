@@ -34,53 +34,59 @@ INSERT INTO `AuthAssignment` (`itemname`, `userid`, `bizrule`, `data`)VALUES
 -- Table structure for table `AuthItem`
 --
 
-CREATE TABLE IF NOT EXISTS `AuthItem` (
-  `name` varchar(64) collate utf8_unicode_ci NOT NULL,
+CREATE TABLE `AuthItem` (
+  `name` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
   `type` int(11) NOT NULL,
-  `description` text collate utf8_unicode_ci,
-  `bizrule` text collate utf8_unicode_ci,
-  `data` text collate utf8_unicode_ci,
-  PRIMARY KEY  (`name`)
+  `description` text COLLATE utf8_unicode_ci,
+  `bizrule` text COLLATE utf8_unicode_ci,
+  `data` text COLLATE utf8_unicode_ci,
+  PRIMARY KEY (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Dumping data for table `AuthItem`
 --
 
-INSERT INTO `AuthItem` (`name`, `type`, `description`, `bizrule`, `data`) VALUES
-('Admin', 2, NULL, NULL, 'N;'),
-('Admin.Default.*', 1, NULL, NULL, 'N;'),
-('Authenticated', 2, NULL, NULL, 'N;'),
-('FileInfo.*', 1, NULL, NULL, 'N;'),
-('FileInfo.Admin', 0, NULL, NULL, 'N;'),
-('FileInfo.Create', 0, NULL, NULL, 'N;'),
-('FileInfo.Delete', 0, NULL, NULL, 'N;'),
-('FileInfo.Index', 0, NULL, NULL, 'N;'),
-('FileInfo.Update', 0, NULL, NULL, 'N;'),
-('FileInfo.View', 0, NULL, NULL, 'N;'),
-('Guest', 2, NULL, NULL, 'N;'),
-('Site.*', 1, NULL, NULL, 'N;'),
-('Site.Contact', 0, NULL, NULL, 'N;'),
-('Site.Error', 0, NULL, NULL, 'N;'),
-('Site.Index', 0, NULL, NULL, 'N;'),
-('Site.Login', 0, NULL, NULL, 'N;'),
-('Site.Logout', 0, NULL, NULL, 'N;'),
-('Upload.*', 1, NULL, NULL, 'N;'),
-('Upload.Index', 0, NULL, NULL, 'N;'),
-('User.*', 1, NULL, NULL, 'N;'),
-('User.Admin', 0, NULL, NULL, 'N;'),
-('User.Create', 0, NULL, NULL, 'N;'),
-('User.Delete', 0, NULL, NULL, 'N;'),
-('User.Index', 0, NULL, NULL, 'N;'),
-('User.Pass', 0, NULL, NULL, 'N;'),
-('User.Update', 0, NULL, NULL, 'N;'),
-('User.View', 0, NULL, NULL, 'N;'),
-('ZipGzDownloads.Admin', 0, NULL, NULL, 'N;'),
-('ZipGzDownloads.Delete', 0, NULL, NULL, 'N;'),
-('ZipGzDownloads.Download', 0, NULL, NULL, 'N;'),
-('ZipGzDownloads.Index', 0, NULL, NULL, 'N;'),
-('ZipGzDownloads.Update', 0, NULL, NULL, 'N;'),
-('ZipGzDownloads.View', 0, NULL, NULL, 'N;');
+INSERT INTO `AuthItem` VALUES('Admin', 2, NULL, NULL, 'N;');
+INSERT INTO `AuthItem` VALUES('Admin.Default.*', 1, NULL, NULL, 'N;');
+INSERT INTO `AuthItem` VALUES('Authenticated', 2, NULL, NULL, 'N;');
+INSERT INTO `AuthItem` VALUES('FileInfo.*', 1, NULL, NULL, 'N;');
+INSERT INTO `AuthItem` VALUES('FileInfo.Admin', 0, NULL, NULL, 'N;');
+INSERT INTO `AuthItem` VALUES('FileInfo.Create', 0, NULL, NULL, 'N;');
+INSERT INTO `AuthItem` VALUES('FileInfo.Delete', 0, NULL, NULL, 'N;');
+INSERT INTO `AuthItem` VALUES('FileInfo.Index', 0, NULL, NULL, 'N;');
+INSERT INTO `AuthItem` VALUES('FileInfo.Update', 0, NULL, NULL, 'N;');
+INSERT INTO `AuthItem` VALUES('FileInfo.View', 0, NULL, NULL, 'N;');
+INSERT INTO `AuthItem` VALUES('FtpSites.*', 1, NULL, NULL, 'N;');
+INSERT INTO `AuthItem` VALUES('FtpSites.Admin', 0, NULL, NULL, 'N;');
+INSERT INTO `AuthItem` VALUES('FtpSites.Create', 0, NULL, NULL, 'N;');
+INSERT INTO `AuthItem` VALUES('FtpSites.Delete', 0, NULL, NULL, 'N;');
+INSERT INTO `AuthItem` VALUES('FtpSites.Index', 0, NULL, NULL, 'N;');
+INSERT INTO `AuthItem` VALUES('FtpSites.Update', 0, NULL, NULL, 'N;');
+INSERT INTO `AuthItem` VALUES('FtpSites.View', 0, NULL, NULL, 'N;');
+INSERT INTO `AuthItem` VALUES('Guest', 2, NULL, NULL, 'N;');
+INSERT INTO `AuthItem` VALUES('Site.*', 1, NULL, NULL, 'N;');
+INSERT INTO `AuthItem` VALUES('Site.Contact', 0, NULL, NULL, 'N;');
+INSERT INTO `AuthItem` VALUES('Site.Error', 0, NULL, NULL, 'N;');
+INSERT INTO `AuthItem` VALUES('Site.Index', 0, NULL, NULL, 'N;');
+INSERT INTO `AuthItem` VALUES('Site.Login', 0, NULL, NULL, 'N;');
+INSERT INTO `AuthItem` VALUES('Site.Logout', 0, NULL, NULL, 'N;');
+INSERT INTO `AuthItem` VALUES('Upload.*', 1, NULL, NULL, 'N;');
+INSERT INTO `AuthItem` VALUES('Upload.Index', 0, NULL, NULL, 'N;');
+INSERT INTO `AuthItem` VALUES('User.*', 1, NULL, NULL, 'N;');
+INSERT INTO `AuthItem` VALUES('User.Admin', 0, NULL, NULL, 'N;');
+INSERT INTO `AuthItem` VALUES('User.Create', 0, NULL, NULL, 'N;');
+INSERT INTO `AuthItem` VALUES('User.Delete', 0, NULL, NULL, 'N;');
+INSERT INTO `AuthItem` VALUES('User.Index', 0, NULL, NULL, 'N;');
+INSERT INTO `AuthItem` VALUES('User.Pass', 0, NULL, NULL, 'N;');
+INSERT INTO `AuthItem` VALUES('User.Update', 0, NULL, NULL, 'N;');
+INSERT INTO `AuthItem` VALUES('User.View', 0, NULL, NULL, 'N;');
+INSERT INTO `AuthItem` VALUES('ZipGzDownloads.Admin', 0, NULL, NULL, 'N;');
+INSERT INTO `AuthItem` VALUES('ZipGzDownloads.Delete', 0, NULL, NULL, 'N;');
+INSERT INTO `AuthItem` VALUES('ZipGzDownloads.Download', 0, NULL, NULL, 'N;');
+INSERT INTO `AuthItem` VALUES('ZipGzDownloads.Index', 0, NULL, NULL, 'N;');
+INSERT INTO `AuthItem` VALUES('ZipGzDownloads.Update', 0, NULL, NULL, 'N;');
+INSERT INTO `AuthItem` VALUES('ZipGzDownloads.View', 0, NULL, NULL, 'N;');
 
 -- --------------------------------------------------------
 
@@ -88,10 +94,10 @@ INSERT INTO `AuthItem` (`name`, `type`, `description`, `bizrule`, `data`) VALUES
 -- Table structure for table `AuthItemChild`
 --
 
-CREATE TABLE IF NOT EXISTS `AuthItemChild` (
-  `parent` varchar(64) collate utf8_unicode_ci NOT NULL,
-  `child` varchar(64) collate utf8_unicode_ci NOT NULL,
-  PRIMARY KEY  (`parent`,`child`),
+CREATE TABLE `AuthItemChild` (
+  `parent` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
+  `child` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`parent`,`child`),
   KEY `child` (`child`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -99,31 +105,32 @@ CREATE TABLE IF NOT EXISTS `AuthItemChild` (
 -- Dumping data for table `AuthItemChild`
 --
 
-INSERT INTO `AuthItemChild` (`parent`, `child`) VALUES
-('Admin.Default.*', 'FileInfo.*'),
-('Authenticated', 'Guest'),
-('Admin.Default.*', 'Site.*'),
-('Authenticated', 'Site.*'),
-('Guest', 'Site.*'),
-('Authenticated', 'Site.Contact'),
-('Guest', 'Site.Contact'),
-('Authenticated', 'Site.Error'),
-('Guest', 'Site.Error'),
-('Authenticated', 'Site.Index'),
-('Guest', 'Site.Index'),
-('Authenticated', 'Site.Login'),
-('Guest', 'Site.Login'),
-('Authenticated', 'Site.Logout'),
-('Guest', 'Site.Logout'),
-('Admin.Default.*', 'Upload.*'),
-('Authenticated', 'Upload.*'),
-('Authenticated', 'Upload.Index'),
-('Admin.Default.*', 'User.*'),
-('Authenticated', 'User.Pass'),
-('Admin.Default.*', 'ZipGzDownloads.Admin'),
-('Authenticated', 'ZipGzDownloads.Download'),
-('Authenticated', 'ZipGzDownloads.Index'),
-('Authenticated', 'ZipGzDownloads.View');
+INSERT INTO `AuthItemChild` VALUES('Admin.Default.*', 'FileInfo.*');
+INSERT INTO `AuthItemChild` VALUES('Authenticated', 'FtpSites.Index');
+INSERT INTO `AuthItemChild` VALUES('Authenticated', 'Guest');
+INSERT INTO `AuthItemChild` VALUES('Admin.Default.*', 'Site.*');
+INSERT INTO `AuthItemChild` VALUES('Authenticated', 'Site.*');
+INSERT INTO `AuthItemChild` VALUES('Guest', 'Site.*');
+INSERT INTO `AuthItemChild` VALUES('Authenticated', 'Site.Contact');
+INSERT INTO `AuthItemChild` VALUES('Guest', 'Site.Contact');
+INSERT INTO `AuthItemChild` VALUES('Authenticated', 'Site.Error');
+INSERT INTO `AuthItemChild` VALUES('Guest', 'Site.Error');
+INSERT INTO `AuthItemChild` VALUES('Authenticated', 'Site.Index');
+INSERT INTO `AuthItemChild` VALUES('Guest', 'Site.Index');
+INSERT INTO `AuthItemChild` VALUES('Authenticated', 'Site.Login');
+INSERT INTO `AuthItemChild` VALUES('Guest', 'Site.Login');
+INSERT INTO `AuthItemChild` VALUES('Authenticated', 'Site.Logout');
+INSERT INTO `AuthItemChild` VALUES('Guest', 'Site.Logout');
+INSERT INTO `AuthItemChild` VALUES('Admin.Default.*', 'Upload.*');
+INSERT INTO `AuthItemChild` VALUES('Authenticated', 'Upload.*');
+INSERT INTO `AuthItemChild` VALUES('Authenticated', 'Upload.Index');
+INSERT INTO `AuthItemChild` VALUES('Admin.Default.*', 'User.*');
+INSERT INTO `AuthItemChild` VALUES('Authenticated', 'User.Pass');
+INSERT INTO `AuthItemChild` VALUES('Admin.Default.*', 'ZipGzDownloads.Admin');
+INSERT INTO `AuthItemChild` VALUES('Authenticated', 'ZipGzDownloads.Download');
+INSERT INTO `AuthItemChild` VALUES('Authenticated', 'ZipGzDownloads.Index');
+INSERT INTO `AuthItemChild` VALUES('Authenticated', 'ZipGzDownloads.View');
+
 -- --------------------------------------------------------
 
 
@@ -301,12 +308,10 @@ CREATE TABLE `file_info` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='downloaded file information' AUTO_INCREMENT=1 ;
 
---
--- Dumping data for table `file_info`
---
 
--- --------------------------------------------------------
-
+--
+-- Table structure for table `file_event_history`
+--
 
 CREATE TABLE IF NOT EXISTS `file_event_history` (
   `id` int(15) NOT NULL auto_increment,
@@ -315,7 +320,6 @@ CREATE TABLE IF NOT EXISTS `file_event_history` (
   `event_time` timestamp NOT NULL default CURRENT_TIMESTAMP,
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
-
 
 --
 -- Table structure for table `files_for_download`
@@ -330,9 +334,19 @@ CREATE TABLE `files_for_download` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
+
 --
--- Dumping data for table `files_for_download`
+-- Table structure for table `ftp_sites`
 --
+
+CREATE TABLE `ftp_sites` (
+  `id` int(7) NOT NULL AUTO_INCREMENT,
+  `path` varchar(2084) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `username` varchar(25) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `password` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `user_id` int(6) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 --
 -- Table structure for table `Gif_Metadata`
@@ -720,15 +734,16 @@ CREATE TABLE IF NOT EXISTS `Word_Metadata` (
 -- Table structure for table `zip_gz_downloads`
 --
 
-CREATE TABLE IF NOT EXISTS `zip_gz_downloads` (
-  `id` int(9) NOT NULL auto_increment,
+CREATE TABLE `zip_gz_downloads` (
+  `id` int(9) NOT NULL AUTO_INCREMENT,
   `user_id` int(7) NOT NULL,
-  `path` varchar(500) collate utf8_unicode_ci NOT NULL,
-  `downloaded` int(1) NOT NULL default '0',
+  `download_type` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1-zip, 2-bagit, tar.gz',
+  `path` varchar(500) COLLATE utf8_unicode_ci NOT NULL,
+  `downloaded` int(1) NOT NULL DEFAULT '0',
   `deletion_reminder` int(1) NOT NULL DEFAULT '0' COMMENT '1- reminder sent. 0-reminder hasn''t been sent.',
-  `creationdate` timestamp NOT NULL default CURRENT_TIMESTAMP,
-  PRIMARY KEY  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+  `creationdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `zip_gz_downloads`

@@ -248,9 +248,11 @@ class DownloadCommand extends CConsoleCommand {
     }
 	
 	/**
-     * Checks for allowed file types extensions
+     * Checks for allowed file types extensions.
+     * 1 - Supported file extension.
+     * 2 - Unsupported file extension.
 	* Returns self reporting file extension.  Defaults to PDF if no extension given.
-	* Certain extensions default to .pdf, so they may misreport real file type
+	* Certain extensions default to .pdf, so they may misreport real file type.
 	* @param $file
 	* @access public
 	* @return string
@@ -513,7 +515,7 @@ class DownloadCommand extends CConsoleCommand {
         $urls = $this->getUrls();
 		if(empty($urls)) { exit; }
 		
-		foreach($urls as $key => $url) {
+		foreach($urls as $url) {
 			
 			$download = $this->CurlProcessing($url['url'],  $url['user_id'], $url['user_uploads_id']);
 			

@@ -58,6 +58,10 @@ class User extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
+            'fileInfo' => array(self::HAS_MANY, 'FileInfo', 'user_id'),
+            'ftpSites' => array(self::HAS_MANY, 'FtpSites', 'user_id'),
+            'upload' => array(self::HAS_MANY, 'Upload', 'user_id'),
+            'zipGzDownloads' => array(self::HAS_MANY, 'ZipGzDownloads', 'user_id'),
 		);
 	}
 
