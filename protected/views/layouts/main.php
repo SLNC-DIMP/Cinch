@@ -13,6 +13,9 @@
 
 	<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/main.css" />
 	<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/form.css" />
+    <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/cinch.css" />
+
+    <?php Yii::app()->clientScript->registerCoreScript('jquery');  ?>
 
 	<title><?php echo CHtml::encode($this->pageTitle); ?></title>
 </head>
@@ -22,22 +25,27 @@
 <div class="container" id="page">
 
 	<div id="header">
-		<div id="logo"><?php echo CHtml::encode(Yii::app()->name); ?></div>
+    	<div><?php echo CHtml::image(Yii::app()->request->baseUrl.'/images/cinch-header.png'); ?></div>
+	<!--	<div id="logo"><?php // echo CHtml::encode(Yii::app()->name); ?></div> -->
+        
 	</div><!-- header -->
 
 	<div id="mainmenu">
     	<?php
 			$menu_items = array(
 				array('label'=>'Home', 'url'=>array('/site/index')),
-				array('label'=>'About', 'url'=>array('/site/page', 'view'=>'about')),
+				array('label'=>'About the Tool', 'url'=>array('/site/page', 'view'=>'about')),
+				array('label'=>'About the Project', 'url'=>array('/site/page', 'view'=>'project')),
+				array('label'=>'FAQ', 'url'=>array('/site/page', 'view'=>'faq')),
 				array('label'=>'Contact', 'url'=>array('/site/contact')),
 			);
 			if(!Yii::app()->user->isGuest) {
 				$menu_items[] =  array('label'=>'Upload', 'url'=>array('/upload'));
-				$menu_items[] =  array('label'=>'FTP', 'url'=>array('/ftp'));
-				$menu_items[] =  array('label'=>'Download Your Files', 'url'=>array('/zipGzDownloads'));
+                $menu_items[] =  array('label'=>'FTP', 'url'=>array('/ftpSites'));
+				$menu_items[] =  array('label'=>'Download Files', 'url'=>array('/zipGzDownloads'));
+				$menu_items[] =  array('label'=>'Change Password', 'url'=>array('/user/pass/' . Yii::app()->user->id));
 			}
-			if(Yii::app()->user->checkAccess('deleteUser')) {
+			if(Yii::app()->authManager->checkAccess('Admin', Yii::app()->user->id)) {
 				$menu_items[] =  array('label'=>'Admin', 'url'=>array('/admin'));
 			}
 			$menu_items[] = array('label'=>'Login', 'url'=>array('/site/login'), 'visible'=>Yii::app()->user->isGuest);
@@ -57,23 +65,10 @@
 	<?php echo $content; ?>
 
 	<div id="footer">
-		Brought to you by the <a href="http://statelibrary.ncdcr.gov/" target="_blank">State Library of North Carolina</a> &amp; <a href="http://www.nclive.org/">NCLive</a><br />
-        Funding for this project provided by a Sparks! Ignition grant from <a href="http://www.imls.gov/" target="_blank">IMLS</a>
+
 	</div><!-- footer -->
 
 </div><!-- page -->
-<script type="text/javascript">
 
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-1152148-28']);
-  _gaq.push(['_trackPageview']);
-
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
-
-</script>
 </body>
 </html>
