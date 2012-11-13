@@ -131,6 +131,7 @@ class UploadController extends Controller {
 		$user_upload_dir = $this->getUsrUploadDir();
 		$uploaded = false;
 		$model = new Upload;
+
 		// sets default field values for form display
 		$model->checksum_type = 1;
 		$model->download_type = 1;

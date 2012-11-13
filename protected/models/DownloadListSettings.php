@@ -1,20 +1,24 @@
 <?php
 
 /**
- * This is the model class for table "ftp_sites".
+ * This is the model class for table "download_list_settings".
  *
- * The followings are the available columns in table 'ftp_sites':
+ * The followings are the available columns in table 'download_list_settings':
  * @property integer $id
- * @property string $path
- * @property string $username
- * @property string $password
+ * @property string $url
+ * @property integer $user_uploads_id
  * @property integer $user_id
+ * @property integer $processed
+ *
+ * The followings are the available model relations:
+ * @property UserUploads $userUploads
+ * @property User $user
  */
-class FtpSites extends CActiveRecord
+class DownloadListSettings extends CActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return FtpSites the static model class
+	 * @return DownloadListSettings the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -26,7 +30,7 @@ class FtpSites extends CActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'ftp_sites';
+		return 'download_list_settings';
 	}
 
 	/**
@@ -37,13 +41,12 @@ class FtpSites extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('path, username, password', 'required'),
-			array('path', 'length', 'max'=>2084),
-			array('username', 'length', 'max'=>25),
-			array('password', 'length', 'max'=>50),
+			array('url, user_uploads_id, user_id', 'required'),
+			array('user_uploads_id, user_id, processed', 'numerical', 'integerOnly'=>true),
+			array('url', 'length', 'max'=>1024),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, path, username, port, user_id', 'safe', 'on'=>'search'),
+			array('id, url, user_uploads_id, user_id, processed', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -55,8 +58,8 @@ class FtpSites extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-            'user' => array(self::BELONGS_TO, 'User', 'user_id'),
-            'file_info_settings' => array(self::HAS_ONE, 'FileInfoSettings', 'file_id')
+			'userUploads' => array(self::BELONGS_TO, 'UserUploads', 'user_uploads_id'),
+			'user' => array(self::BELONGS_TO, 'User', 'user_id'),
 		);
 	}
 
@@ -67,11 +70,10 @@ class FtpSites extends CActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'path' => 'Path',
-			'username' => 'Username',
-			'password' => 'Password',
-            'port' => 'Port',
+			'url' => 'Url',
+			'user_uploads_id' => 'User Uploads',
 			'user_id' => 'User',
+			'processed' => 'Processed',
 		);
 	}
 
@@ -87,11 +89,10 @@ class FtpSites extends CActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id);
-		$criteria->compare('path',$this->path,true);
-		$criteria->compare('username',$this->username,true);
-		$criteria->compare('password',$this->password,true);
-        $criteria->compare('port',$this->port,true);
+		$criteria->compare('url',$this->url,true);
+		$criteria->compare('user_uploads_id',$this->user_uploads_id);
 		$criteria->compare('user_id',$this->user_id);
+		$criteria->compare('processed',$this->processed);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
