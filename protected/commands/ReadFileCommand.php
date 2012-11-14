@@ -87,7 +87,7 @@ class ReadFileCommand extends CConsoleCommand {
 	* Process all unprocessed lists and add urls to database.  When list completes updates list as processed.
 	* If a list fails during processing rereading list will pick up where the list died.
 	*/
-	public function run() {
+	public function run($args) {
     	$file_lists = $file_lists = $this->getLists();
 		if(empty($file_lists)) { 
 			echo "There are no download lists to process\r\n";

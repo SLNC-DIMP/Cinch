@@ -500,7 +500,7 @@ class DownloadCommand extends CConsoleCommand {
 	/**
 	* Wrapper for downloading user files using the methods in the DownloadCommand class
 	*/
-	public function run() {
+	public function run($args) {
         $urls = $this->getUrls();
 		if(empty($urls)) { exit; }
 		
