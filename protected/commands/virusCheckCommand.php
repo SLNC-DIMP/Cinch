@@ -174,7 +174,7 @@ class virusCheckCommand extends CConsoleCommand {
 	* Deletes file if a virus is found.
 	* Mails admin if any virus laden files couldn't be deleted.
 	*/
-	public function run() {
+	public function run($args) {
 		$files = $this->getFiles();
 		if(empty($files)) { exit; }
 		

@@ -361,8 +361,9 @@ class MetadataCommand extends CConsoleCommand {
 	* 4 error code for can't grab metadata
 	* 12 error code for unsupported file type
 	* 18 error code file mime-type doesn't match file extension
+     * @param $args
 	*/
-	public function run() {
+	public function run($args) {
 		$files = $this->getFileList();
 		if(empty($files)) { exit; }
 		
