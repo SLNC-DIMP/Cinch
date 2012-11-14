@@ -56,7 +56,7 @@ class ChecksumCommand extends CConsoleCommand {
 	/**
 	* Create remote checksum to compare with downloaded version.  
 	* Also acts as check to see if file exists.  
-	* Supress file open warning on failure.
+	* Suppress file open warning on failure.
 	* @param $file
 	* @access public
 	* @return string

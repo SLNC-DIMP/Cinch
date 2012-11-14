@@ -220,7 +220,7 @@ class purgeSystemCommand extends CConsoleCommand {
 		foreach($dirs as $dir) {
 			$count = count(scandir($dir));
 			
-			if($count == 2) { // check for . and .. directories
+			if($count > 2) { // check for . and .. directories
 				$delete_dir = @rmdir($dir);
 				
 				if($delete_dir == false) {
