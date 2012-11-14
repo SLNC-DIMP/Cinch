@@ -33,3 +33,7 @@ body {
 .hide {
     display: none;
 }
+
+#port input {
+    display: inline;
+}

@@ -56,7 +56,7 @@ class FtpSites extends CActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
             'user' => array(self::BELONGS_TO, 'User', 'user_id'),
-            'file_info_settings' => array(self::HAS_ONE, 'FileInfoSettings', 'file_id')
+            'download_list_settings' => array(self::HAS_ONE, 'DownloadListSettings', 'file_id')
 		);
 	}
 

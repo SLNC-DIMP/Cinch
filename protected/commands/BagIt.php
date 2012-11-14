@@ -2,13 +2,16 @@
 // Can't use Yii::import here as there are multiple classes in bagit.php
 require_once Yii::app()->Basepath . '/lib/BagItPHP/lib/bagit.php';
 Yii::import('application.models.Utils');
+Yii::import('application.commands.DownloadPath');
 
 class BagItCommand extends CConsoleCommand {
 
-    public $download_path;
-
-    public function __construct($download_path) {
-        $this->download_path = $download_path;
+    public function getUsers() {
+        return Yii::app()->db->createCommand()
+                ->select('DISTINCT user_id')
+                ->from('upload')
+                ->where('download_type=2')
+                ->queryAll();
     }
 
     /**
@@ -20,11 +23,7 @@ class BagItCommand extends CConsoleCommand {
         $get_file_list = Yii::app()->db->createCommand()
             ->select('file_info.id,
                 file_info.user_id,
-                temp_file_path,
-                jp2,
-                pdfa,
-                pdfa_convert,
-                checksum_type')
+                temp_file_path')
             ->from('file_info')
             ->join('upload', 'file_info.upload_file_id=upload.id')
             ->where(array('and', 'download_type = 2',
@@ -32,6 +31,7 @@ class BagItCommand extends CConsoleCommand {
                     'temp_file_path IS NOT NULL',
                     'zipped != 1',
                     'events_frozen != 1'))
+            ->order('file_info.user_id', 'upload_file_id DESC')
             ->queryAll();
 
         return $get_file_list;
@@ -59,12 +59,6 @@ class BagItCommand extends CConsoleCommand {
     public function createBag($user_zip_path) {
 		return new BagIt($user_zip_path);
 	}
-	
-/*	A bit redundant.  Probably will delete
-	public function addFiles(BagIt $bag, $file) {
-        $bag_filename = $this->bagitName($file);
-		$bag->addFile($file, $bag_filename);
-	} */
 
     /**
      * Creates the filename to pass to BagIt
@@ -76,6 +70,10 @@ class BagItCommand extends CConsoleCommand {
         return substr_replace(strrchr($file, '/'), '', 0, 1);
     }
 
+    private function idCheck($user_id) {
+
+    }
+
     /**
      * Creates new BagIt containers.
      */
@@ -83,12 +81,13 @@ class BagItCommand extends CConsoleCommand {
 		$files = $this->getFiles();
 		if(empty($files)) { echo "No files to bag\n"; exit; }
 
+        $bag_path = new DownloadPath();
 
-        $new_bag = $this->createBag('user_zip_path?');
 		foreach($files as $file) {
+            $new_bag = $this->createBag($bag_path->getUserPath($file['user_id']));
             $bag_filename = $this->bagItName($file);
 
-			$new_bag->addFile($file, $bag_filename);
+			$new_bag->addFile($file['temp_file_path'], $bag_filename);
 			$new_bag->update();
 		}
 

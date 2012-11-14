@@ -341,9 +341,10 @@ CREATE TABLE `files_for_download` (
 
 CREATE TABLE `ftp_sites` (
   `id` int(7) NOT NULL AUTO_INCREMENT,
-  `path` varchar(2084) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `username` varchar(25) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `password` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `path` varchar(2084) COLLATE utf8_unicode_ci NOT NULL,
+  `username` varchar(25) COLLATE utf8_unicode_ci NOT NULL,
+  `password` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  `port` tinyint(1) NOT NULL,
   `user_id` int(6) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;

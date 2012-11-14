@@ -40,7 +40,8 @@ License:  CINCH is released under the Unlicense (http://unlicense.org/)
 Requirements:
 
 * Currently Cinch will only run on *nix systems
-* PHP 5.3+ compiled with --enable-cli flag and curl module.  This is probably already setup in your package manager (PHP 5.4+ is recommended).
+* PHP 5.3+ compiled with --enable-cli, --enable-ftp flags and the curl module enabled. This is probably already setup in your package manager (PHP 5.4+ is recommended).
+* libcurl version 7.10.5+
 * MySQL
 * ClamAV
 
@@ -50,6 +51,9 @@ Optional Requirements:
 * RabbitMQ
 * ImageMagick 
 * GhostScript
+* If sftp is required the ssh2 PECL package (http://pecl.php.net/package/ssh2) needs to be compiled and added to your php.ini file.
+* Sftp also requires the following Linux/Unix packages: libssh2 and OpenSSL, including the openssl-dev packages need to be installed.
+
 
 See http://www.rabbitmq.com/download.html for instructions on Linux/Mac OS X setup of Erlang and RabbitMQ
 ClamAV, ImageMagick, and GhostScript are also available in most Linux package managers.  Or via MacPorts or HomeBrew on Mac OS X
