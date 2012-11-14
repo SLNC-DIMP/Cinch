@@ -13,6 +13,7 @@
 
 	<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/main.css" />
 	<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/form.css" />
+    <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/cinch.css" />
 
 	<title><?php echo CHtml::encode($this->pageTitle); ?></title>
 </head>
@@ -22,22 +23,26 @@
 <div class="container" id="page">
 
 	<div id="header">
-		<div id="logo"><?php echo CHtml::encode(Yii::app()->name); ?></div>
+    	<div><?php echo CHtml::image(Yii::app()->request->baseUrl.'/images/cinch-header.png'); ?></div>
+	<!--	<div id="logo"><?php // echo CHtml::encode(Yii::app()->name); ?></div> -->
+        
 	</div><!-- header -->
 
 	<div id="mainmenu">
     	<?php
 			$menu_items = array(
 				array('label'=>'Home', 'url'=>array('/site/index')),
-				array('label'=>'About', 'url'=>array('/site/page', 'view'=>'about')),
+				array('label'=>'About the Tool', 'url'=>array('/site/page', 'view'=>'about')),
+				array('label'=>'About the Project', 'url'=>array('/site/page', 'view'=>'project')),
+				array('label'=>'FAQ', 'url'=>array('/site/page', 'view'=>'faq')),
 				array('label'=>'Contact', 'url'=>array('/site/contact')),
 			);
 			if(!Yii::app()->user->isGuest) {
 				$menu_items[] =  array('label'=>'Upload', 'url'=>array('/upload'));
-				$menu_items[] =  array('label'=>'FTP', 'url'=>array('/ftp'));
 				$menu_items[] =  array('label'=>'Download Your Files', 'url'=>array('/zipGzDownloads'));
+				$menu_items[] =  array('label'=>'Change Password', 'url'=>array('/user/pass/' . Yii::app()->user->id));
 			}
-			if(Yii::app()->user->checkAccess('deleteUser')) {
+			if(Yii::app()->authManager->checkAccess('Admin', Yii::app()->user->id)) {
 				$menu_items[] =  array('label'=>'Admin', 'url'=>array('/admin'));
 			}
 			$menu_items[] = array('label'=>'Login', 'url'=>array('/site/login'), 'visible'=>Yii::app()->user->isGuest);
@@ -57,8 +62,10 @@
 	<?php echo $content; ?>
 
 	<div id="footer">
-		Brought to you by the <a href="http://statelibrary.ncdcr.gov/" target="_blank">State Library of North Carolina</a> &amp; <a href="http://www.nclive.org/">NCLive</a><br />
-        Funding for this project provided by a Sparks! Ignition grant from <a href="http://www.imls.gov/" target="_blank">IMLS</a>
+    <?php echo CHtml::link(CHtml::image(Yii::app()->request->baseUrl.'/images/footerncdcr75.png'), "http://www.ncdcr.gov/", array('target'=>'_blank')); ?>
+    <?php echo CHtml::link(CHtml::image(Yii::app()->request->baseUrl.'/images/footerslnc75.png'), "http://statelibrary.ncdcr.gov/", array('target'=>'_blank')); ?>
+    <?php echo CHtml::link(CHtml::image(Yii::app()->request->baseUrl.'/images/footernclive75.png'), "http://www.nclive.org/", array('target'=>'_blank')); ?>
+    <?php echo CHtml::link(CHtml::image(Yii::app()->request->baseUrl.'/images/IMLS_Logo.png'), "http://www.imls.gov/", array('target'=>'_blank')); ?>
 	</div><!-- footer -->
 
 </div><!-- page -->
