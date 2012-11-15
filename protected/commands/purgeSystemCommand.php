@@ -25,7 +25,7 @@ class purgeSystemCommand extends CConsoleCommand {
 	* gets file_info table
 	* @var $file_info
 	*/
-	public $file_info = 'file_info';
+	protected $file_info = 'file_info';
 	/**
 	* Gets the the error file path (if there is one) for that day's processing.
 	* @var $error_list
@@ -61,7 +61,7 @@ class purgeSystemCommand extends CConsoleCommand {
 			AND   temp_file_path != :path";
 		
 		$files = Yii::app()->db->createCommand($sql)
-			->bindParam(':download_time', $this->timeOffset(30))
+			->bindParam(':download_time', $this->timeOffset(10))
 			->bindValue(':virus_check', 1)
 			->bindValue(':checksum_run', 1)
 			->bindValue(':metadata', 1) 
@@ -86,7 +86,7 @@ class purgeSystemCommand extends CConsoleCommand {
 		
 		$sql = "SELECT id, path, user_id FROM $table WHERE $field <= :timeoffset";
 		$generated_files = Yii::app()->db->createCommand($sql)
-			->bindParam(':timeoffset', $this->timeOffset(30))
+			->bindParam(':timeoffset', $this->timeOffset(10))
 			->queryAll();
 		
 		return $generated_files;
@@ -235,8 +235,36 @@ class purgeSystemCommand extends CConsoleCommand {
 		}
 	} */
 
+    /**
+     * Deletes empty directories in a given path
+     * @param $dir_path
+     * @access public
+     */
     public function removeDir($dir_path) {
+        try {
+            $dirs = new RecursiveIteratorIterator(
+                        new RecursiveDirectoryIterator($dir_path,FilesystemIterator::KEY_AS_PATHNAME),
+                            RecursiveIteratorIterator::SELF_FIRST
+                    );
 
+            while($dirs->valid()) {
+               if(is_dir($dirs->key()) && !$dirs->isDot() && count(scandir($dirs->key())) == 2) {
+                   $delete_dir = @rmdir($dirs->key());
+
+                    if($delete_dir == false) {
+                        $this->logError($this->getDateTime() . " - Directory: " . $dirs->key() . " could not be deleted.");
+                    } else {
+                        echo $dirs->key() . " deleted\r\n";
+                    }
+                } else {
+                    echo $dirs->key() . " is not empty\r\n";
+                }
+
+                $dirs->next();
+            }
+        } catch(UnexpectedValueException $e) {
+            echo "$dir_path is not a valid path or directory" . $e->getMessage() . "\n";
+        }
     }
 	
 	/**
@@ -273,7 +301,7 @@ class purgeSystemCommand extends CConsoleCommand {
 			$to_from = Yii::app()->params['adminEmail'];
 			$subject = 'Cinch file and directory deletion errors';
 			
-			$message = "The following deletion errors occured:\r\n";
+			$message = "The following deletion errors occurred:\r\n";
 			$message .= file_get_contents($this->error_list);
 			
 			mail($to_from, $subject, $message, "From: " . $to_from . "\r\n");
