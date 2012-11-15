@@ -281,6 +281,7 @@ class purgeSystemCommand extends CConsoleCommand {
 	/**
 	* Clears generated file from zip_gz_downloads, csv_meta_paths, and upload tables from the filesystem.
 	* Updates appropriate tables accordingly.
+    * @access public
 	*/
 	public function clearGenerated() {
 		$tables =  array('zip_gz_downloads', 'csv_meta_paths', 'upload');
@@ -293,7 +294,7 @@ class purgeSystemCommand extends CConsoleCommand {
 	
 	/**
 	* Clears processed downloads from files_for_download and upload tables.
-	* Bit of a hack for upload table.  Left in as a bug wasn't deleting upload db enteries properly.
+	* Bit of a hack for upload table.  Left in as a bug wasn't deleting upload db entries properly.
 	* This way the database will be cleaned up appropriately.
 	*/
 	public function clearProcessed() {
@@ -328,7 +329,8 @@ class purgeSystemCommand extends CConsoleCommand {
 	}
 	
 	/**
-	* Implments class methods to delete expired files and directories from the system.
+	* Implements class methods to delete expired files and directories from the system.
+    * @access public
 	*/
 	public function actionDelete() {
 		$this->clearGenerated();
