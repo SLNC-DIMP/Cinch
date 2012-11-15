@@ -213,14 +213,14 @@ class purgeSystemCommand extends CConsoleCommand {
 	* @param $dir_path
 	* @access public
 	*/
-	public function removeDir($dir_path) {
+/*	public function removeDir($dir_path) {
 		exec(escapeshellcmd('find ' . $dir_path . ' -type d'), $dirs);
 		unset($dirs[0]); // this is the base dir for the downloads/uploads so leave it there
 		
 		foreach($dirs as $dir) {
 			$count = count(scandir($dir));
 			
-			if($count > 2) { // check for . and .. directories
+			if($count == 2) { // check for . and .. directories
 				$delete_dir = @rmdir($dir);
 				
 				if($delete_dir == false) {
@@ -233,7 +233,11 @@ class purgeSystemCommand extends CConsoleCommand {
 			}
 
 		}
-	} 
+	} */
+
+    public function removeDir($dir_path) {
+
+    }
 	
 	/**
 	* Loop through the list of files to delete, remove them
