@@ -77,6 +77,7 @@ class ZipCreationCommand extends CConsoleCommand {
 								 'virus_check = 1',
 								 'checksum_run = 1',
 								 'metadata = 1',
+                                 'zipped != 1',
 								 'temp_file_path IS NOT NULL', 
 								 'temp_file_path !=""'))
 			->group('user_id')
@@ -97,6 +98,7 @@ class ZipCreationCommand extends CConsoleCommand {
 		$sql = "SELECT id, temp_file_path, problem_file, user_id
 			FROM file_info
 			WHERE :user_id = user_id
+			AND zipped != 1
 			AND	checksum_run = 1
 			AND	metadata = 1 
 			AND	virus_check = 1
