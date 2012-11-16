@@ -196,7 +196,7 @@ class MetadataCommand extends CConsoleCommand {
 	* Code 18 file mime-type doesn't match file extension
 	* @param $metadata (array)
 	* @access public
-	* @return mixed sring on success, array on error
+	* @return mixed string on success, array on error
 	*/
 	public function getTikaFileType($metadata) {
 		$constants = new ReflectionClass('MetadataCommand');
