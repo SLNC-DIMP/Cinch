@@ -91,6 +91,7 @@ class virusCheckCommand extends CConsoleCommand {
 	* [2] is set to total infected files on failed scan attempt
 	* [3] is set to total infected files on successful scan attempt
     * [3] is to to error total on failed scan
+     * Infected total on error not actually used.  As it shouldn't really have scanned the file.
 	* Can't get actual error message out of $output 
 	* Hence combination of scan_time and error detected to determine if it's one file or the whole system
 	* @param array $output 
