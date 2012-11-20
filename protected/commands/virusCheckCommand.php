@@ -72,7 +72,6 @@ class virusCheckCommand extends CConsoleCommand {
 		
 		$output['path'] = $file_path;
 		$output['file_id'] = $file_id;
-		
 		return $output;	
 	}
 	
@@ -91,7 +90,7 @@ class virusCheckCommand extends CConsoleCommand {
 	* $output returned as an array with fields in a fairly predictable order
 	* [2] is set to total infected files on failed scan attempt
 	* [3] is set to total infected files on successful scan attempt
-	* [3] is set to total errors on failed scan attempt
+    * [3] is to to error total on failed scan
 	* Can't get actual error message out of $output 
 	* Hence combination of scan_time and error detected to determine if it's one file or the whole system
 	* @param array $output 
@@ -100,6 +99,7 @@ class virusCheckCommand extends CConsoleCommand {
 	*/
 	protected function scanOutput(array $output) {
 		if(preg_match('/^Total\serrors/i', $output[3])) {
+           // $output['infected'] = $this->cleanString($output[2]);
 			$output['errors'] = $this->cleanString($output[3]);
 		} 
 		
@@ -114,7 +114,7 @@ class virusCheckCommand extends CConsoleCommand {
 		if(!isset($output['errors']) && !isset($output['scan_time']) && !empty($output)) {
 			$output['infected'] = $this->cleanString($output[3]);
 		}
-		
+
 		return $output;
 	}
 	
