@@ -10,7 +10,7 @@ Yii::import('application.models.Utils');
 * @package MetadataCsv
 * @author State Library of North Carolina - Digital Information Management Program <digital.info@ncdcr.gov>
 * @author Dean Farrell
-* @version 1.0
+* @version 1.4
 * @license Unlicense {@link http://unlicense.org/}
 */
 
@@ -18,7 +18,7 @@ Yii::import('application.models.Utils');
 * This is the command for creation of metadata csv manifest for a user's downloaded files.
 * @author State Library of North Carolina - Digital Information Management Program <digital.info@ncdcr.gov>
 * @author Dean Farrell
-* @version 1.0
+* @version 1.4
 * @license Unlicense {@link http://unlicense.org/}
 */
 class MetadataCsvCommand extends CConsoleCommand {
@@ -137,6 +137,12 @@ class MetadataCsvCommand extends CConsoleCommand {
 			case 12:
 				$table = 'PPT_Metadata';
 				break;
+            case 13:
+                $table = 'Mp3_Metadata';
+                break;
+            case 18:
+                $table = 'Mp4_Metadata';
+                break;
 			default:
 				$table = false;
 				break;

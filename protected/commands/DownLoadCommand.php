@@ -10,7 +10,7 @@ Yii::import('application.models.Utils');
 * @package Download
 * @author State Library of North Carolina - Digital Information Management Program <digital.info@ncdcr.gov>
 * @author Dean Farrell
-* @version 1.0
+* @version 1.4
 * @license Unlicense {@link http://unlicense.org/}
 */
 
@@ -18,7 +18,7 @@ Yii::import('application.models.Utils');
 * This is the command for downloading a user's files.
 * @author State Library of North Carolina - Digital Information Management Program <digital.info@ncdcr.gov>
 * @author Dean Farrell
-* @version 1.0
+* @version 1.4
 * @license Unlicense {@link http://unlicense.org/}
 */ 
 class DownloadCommand extends CConsoleCommand {
@@ -256,7 +256,12 @@ class DownloadCommand extends CConsoleCommand {
 	* @return string
 	*/
 	public function initFileType($file) {
-		$supported_extensions = array('pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'png', 'gif', 'jpg', 'jpeg', 'txt', 'csv');
+		$supported_extensions = array(
+            'pdf', 'doc', 'docx', 'xls',
+            'xlsx', 'ppt', 'pptx', 'png',
+            'gif', 'jpg', 'jpeg', 'txt',
+            'csv','mp3','mp4'
+        );
 		$pdf_extensions = array('asp', 'aspx', 'php', 'jsp', 'cfm', 'cfml');
 		$file_info = strtolower(@pathinfo($file, PATHINFO_EXTENSION));
 		
@@ -267,7 +272,7 @@ class DownloadCommand extends CConsoleCommand {
 		} else {
 			$file_type = 2;
 		}
-		
+
 		return $file_type;
 	}
 	
@@ -363,7 +368,7 @@ class DownloadCommand extends CConsoleCommand {
 		}
 
 		$error = ($file_size < self::FILE_SIZE_LIMIT) ? false : true;
-		
+
 		return $error;
 	}
 	
@@ -438,7 +443,7 @@ class DownloadCommand extends CConsoleCommand {
 			curl_setopt($ch, CURLOPT_AUTOREFERER, 1);
 			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
 			curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
-			curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+			curl_setopt($ch, CURLOPT_TIMEOUT, 25);
 			curl_setopt($ch, CURLOPT_FILETIME, 1);
 						
 			curl_exec($ch);

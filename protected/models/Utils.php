@@ -7,7 +7,7 @@
 * @package Utils
 * @author State Library of North Carolina - Digital Information Management Program <digital.info@ncdcr.gov>
 * @author Dean Farrell
-* @version 1.0
+* @version 1.4
 * @license Unlicense {@link http://unlicense.org/}
 */
 
@@ -15,7 +15,7 @@
 * Various database calls to write errors and events.
 * @author State Library of North Carolina - Digital Information Management Program <digital.info@ncdcr.gov>
 * @author Dean Farrell
-* @version 1.0
+* @version 1.4
 * @license Unlicense {@link http://unlicense.org/}
 */
 class Utils {

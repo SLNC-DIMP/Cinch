@@ -8,7 +8,7 @@ Yii::import('application.models.Utils');
 * @package Metadata
 * @author State Library of North Carolina - Digital Information Management Program <digital.info@ncdcr.gov>
 * @author Dean Farrell
-* @version 1.0
+* @version 1.4
 * @license Unlicense {@link http://unlicense.org/}
 */
 
@@ -16,7 +16,7 @@ Yii::import('application.models.Utils');
 * This is the command for extracting metadata from a user's files.
 * @author State Library of North Carolina - Digital Information Management Program <digital.info@ncdcr.gov>
 * @author Dean Farrell
-* @version 1.0
+* @version 1.4
 * @license Unlicense {@link http://unlicense.org/}
 */
 class MetadataCommand extends CConsoleCommand {
@@ -37,6 +37,8 @@ class MetadataCommand extends CConsoleCommand {
 	const PNG = 'image/png';
 	const GIF = 'image/gif';
 	const TEXT = 'text/plain';
+    const MP3 = 'audio/mp3';
+    const MP4 = 'video/mp4';
 	
 	public function __construct() {
 		$this->tika_path = Yii::getPathOfAlias('application') . '/tika-app-1.2.jar';
@@ -98,6 +100,12 @@ class MetadataCommand extends CConsoleCommand {
 			case self::TEXT:
 				$write = new Text_Metadata;
 				break;
+            case self::MP3:
+                $write = new Mp3_Metadata;
+                break;
+            case self::MP4:
+                $write = new Mp4_Metadata;
+                break;
 		}
 		
 		$write->writeMetadata($metadata, $file_id, $user_id);

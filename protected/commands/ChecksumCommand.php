@@ -64,13 +64,13 @@ class ChecksumCommand extends CConsoleCommand {
 	public function createRemoteChecksum($file) {
 		$fh = @fopen($file, 'r');
 		if($fh != false) {
-			$remote_checkum = $this->createChecksum($file, 'sha1', true);
+			$remote_checksum = $this->createChecksum($file, 'sha1', true);
 			@fclose($fh);
 		} else {
-			$remote_checkum = false;
+			$remote_checksum = false;
 		}
 	
-		return $remote_checkum;
+		return $remote_checksum;
 	}
 	
 	/**

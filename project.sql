@@ -249,22 +249,40 @@ CREATE TABLE IF NOT EXISTS `file_type` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=13 ;
 
 --
--- Dumping data for table `file_type`
+-- Table structure for table `file_type`
 --
 
-INSERT INTO `file_type` (`id`, `file_type`, `file_type_name`) VALUES
-(1, 'application/pdf', 'PDF'),
-(2, 'application/msword', 'DOC'),
-(3, 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'DOCX'),
-(4, 'image/tiff', 'TIFF'),
-(5, 'image/jpeg', 'JPEG'),
-(6, 'image/gif', 'GIF'),
-(7, 'text/plain', 'TXT'),
-(8, 'application/vnd.ms-excel', 'XLS'),
-(9, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'XLSX'),
-(10, 'image/png', 'PNG'),
-(11, 'application/vnd.ms-powerpoint', 'PPT'),
-(12, 'application/vnd.openxmlformats-officedocument.presentationml.presentation', 'PPTX');
+CREATE TABLE `file_type` (
+  `id` int(4) NOT NULL AUTO_INCREMENT,
+  `file_type` varchar(125) COLLATE utf8_unicode_ci NOT NULL,
+  `file_type_name` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=20 ;
+
+--
+-- Dumping data for table `file_type`
+-- Note: Not all file types are actively used (OGG and MOV)
+--
+
+INSERT INTO `file_type` VALUES(1, 'application/pdf', 'PDF');
+INSERT INTO `file_type` VALUES(2, 'application/msword', 'DOC');
+INSERT INTO `file_type` VALUES(3, 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'DOCX');
+INSERT INTO `file_type` VALUES(4, 'image/tiff', 'TIFF');
+INSERT INTO `file_type` VALUES(5, 'image/jpeg', 'JPEG');
+INSERT INTO `file_type` VALUES(6, 'image/gif', 'GIF');
+INSERT INTO `file_type` VALUES(7, 'text/plain', 'TXT');
+INSERT INTO `file_type` VALUES(8, 'application/vnd.ms-excel', 'XLS');
+INSERT INTO `file_type` VALUES(9, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'XLSX');
+INSERT INTO `file_type` VALUES(10, 'image/png', 'PNG');
+INSERT INTO `file_type` VALUES(11, 'application/vnd.ms-powerpoint', 'PPT');
+INSERT INTO `file_type` VALUES(12, 'application/vnd.openxmlformats-officedocument.presentationml.presentation', 'PPTX');
+INSERT INTO `file_type` VALUES(13, 'audio/mpeg', 'MP3');
+INSERT INTO `file_type` VALUES(14, 'audio/vorbis', 'OGG');
+INSERT INTO `file_type` VALUES(15, 'audio/ogg', 'OGG');
+INSERT INTO `file_type` VALUES(16, 'video/ogg', 'OGG');
+INSERT INTO `file_type` VALUES(17, 'application/ogg', 'OGG');
+INSERT INTO `file_type` VALUES(18, 'video/mp4', 'MP4');
+INSERT INTO `file_type` VALUES(19, 'video/quicktime', 'MOV');
 
 --
 -- Table structure for table `file_info`
@@ -385,6 +403,56 @@ CREATE TABLE IF NOT EXISTS `Jpg_Metadata` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `Mp3_Metadata`
+--
+
+CREATE TABLE `Mp3_Metadata` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `author` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `content_length` int(11) DEFAULT NULL,
+  `content_type` varchar(15) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `channels` tinyint(2) DEFAULT NULL,
+  `creator` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `resource_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `sample_rate` int(7) DEFAULT NULL,
+  `title` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `version` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `album` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `artist` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `audio_channel_type` varchar(25) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `audio_compressor` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `audio_sample_rate` int(7) DEFAULT NULL,
+  `composer` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `genre` varchar(125) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `release_date` varchar(75) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `file_id` int(11) NOT NULL,
+  `user_id` int(7) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+--
+-- Table structure for table `Mp4_Metadata`
+--
+
+CREATE TABLE `Mp4_Metadata` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `content_length` int(11) DEFAULT NULL,
+  `content_type` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `creation_date` varchar(25) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `last_modified` varchar(25) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `last_save_date` varchar(25) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `resource_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `tiff_image_length` varchar(7) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `tiff_image_width` varchar(7) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `audio_channel_type` varchar(2) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `audio_sample_rate` varchar(2) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `file_id` int(11) NOT NULL,
+  `user_id` int(7) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+
+--
 -- Table structure for table `pdf_metadata`
 --
 
@@ -477,7 +545,6 @@ CREATE TABLE IF NOT EXISTS `PPT_Metadata` (
   `user_id` int(7) NOT NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
-
 
 
 --

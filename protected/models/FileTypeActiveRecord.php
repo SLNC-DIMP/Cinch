@@ -7,7 +7,7 @@
  * @package Metadata Queries
  * @author State Library of North Carolina - Digital Information Management Program <digital.info@ncdcr.gov>
  * @author Dean Farrell
- * @version 1.0
+ * @version 1.4
  * @license Unlicense {@link http://unlicense.org/}
  */
 
@@ -15,7 +15,7 @@
  * Builds queries and writes them to the database.
  * @author State Library of North Carolina - Digital Information Management Program <digital.info@ncdcr.gov>
  * @author Dean Farrell
- * @version 1.0
+ * @version 1.4
  * @license Unlicense {@link http://unlicense.org/}
  */
 abstract class FileTypeActiveRecord extends CActiveRecord {
@@ -31,7 +31,7 @@ abstract class FileTypeActiveRecord extends CActiveRecord {
 	
 	/**
 	* Returned metadata fields vary by document, not just doc type.
-	* This finds the interection of returned metadata with file type table fields.
+	* This finds the intersection of returned metadata with file type table fields.
 	* @param array $possible_query_fields
 	* @param array $metadata
 	* @access public

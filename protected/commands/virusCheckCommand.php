@@ -8,7 +8,7 @@ Yii::import('application.models.Utils');
 * @package Virus Check
 * @author State Library of North Carolina - Digital Information Management Program <digital.info@ncdcr.gov>
 * @author Dean Farrell
-* @version 1.0
+* @version 1.4
 * @license Unlicense {@link http://unlicense.org/}
 */
 
@@ -16,7 +16,7 @@ Yii::import('application.models.Utils');
 * This is the command for detecting viruses and deleting file if a virus is found.
 * @author State Library of North Carolina - Digital Information Management Program <digital.info@ncdcr.gov>
 * @author Dean Farrell
-* @version 1.0
+* @version 1.4
 * @license Unlicense {@link http://unlicense.org/}
 */
 class virusCheckCommand extends CConsoleCommand {

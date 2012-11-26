@@ -7,7 +7,7 @@
 * @package Purge System
 * @author State Library of North Carolina - Digital Information Management Program <digital.info@ncdcr.gov>
 * @author Dean Farrell
-* @version 1.0
+* @version 1.4
 * @license Unlicense {@link http://unlicense.org/}
 * @todo update file_info table.  DON'T DELETE record.
 */
@@ -16,7 +16,7 @@
 * This is the command for informing users of impending file deletions and deleting user files after they've been on the server for 30 days.
 * @author State Library of North Carolina - Digital Information Management Program <digital.info@ncdcr.gov>
 * @author Dean Farrell
-* @version 1.0
+* @version 1.4
 * @license Unlicense {@link http://unlicense.org/}
 * @todo update file_info table.  DON'T DELETE record.
 */
