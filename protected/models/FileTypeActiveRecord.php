@@ -22,13 +22,16 @@ abstract class FileTypeActiveRecord extends CActiveRecord {
 	/**
 	* Should be an abstract write method, but Yii doesn't seem to care for abstract methods
 	* @abstract
+    * @param array $metadata
+    * @param $file_id
+    * @param $user_id
 	* @access public
 	*/
-	 public function writeMetadata() {}
+	 public function writeMetadata(array $metadata, $file_id, $user_id) {}
 	
 	/**
 	* Returned metadata fields vary by document, not just doc type.
-	* This finds the interection of returned metadata with file type table fields.
+	* This finds the intersection of returned metadata with file type table fields.
 	* @param array $possible_query_fields
 	* @param array $metadata
 	* @access public

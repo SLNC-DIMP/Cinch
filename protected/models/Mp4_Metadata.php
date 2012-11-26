@@ -1,23 +1,23 @@
 <?php
-    /**
-     * Mp4_Metadata class file
-     *
-     * Writes extracted mp4 metadata to the database.
-     * @catagory Mp4_Metadata
-     * @package Mp4_Metadata
-     * @author State Library of North Carolina - Digital Information Management Program <digital.info@ncdcr.gov>
-     * @author Dean Farrell
-     * @version 1.0
-     * @license Unlicense {@link http://unlicense.org/}
-     */
+/**
+ * Mp4_Metadata class file
+ *
+ * Writes extracted mp4 metadata to the database.
+ * @catagory Mp4_Metadata
+ * @package Mp4_Metadata
+ * @author State Library of North Carolina - Digital Information Management Program <digital.info@ncdcr.gov>
+ * @author Dean Farrell
+ * @version 1.0
+ * @license Unlicense {@link http://unlicense.org/}
+ */
 
-    /**
-     * Writes extracted mp4 metadata to the database.
-     * @author State Library of North Carolina - Digital Information Management Program <digital.info@ncdcr.gov>
-     * @author Dean Farrell
-     * @version 1.0
-     * @license Unlicense {@link http://unlicense.org/}
-     */
+/**
+ * Writes extracted mp4 metadata to the database.
+ * @author State Library of North Carolina - Digital Information Management Program <digital.info@ncdcr.gov>
+ * @author Dean Farrell
+ * @version 1.0
+ * @license Unlicense {@link http://unlicense.org/}
+ */
 class Mp4_Metadata extends FileTypeActiveRecord {
     /**
      * Writes extracted mp4 metadata to the database
