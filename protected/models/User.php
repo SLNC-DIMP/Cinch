@@ -135,8 +135,8 @@ class User extends CActiveRecord
 	 */
 	public function mailUser() {
 		$from = 'From: ' . Yii::app()->params['adminEmail'] . "\r\n" .
-		$message = "Your CINCH Credentials:\r\n";
-		$message .= "Username: " . $this->username . "\r\n";
+
+		$message = "Username: " . $this->username . "\r\n";
 		$message .= "Password: " . $this->password;
 		
 		mail($this->email, 'Your CINCH Credentials', $message, $from);

@@ -181,7 +181,7 @@ class MetadataCommand extends CConsoleCommand {
 	* Or conversely extracts document text
 	* Run it in server mode so it doesn't need to reload Tika each time
 	* @param $file
-	* @param $extract - Options metadata is default text, html, xml other possible  values
+	* @param $extract - Options metadata is default text, html, xml other possible values
 	* @access protected
 	* @return array
 	*/

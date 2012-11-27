@@ -80,33 +80,65 @@ class UserController extends Controller
 			'model'=>$model,
 		));
 	}
-	
-	/**
-	 * Updates a user's password.  User must be logged in for this action to happen.
-	 * Also restricts accessing other users' passwords
-	 * @param integer $id the ID of the model to be updated
-	 */
-	public function actionPass($id)
-	{ 
-		if($id === Yii::app()->user->id) {
-			$model=$this->loadModel($id);
-	
-			if(isset($_POST['User']))
-			{
-				$model->attributes=$_POST['User'];
-				
-				if($model->validate(array('password', 'password_repeat'), false) && $model->update()) {
-					Yii::app()->user->setFlash('success', "Password successfully updated!");
-				}
-			}
-	
-			$this->render('pass',array(
-				'model'=>$model,
-			));
-		} else {
-			throw new CHttpException(403,'Forbidden request, You are not allowed to perform this action.');
-		}
-	}
+
+    /**
+     * Updates a user's password.  User must be logged in for this action to happen.
+     * Also restricts accessing other users' passwords
+     * @param integer $id the ID of the model to be updated
+     */
+    public function actionPass($id)
+    {
+        if($id === Yii::app()->user->id) {
+            $model=$this->loadModel($id);
+
+            if(isset($_POST['User']))
+            {
+                $model->attributes=$_POST['User'];
+
+                if($model->validate(array('password', 'password_repeat'), false) && $model->update()) {
+                    Yii::app()->user->setFlash('success', "Password successfully updated!");
+                }
+            }
+
+            $this->render('pass',array(
+                'model'=>$model,
+            ));
+        } else {
+            throw new CHttpException(403,'Forbidden request, You are not allowed to perform this action.');
+        }
+    }
+
+    /**
+     * Resets user's password and emails them their new password
+     * Admin access only
+     * @param $id
+     * @throws CHttpException
+     */
+    public function actionResetPassword($id) {
+        if(Yii::app()->authManager->checkAccess('Admin', Yii::app()->user->id)) {
+            $reset_password = $this->randString();
+
+            $model = $this->loadModel($id);
+            $model->attributes = array('password'=>$reset_password);
+
+            if($model->update()) {
+                Yii::app()->user->setFlash('success', "Password successfully reset!");
+            }
+
+            $message = "Your password has been reset to $reset_password.  Please login and change it at your earliest convenience.\r\n";
+            $message .= "From,\r\n";
+            $message .= "Your Cinch administrators";
+
+            mail($model->email, "Password successfully reset", $message, "From: " . Yii::app()->params['adminEmail'] . "\r\n");
+
+            $this->render('update',array(
+                'model'=>$model,
+            ));
+
+        } else {
+            throw new CHttpException(403,'Forbidden request, You are not allowed to perform this action.');
+        }
+    }
 
 	/**
 	 * Deletes a particular model.
@@ -179,4 +211,16 @@ class UserController extends Controller
 			Yii::app()->end();
 		}
 	}
+
+    /**
+     * Generates a random string of letter followed by numbers for use in resetting passwords.
+     * @return string
+     */
+    private function randString() {
+        $letters = range('a', 'z');
+        shuffle($letters);
+        $sample = array_slice($letters, 0, 7);
+
+        return implode('', $sample) . mt_rand(1,9999);
+    }
 }

@@ -9,7 +9,7 @@ Yii::import('application.models.Utils');
 * @package Checksum
 * @author State Library of North Carolina - Digital Information Management Program <digital.info@ncdcr.gov>
 * @author Dean Farrell
-* @version 1.0
+* @version 1.4
 * @license Unlicense {@link http://unlicense.org/}
 */
 
@@ -17,7 +17,7 @@ Yii::import('application.models.Utils');
 * This is the command for creation of checksums for a user's downloaded files.
 * @author State Library of North Carolina - Digital Information Management Program <digital.info@ncdcr.gov>
 * @author Dean Farrell
-* @version 1.0
+* @version 1.4
 * @license Unlicense {@link http://unlicense.org/}
 */
 class ChecksumCommand extends CConsoleCommand {

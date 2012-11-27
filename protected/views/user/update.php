@@ -16,3 +16,6 @@ $this->menu=array(
 <h1>Update User <?php echo $model->id; ?></h1>
 
 <?php echo $this->renderPartial('_form', array('model'=>$model)); ?>
+
+<p><?php echo CHtml::link("Click here to reset password for $model->username",
+        Yii::app()->request->baseUrl . '/user/resetpassword/'. $model->id); ?></p>
