@@ -95,15 +95,6 @@ class User extends CActiveRecord
 	}
 	
 	/**
-	* mail user their user info
-	* @access public
-	*/
-	public function afterValidate() {
-		parent::afterValidate();
-		$this->mailUser();
-	}
-	
-	/**
 	* Encrypt user's password using Blowfish algorithm and bcrypt
 	* @param $password
 	* @param $db_pass
@@ -117,12 +108,13 @@ class User extends CActiveRecord
     }
  	
 	 /**
-	 * Replace the raw password with the hashed one
+	 * Mails users their login info and replaces the raw password with the hashed one in the db.
 	 * @access public
 	 * @return boolean
 	 */
     public function beforeSave() {
         if (isset($this->password)) {
+            $this->mailUser();
             $new_pass = new PasswordHash(8, false);
             $this->password = $new_pass->HashPassword($this->password);
         }
