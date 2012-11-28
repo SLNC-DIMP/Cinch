@@ -37,7 +37,7 @@ class MetadataCommand extends CConsoleCommand {
 	const PNG = 'image/png';
 	const GIF = 'image/gif';
 	const TEXT = 'text/plain';
-    const MP3 = 'audio/mp3';
+    const MP3 = 'audio/mpeg';
     const MP4 = 'video/mp4';
 	
 	public function __construct() {
@@ -212,7 +212,7 @@ class MetadataCommand extends CConsoleCommand {
 		
 		if(!empty($metadata)) { // || !is_null($metadata)
 			$clean_file_type = $metadata['Content-Type'];
-			
+
 			if(!in_array($clean_file_type, $file_types)) {
 				$clean_file_type = array(12, 18);
 			}
