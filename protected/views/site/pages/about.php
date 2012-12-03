@@ -16,6 +16,8 @@ $this->breadcrumbs=array(
   <li>Jpeg</li>
   <li>PNG</li>
   <li>Gif</li>
+  <li>MP3</li>
+  <li>MP4</li>
   <li>Text files (e.g. files with .txt or .csv extensions)</li>
 </ul>
 <p>CINCH <a href="<?php echo Yii::app()->request->baseUrl; ?>/CINCHdocumentation.pdf" target="_blank">documentation</a> and
