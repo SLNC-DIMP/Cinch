@@ -1,3 +1,5 @@
+As of December 1, 2018, we are no longer offering a hosted version of CINCH. You may still install it locally using the Github files.
+
 A project to develop a bulk download service to a central repository 
 that will maintain original file timestamps, extract file level metadata, 
 create file checksums and periodically validate checksums for continued file integrity. 
